@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\APIController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,6 +16,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::prefix('/aircraft')->group(function () {
+    Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllAircraft']);
+});
+
+Route::prefix('/ships')->group(function () {
+    Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllShips']);
+});
+
+Route::prefix('/vehicles')->group(function () {
+    Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllVehicles']);
 });
