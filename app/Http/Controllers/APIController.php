@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Aircraft;
 use App\Models\Ships;
 use App\Models\Vehicles;
+use App\Models\Facilities;
 
 class APIController extends Controller
 {
@@ -74,6 +75,58 @@ class APIController extends Controller
             "msg"=> count($vhc)." Data retrived", 
             "status"=>200,
             "data"=>$vhc
+        ]);
+    }
+
+    public function getTotalAircraftByRole(){
+        $air = Aircraft::selectRaw('primary_role, count(*) as total')
+            ->groupBy('primary_role')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($air)." Data retrived", 
+            "status"=>200,
+            "data"=>$air
+        ]);
+    }
+
+    public function getTotalShipsByClass(){
+        $shp = Ships::selectRaw('class, count(*) as total')
+            ->groupBy('class')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($shp)." Data retrived", 
+            "status"=>200,
+            "data"=>$shp
+        ]);
+    }
+
+    public function getTotalVehiclesByRole(){
+        $vhc = Vehicles::selectRaw('primary_role, count(*) as total')
+            ->groupBy('primary_role')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($vhc)." Data retrived", 
+            "status"=>200,
+            "data"=>$vhc
+        ]);
+    }
+
+    public function getTotalFacilitiesByType(){
+        $fac = Facilities::selectRaw('type, count(*) as total')
+            ->groupBy('type')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($fac)." Data retrived", 
+            "status"=>200,
+            "data"=>$fac
         ]);
     }
 }
