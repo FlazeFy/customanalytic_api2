@@ -11,6 +11,7 @@ use App\Models\Facilities;
 use App\Models\Weapons;
 use App\Models\Events;
 use App\Models\Books;
+use App\Models\Casualities;
 
 class APIController extends Controller
 {
@@ -117,9 +118,34 @@ class APIController extends Controller
         ]);
     }
 
+    public function getAllCasualities($page_limit, $orderby, $ordertype){
+        $cst = Casualities::select('id', 'country', 'continent', 'total_population', 'military_death', 'civilian_death', 'total_death', 'death_per_pop', 'avg_death_per_pop', 'military_wounded')
+            ->orderBy($orderby, $ordertype)
+            ->paginate($page_limit);
+    
+        return response()->json([
+            "msg"=> count($cst)." Data retrived", 
+            "status"=>200,
+            "data"=>$cst
+        ]);
+    }
+
     public function getTotalAircraftByRole(){
         $air = Aircraft::selectRaw('primary_role, count(*) as total')
             ->groupBy('primary_role')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($air)." Data retrived", 
+            "status"=>200,
+            "data"=>$air
+        ]);
+    }
+
+    public function getTotalAircraftByCountry(){
+        $air = Aircraft::selectRaw('country, count(*) as total')
+            ->groupBy('country')
             ->orderBy('total', 'DESC')
             ->get();
     
@@ -143,6 +169,19 @@ class APIController extends Controller
         ]);
     }
 
+    public function getTotalShipsByCountry(){
+        $shp = Ships::selectRaw('country, count(*) as total')
+            ->groupBy('country')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($shp)." Data retrived", 
+            "status"=>200,
+            "data"=>$shp
+        ]);
+    }
+
     public function getTotalVehiclesByRole(){
         $vhc = Vehicles::selectRaw('primary_role, count(*) as total')
             ->groupBy('primary_role')
@@ -156,9 +195,35 @@ class APIController extends Controller
         ]);
     }
 
+    public function getTotalVehiclesByCountry(){
+        $vhc = Vehicles::selectRaw('country, count(*) as total')
+            ->groupBy('country')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($vhc)." Data retrived", 
+            "status"=>200,
+            "data"=>$vhc
+        ]);
+    }
+
     public function getTotalFacilitiesByType(){
         $fac = Facilities::selectRaw('type, count(*) as total')
             ->groupBy('type')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($fac)." Data retrived", 
+            "status"=>200,
+            "data"=>$fac
+        ]);
+    }
+
+    public function getTotalFacilitiesByCountry(){
+        $fac = Facilities::selectRaw('country, count(*) as total')
+            ->groupBy('country')
             ->orderBy('total', 'DESC')
             ->get();
     

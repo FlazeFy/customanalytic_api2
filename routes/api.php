@@ -23,20 +23,24 @@ use App\Http\Controllers\APIController;
 Route::prefix('/aircraft')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllAircraft']);
     Route::get('/total/byrole', [APIController::class, 'getTotalAircraftByRole']);
+    Route::get('/total/bycountry', [APIController::class, 'getTotalAircraftByCountry']);
 });
 
 Route::prefix('/ships')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllShips']);
     Route::get('/total/byclass', [APIController::class, 'getTotalShipsByClass']);
+    Route::get('/total/bycountry', [APIController::class, 'getTotalShipsByCountry']);
 });
 
 Route::prefix('/vehicles')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllVehicles']);
     Route::get('/total/byrole', [APIController::class, 'getTotalVehiclesByRole']);
+    Route::get('/total/bycountry', [APIController::class, 'getTotalVehiclesByCountry']);
 });
 
 Route::prefix('/facilities')->group(function () {
     Route::get('/total/bytype', [APIController::class, 'getTotalFacilitiesByType']);
+    Route::get('/total/bycountry', [APIController::class, 'getTotalFacilitiesByCountry']);
 });
 
 Route::prefix('/weapons')->group(function () {
@@ -51,4 +55,8 @@ Route::prefix('/events')->group(function () {
 Route::prefix('/books')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllBooks']);
     Route::get('/total/byreviewer', [APIController::class, 'getTotalBooksByReviewer']);
+});
+
+Route::prefix('/casualities')->group(function () {
+    Route::get('/limit/{page_limit}/order/{orderby}/{ordertype}', [APIController::class, 'getAllCasualities']);
 });
