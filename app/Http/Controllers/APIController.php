@@ -8,6 +8,9 @@ use App\Models\Aircraft;
 use App\Models\Ships;
 use App\Models\Vehicles;
 use App\Models\Facilities;
+use App\Models\Weapons;
+use App\Models\Events;
+use App\Models\Books;
 
 class APIController extends Controller
 {
@@ -78,6 +81,42 @@ class APIController extends Controller
         ]);
     }
 
+    public function getAllWeapons($page_limit, $order){
+        $wpn = Weapons::select('id', 'name', 'type', 'country')
+            ->orderBy('name', $order)
+            ->paginate($page_limit);
+    
+        return response()->json([
+            "msg"=> count($wpn)." Data retrived", 
+            "status"=>200,
+            "data"=>$wpn
+        ]);
+    }
+
+    public function getAllEvents($page_limit, $order){
+        $evt = Events::select('id', 'event', 'date')
+            ->orderBy('event', $order)
+            ->paginate($page_limit);
+    
+        return response()->json([
+            "msg"=> count($evt)." Data retrived", 
+            "status"=>200,
+            "data"=>$evt
+        ]);
+    }
+
+    public function getAllBooks($page_limit, $order){
+        $bok = Books::select('id', 'title', 'author', 'reviewer', 'review_date', 'datetime')
+            ->orderBy('title', $order)
+            ->paginate($page_limit);
+    
+        return response()->json([
+            "msg"=> count($bok)." Data retrived", 
+            "status"=>200,
+            "data"=>$bok
+        ]);
+    }
+
     public function getTotalAircraftByRole(){
         $air = Aircraft::selectRaw('primary_role, count(*) as total')
             ->groupBy('primary_role')
@@ -127,6 +166,32 @@ class APIController extends Controller
             "msg"=> count($fac)." Data retrived", 
             "status"=>200,
             "data"=>$fac
+        ]);
+    }
+
+    public function getTotalWeaponsByType(){
+        $wpn = Weapons::selectRaw('type, count(*) as total')
+            ->groupBy('type')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($wpn)." Data retrived", 
+            "status"=>200,
+            "data"=>$wpn
+        ]);
+    }
+
+    public function getTotalBooksByReviewer(){
+        $bok = Books::selectRaw('reviewer, count(*) as total')
+            ->groupBy('reviewer')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($bok)." Data retrived", 
+            "status"=>200,
+            "data"=>$bok
         ]);
     }
 }

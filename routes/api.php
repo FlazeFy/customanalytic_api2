@@ -38,3 +38,17 @@ Route::prefix('/vehicles')->group(function () {
 Route::prefix('/facilities')->group(function () {
     Route::get('/total/bytype', [APIController::class, 'getTotalFacilitiesByType']);
 });
+
+Route::prefix('/weapons')->group(function () {
+    Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllWeapons']);
+    Route::get('/total/bytype', [APIController::class, 'getTotalWeaponsByType']);
+});
+
+Route::prefix('/events')->group(function () {
+    Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllEvents']);
+});
+
+Route::prefix('/books')->group(function () {
+    Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllBooks']);
+    Route::get('/total/byreviewer', [APIController::class, 'getTotalBooksByReviewer']);
+});
