@@ -182,6 +182,20 @@ class APIController extends Controller
         ]);
     }
 
+    public function getTotalShipsByLaunchYear(){
+        $shp = Ships::selectRaw('launch_year, count(*) as total')
+            ->where('launch_year', '!=', 0000)
+            ->groupBy('launch_year')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($shp)." Data retrived", 
+            "status"=>200,
+            "data"=>$shp
+        ]);
+    }
+
     public function getTotalVehiclesByRole(){
         $vhc = Vehicles::selectRaw('primary_role, count(*) as total')
             ->groupBy('primary_role')
@@ -234,9 +248,34 @@ class APIController extends Controller
         ]);
     }
 
+    public function getTotalFacilitiesByLocation(){
+        $fac = Facilities::selectRaw('name, location, country, coordinate')
+            ->where('coordinate', '!=', '')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($fac)." Data retrived", 
+            "status"=>200,
+            "data"=>$fac
+        ]);
+    }
+
     public function getTotalWeaponsByType(){
         $wpn = Weapons::selectRaw('type, count(*) as total')
             ->groupBy('type')
+            ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($wpn)." Data retrived", 
+            "status"=>200,
+            "data"=>$wpn
+        ]);
+    }
+
+    public function getTotalWeaponsByCountry(){
+        $wpn = Weapons::selectRaw('country, count(*) as total')
+            ->groupBy('country')
             ->orderBy('total', 'DESC')
             ->get();
     

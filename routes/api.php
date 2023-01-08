@@ -30,6 +30,7 @@ Route::prefix('/ships')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllShips']);
     Route::get('/total/byclass', [APIController::class, 'getTotalShipsByClass']);
     Route::get('/total/bycountry', [APIController::class, 'getTotalShipsByCountry']);
+    Route::get('/total/bylaunchyear', [APIController::class, 'getTotalShipsByLaunchYear']);
 });
 
 Route::prefix('/vehicles')->group(function () {
@@ -41,11 +42,13 @@ Route::prefix('/vehicles')->group(function () {
 Route::prefix('/facilities')->group(function () {
     Route::get('/total/bytype', [APIController::class, 'getTotalFacilitiesByType']);
     Route::get('/total/bycountry', [APIController::class, 'getTotalFacilitiesByCountry']);
+    Route::get('/bylocation', [APIController::class, 'getTotalFacilitiesByLocation']);
 });
 
 Route::prefix('/weapons')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllWeapons']);
     Route::get('/total/bytype', [APIController::class, 'getTotalWeaponsByType']);
+    Route::get('/total/bycountry', [APIController::class, 'getTotalWeaponsByCountry']);
 });
 
 Route::prefix('/events')->group(function () {

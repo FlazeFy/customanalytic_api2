@@ -11,5 +11,5 @@ class Facilities extends Model
 
     protected $table = 'facilities';
     protected $primaryKey = 'id';
-    protected $fillable = ['name', 'type', 'location', 'country'];
+    protected $fillable = ['name', 'type', 'location', 'country', 'coordinate'];
 }
