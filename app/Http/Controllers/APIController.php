@@ -130,10 +130,58 @@ class APIController extends Controller
         ]);
     }
 
+    public function getTotalDeathByCountry($order, $page_limit){
+        if($order != "NULL"){
+            $cst = Casualities::selectRaw('country, total_population, military_death, civilian_death, military_death + civilian_death as total')
+                ->whereRaw('military_death+civilian_death != 0')
+                ->orderBy("total", $order)
+                ->paginate($page_limit);
+        } else {
+            $cst = Casualities::selectRaw('country, total_population, military_death, civilian_death, military_death + civilian_death as total')
+                ->whereRaw('military_death+civilian_death != 0')
+                ->paginate($page_limit);
+        }   
+    
+        return response()->json([
+            "msg"=> count($cst)." Data retrived", 
+            "status"=>200,
+            "data"=>$cst
+        ]);
+    }
+
+    public function getTotalDeathBySides(){
+        $cst = Casualities::selectRaw('sum(military_death) as m_death, sum(civilian_death) as c_death,
+                (CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
+                OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
+                OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS side')
+                ->groupBy("side")
+                ->get();
+    
+        return response()->json([
+            "msg"=> count($cst)." Data retrived", 
+            "status"=>200,
+            "data"=>$cst
+        ]);
+    }
+
     public function getTotalAircraftByRole(){
         $air = Aircraft::selectRaw('primary_role, count(*) as total')
             ->groupBy('primary_role')
             ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($air)." Data retrived", 
+            "status"=>200,
+            "data"=>$air
+        ]);
+    }
+
+    public function getTotalAircraftBySides(){
+        $air = Aircraft::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
+            OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
+            OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS side, COUNT(*) as total')
+            ->groupBy('side')
             ->get();
     
         return response()->json([
@@ -185,6 +233,7 @@ class APIController extends Controller
     public function getTotalShipsByLaunchYear(){
         $shp = Ships::selectRaw('launch_year, count(*) as total')
             ->where('launch_year', '!=', 0000)
+            ->whereRaw('char_length(launch_year) = 5')
             ->groupBy('launch_year')
             ->orderBy('total', 'DESC')
             ->get();

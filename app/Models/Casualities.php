@@ -11,5 +11,5 @@ class Casualities extends Model
 
     protected $table = 'casualities';
     protected $primaryKey = 'id';
-    protected $fillable = ['country', 'continent', 'total_population', 'military_death', 'civilian_death', 'total_death', 'death_per_pop', 'avg_death_per_pop', 'military_wounded'];
+    protected $fillable = ['country', 'continent', 'total_population', 'military_death', 'civilian_death', 'death_per_pop', 'avg_death_per_pop', 'military_wounded'];
 }

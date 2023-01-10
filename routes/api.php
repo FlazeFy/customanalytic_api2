@@ -24,6 +24,7 @@ Route::prefix('/aircraft')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllAircraft']);
     Route::get('/total/byrole', [APIController::class, 'getTotalAircraftByRole']);
     Route::get('/total/bycountry', [APIController::class, 'getTotalAircraftByCountry']);
+    Route::get('/total/bysides', [APIController::class, 'getTotalAircraftBySides']);
 });
 
 Route::prefix('/ships')->group(function () {
@@ -62,4 +63,6 @@ Route::prefix('/books')->group(function () {
 
 Route::prefix('/casualities')->group(function () {
     Route::get('/limit/{page_limit}/order/{orderby}/{ordertype}', [APIController::class, 'getAllCasualities']);
+    Route::get('/totaldeath/bycountry/{order}/limit/{page_limit}', [APIController::class, 'getTotalDeathByCountry']);
+    Route::get('/totaldeath/bysides', [APIController::class, 'getTotalDeathBySides']);
 });
