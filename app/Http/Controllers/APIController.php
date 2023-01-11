@@ -230,6 +230,20 @@ class APIController extends Controller
         ]);
     }
 
+    public function getTotalShipsBySides(){
+        $shp = Ships::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
+            OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
+            OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS side, COUNT(*) as total')
+            ->groupBy('side')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($shp)." Data retrived", 
+            "status"=>200,
+            "data"=>$shp
+        ]);
+    }
+
     public function getTotalShipsByLaunchYear(){
         $shp = Ships::selectRaw('launch_year, count(*) as total')
             ->where('launch_year', '!=', 0000)
@@ -262,6 +276,20 @@ class APIController extends Controller
         $vhc = Vehicles::selectRaw('country, count(*) as total')
             ->groupBy('country')
             ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($vhc)." Data retrived", 
+            "status"=>200,
+            "data"=>$vhc
+        ]);
+    }
+
+    public function getTotalVehiclesBySides(){
+        $vhc = Vehicles::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
+            OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
+            OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS side, COUNT(*) as total')
+            ->groupBy('side')
             ->get();
     
         return response()->json([
@@ -332,6 +360,20 @@ class APIController extends Controller
             "msg"=> count($wpn)." Data retrived", 
             "status"=>200,
             "data"=>$wpn
+        ]);
+    }
+
+    public function getTotalWeaponsBySides(){
+        $shp = Weapons::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
+            OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
+            OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS side, COUNT(*) as total')
+            ->groupBy('side')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($shp)." Data retrived", 
+            "status"=>200,
+            "data"=>$shp
         ]);
     }
 
