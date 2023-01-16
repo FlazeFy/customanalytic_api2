@@ -325,9 +325,42 @@ class APIController extends Controller
         ]);
     }
 
-    public function getTotalFacilitiesByLocation(){
-        $fac = Facilities::selectRaw('name, location, country, coordinate')
-            ->where('coordinate', '!=', '')
+    public function getFacilitiesByLocation($type){
+        if($type != "NULL"){
+            $fac = Facilities::selectRaw('name, type, location, country, coordinate')
+                ->where('coordinate', '!=', '')
+                ->where('type', $type)
+                ->get();
+        } else {
+            $fac = Facilities::selectRaw('name, type, location, country, coordinate')
+                ->where('coordinate', '!=', '')
+                ->get();
+        }
+    
+        return response()->json([
+            "msg"=> count($fac)." Data retrived", 
+            "status"=>200,
+            "data"=>$fac
+        ]);
+    }
+
+    public function getTotalFacilitiesBySides(){
+        $fac = Facilities::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
+            OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
+            OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS side, COUNT(*) as total')
+            ->groupBy('side')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($fac)." Data retrived", 
+            "status"=> 200,
+            "data"=> $fac
+        ]);
+    }
+
+    public function getFacilitiesType(){
+        $fac = Facilities::selectRaw('type')
+            ->groupBy('type')
             ->get();
     
         return response()->json([
@@ -381,6 +414,20 @@ class APIController extends Controller
         $bok = Books::selectRaw('reviewer, count(*) as total')
             ->groupBy('reviewer')
             ->orderBy('total', 'DESC')
+            ->get();
+    
+        return response()->json([
+            "msg"=> count($bok)." Data retrived", 
+            "status"=>200,
+            "data"=>$bok
+        ]);
+    }
+
+    public function getTotalBooksByYearReview(){
+        $bok = Books::selectRaw('YEAR(datetime) as year_review, count(*) as total')
+            ->whereRaw('YEAR(datetime) is not null')
+            ->groupBy('year_review')
+            ->orderBy('year_review', 'ASC')
             ->get();
     
         return response()->json([

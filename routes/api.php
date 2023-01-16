@@ -45,7 +45,9 @@ Route::prefix('/vehicles')->group(function () {
 Route::prefix('/facilities')->group(function () {
     Route::get('/total/bytype', [APIController::class, 'getTotalFacilitiesByType']);
     Route::get('/total/bycountry', [APIController::class, 'getTotalFacilitiesByCountry']);
-    Route::get('/bylocation', [APIController::class, 'getTotalFacilitiesByLocation']);
+    Route::get('/total/bysides', [APIController::class, 'getTotalFacilitiesBySides']);
+    Route::get('/bylocation/{type}', [APIController::class, 'getFacilitiesByLocation']);
+    Route::get('/type', [APIController::class, 'getFacilitiesType']);
 });
 
 Route::prefix('/weapons')->group(function () {
@@ -62,6 +64,7 @@ Route::prefix('/events')->group(function () {
 Route::prefix('/books')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [APIController::class, 'getAllBooks']);
     Route::get('/total/byreviewer', [APIController::class, 'getTotalBooksByReviewer']);
+    Route::get('/total/byyearreview', [APIController::class, 'getTotalBooksByYearReview']);
 });
 
 Route::prefix('/casualities')->group(function () {
