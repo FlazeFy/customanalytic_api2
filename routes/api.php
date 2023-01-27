@@ -55,6 +55,7 @@ Route::prefix('/weapons')->group(function () {
     Route::get('/total/bytype', [APIController::class, 'getTotalWeaponsByType']);
     Route::get('/total/bycountry', [APIController::class, 'getTotalWeaponsByCountry']);
     Route::get('/total/bysides', [APIController::class, 'getTotalWeaponsBySides']);
+    Route::get('/summary', [APIController::class, 'getWeaponsSummary']);
 });
 
 Route::prefix('/events')->group(function () {
@@ -71,4 +72,5 @@ Route::prefix('/casualities')->group(function () {
     Route::get('/limit/{page_limit}/order/{orderby}/{ordertype}', [APIController::class, 'getAllCasualities']);
     Route::get('/totaldeath/bycountry/{order}/limit/{page_limit}', [APIController::class, 'getTotalDeathByCountry']);
     Route::get('/totaldeath/bysides', [APIController::class, 'getTotalDeathBySides']);
+    Route::get('/summary', [APIController::class, 'getCasualitiesSummary']);
 });

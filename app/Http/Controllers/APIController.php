@@ -149,6 +149,53 @@ class APIController extends Controller
         ]);
     }
 
+    public function getCasualitiesSummary(){
+        $cst = Casualities::selectRaw("(SELECT cast(avg(military_death + civilian_death) as decimal(10,0)) from casualities) as average_death, 
+                max(military_death + civilian_death) as 'highest_death', 
+                country as highest_death_country, 
+                cast((max(military_death + civilian_death) / (SELECT sum(military_death + civilian_death) from casualities) * 100) as decimal(10,2)) as highest_death_country_percent,
+                (SELECT sum(military_death + civilian_death) from casualities) as total_death_all")
+            ->whereRaw('military_death + civilian_death = ( SELECT MAX(military_death + civilian_death) FROM casualities)')
+            ->groupBy('military_death', 'civilian_death', 'country')
+            ->get();
+
+        return response()->json([
+            "msg"=> count($cst)." Data retrived", 
+            "status"=>200,
+            "data"=>$cst
+        ]);
+    }
+
+    public function getWeaponsSummary(){
+        $wpn = Weapons::selectRaw("SELECT type as most_produced, count(*) as 'total', 
+                (SELECT GROUP_CONCAT(' ',country)
+                FROM (
+                    SELECT country 
+                    FROM weapons WHERE type = 'Field Gun '
+                    GROUP BY country
+                    ORDER BY count(id) DESC LIMIT 3
+                ) q) most_produced_by_country, 
+                (SELECT CAST(AVG(total) as int) 
+                FROM (
+                    SELECT COUNT(*) as total
+                    FROM weapons
+                    WHERE type = 'Field Gun '
+                    GROUP BY country
+                ) q) AS average_by_country
+                ")
+            ->whereRaw('military_death + civilian_death = ( SELECT MAX(military_death + civilian_death) FROM casualities)')
+            ->groupBy('type', 'country')
+            ->orderBy('total', 'DESC')
+            ->limit(1)
+            ->get();
+
+        return response()->json([
+            "msg"=> count($wpn)." Data retrived", 
+            "status"=>200,
+            "data"=>$wpn
+        ]);
+    }
+
     public function getTotalDeathBySides(){
         $cst = Casualities::selectRaw('sum(military_death) as m_death, sum(civilian_death) as c_death,
                 (CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
