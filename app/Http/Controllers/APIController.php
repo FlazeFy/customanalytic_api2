@@ -167,7 +167,7 @@ class APIController extends Controller
     }
 
     public function getWeaponsSummary(){
-        $wpn = Weapons::selectRaw("SELECT type as most_produced, count(*) as 'total', 
+        $wpn = Weapons::selectRaw("type as most_produced, count(*) as 'total', 
                 (SELECT GROUP_CONCAT(' ',country)
                 FROM (
                     SELECT country 
@@ -183,8 +183,7 @@ class APIController extends Controller
                     GROUP BY country
                 ) q) AS average_by_country
                 ")
-            ->whereRaw('military_death + civilian_death = ( SELECT MAX(military_death + civilian_death) FROM casualities)')
-            ->groupBy('type', 'country')
+            ->groupBy('type')
             ->orderBy('total', 'DESC')
             ->limit(1)
             ->get();
@@ -193,6 +192,66 @@ class APIController extends Controller
             "msg"=> count($wpn)." Data retrived", 
             "status"=>200,
             "data"=>$wpn
+        ]);
+    }
+
+    public function getAircraftSummary(){
+        $air = Aircraft::selectRaw("primary_role as most_produced, count(*) as 'total', 
+                (SELECT GROUP_CONCAT(' ',country)
+                FROM (
+                    SELECT country 
+                    FROM aircraft 
+                    WHERE primary_role = 'Fighter'
+                    GROUP BY country
+                    ORDER BY count(id) DESC LIMIT 3
+                ) q) most_produced_by_country, 
+                (SELECT CAST(AVG(total) as int) 
+                FROM (
+                    SELECT COUNT(*) as total
+                    FROM aircraft
+                    WHERE primary_role = 'Fighter'
+                    GROUP BY country
+                ) q) AS average_by_country
+                ")
+            ->groupBy('primary_role')
+            ->orderBy('total', 'DESC')
+            ->limit(1)
+            ->get();
+
+        return response()->json([
+            "msg"=> count($air)." Data retrived", 
+            "status"=> 200,
+            "data"=> $air
+        ]);
+    }
+
+    public function getVehiclesSummary(){
+        $vch = Vehicles::selectRaw("primary_role as most_produced, count(*) as 'total', 
+                (SELECT GROUP_CONCAT(' ',country)
+                FROM (
+                    SELECT country 
+                    FROM vehicles 
+                    WHERE primary_role = 'Light Tank'
+                    GROUP BY country
+                    ORDER BY count(id) DESC LIMIT 3
+                ) q) most_produced_by_country, 
+                (SELECT CAST(AVG(total) as int) 
+                FROM (
+                    SELECT COUNT(*) as total
+                    FROM vehicles
+                    WHERE primary_role = 'Light Tank'
+                    GROUP BY country
+                ) q) AS average_by_country
+                ")
+            ->groupBy('primary_role')
+            ->orderBy('total', 'DESC')
+            ->limit(1)
+            ->get();
+
+        return response()->json([
+            "msg"=> count($vch)." Data retrived", 
+            "status"=> 200,
+            "data"=> $vch
         ]);
     }
 

@@ -25,6 +25,7 @@ Route::prefix('/aircraft')->group(function () {
     Route::get('/total/byrole', [APIController::class, 'getTotalAircraftByRole']);
     Route::get('/total/bycountry', [APIController::class, 'getTotalAircraftByCountry']);
     Route::get('/total/bysides', [APIController::class, 'getTotalAircraftBySides']);
+    Route::get('/summary', [APIController::class, 'getAircraftSummary']);
 });
 
 Route::prefix('/ships')->group(function () {
@@ -40,6 +41,7 @@ Route::prefix('/vehicles')->group(function () {
     Route::get('/total/byrole', [APIController::class, 'getTotalVehiclesByRole']);
     Route::get('/total/bycountry', [APIController::class, 'getTotalVehiclesByCountry']);
     Route::get('/total/bysides', [APIController::class, 'getTotalVehiclesBySides']);
+    Route::get('/summary', [APIController::class, 'getVehiclesSummary']);
 });
 
 Route::prefix('/facilities')->group(function () {
