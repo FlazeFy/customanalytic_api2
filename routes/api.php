@@ -34,6 +34,7 @@ Route::prefix('/ships')->group(function () {
     Route::get('/total/bycountry', [APIController::class, 'getTotalShipsByCountry']);
     Route::get('/total/bysides', [APIController::class, 'getTotalShipsBySides']);
     Route::get('/total/bylaunchyear', [APIController::class, 'getTotalShipsByLaunchYear']);
+    Route::get('/summary', [APIController::class, 'getShipsSummary']);
 });
 
 Route::prefix('/vehicles')->group(function () {
@@ -50,6 +51,7 @@ Route::prefix('/facilities')->group(function () {
     Route::get('/total/bysides', [APIController::class, 'getTotalFacilitiesBySides']);
     Route::get('/bylocation/{type}', [APIController::class, 'getFacilitiesByLocation']);
     Route::get('/type', [APIController::class, 'getFacilitiesType']);
+    Route::get('/summary', [APIController::class, 'getFacilitiesSummary']);
 });
 
 Route::prefix('/weapons')->group(function () {

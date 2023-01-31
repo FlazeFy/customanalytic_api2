@@ -255,6 +255,75 @@ class APIController extends Controller
         ]);
     }
 
+    public function getShipsSummary(){
+        $shp = Ships::selectRaw("class as most_produced, count(*) as 'total', 
+                (SELECT GROUP_CONCAT(' ',country)
+                FROM (
+                    SELECT country 
+                    FROM ships 
+                    WHERE class = 'M-class Minesweeper '
+                    GROUP BY country
+                    ORDER BY count(id) DESC LIMIT 3
+                ) q) most_produced_by_country, 
+                (SELECT CAST(AVG(total) as int) 
+                FROM (
+                    SELECT COUNT(*) as total
+                    FROM ships
+                    WHERE class = 'M-class Minesweeper '
+                    GROUP BY country
+                ) q) AS average_by_country,
+                (SELECT GROUP_CONCAT(' ',launch_year)
+                FROM (
+                    SELECT launch_year
+                    FROM ships 
+                    WHERE launch_year != '0000 ' 
+                    AND char_length(launch_year) = 5 
+                    GROUP BY launch_year
+                    ORDER BY count(id) DESC LIMIT 3 
+                ) q) most_built_year
+                ")
+            ->groupBy('class')
+            ->orderBy('total', 'DESC')
+            ->limit(1)
+            ->get();
+
+        return response()->json([
+            "msg"=> count($shp)." Data retrived", 
+            "status"=> 200,
+            "data"=> $shp
+        ]);
+    }
+
+    public function getFacilitiesSummary(){
+        $fac = Facilities::selectRaw("type as most_built, count(*) as 'total', 
+                (SELECT GROUP_CONCAT(' ',country)
+                FROM (
+                    SELECT country 
+                    FROM facilities 
+                    WHERE type = 'Airfield '
+                    GROUP BY country
+                    ORDER BY count(id) DESC LIMIT 3
+                ) q) most_built_by_country, 
+                (SELECT CAST(AVG(total) as int) 
+                FROM (
+                    SELECT COUNT(*) as total
+                    FROM facilities
+                    WHERE type = 'Airfield '
+                    GROUP BY country
+                ) q) AS average_by_country
+                ")
+            ->groupBy('type')
+            ->orderBy('total', 'DESC')
+            ->limit(1)
+            ->get();
+
+        return response()->json([
+            "msg"=> count($fac)." Data retrived", 
+            "status"=> 200,
+            "data"=> $fac
+        ]);
+    }
+
     public function getTotalDeathBySides(){
         $cst = Casualities::selectRaw('sum(military_death) as m_death, sum(civilian_death) as c_death,
                 (CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
