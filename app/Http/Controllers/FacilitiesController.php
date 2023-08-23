@@ -49,8 +49,8 @@ class FacilitiesController extends Controller
     }
 
     public function getTotalFacilitiesByType(){
-        $fac = Facilities::selectRaw('type, count(*) as total')
-            ->groupBy('type')
+        $fac = Facilities::selectRaw('type as context, count(*) as total')
+            ->groupByRaw('1')
             ->orderBy('total', 'DESC')
             ->get();
     
@@ -62,8 +62,8 @@ class FacilitiesController extends Controller
     }
 
     public function getTotalFacilitiesByCountry(){
-        $fac = Facilities::selectRaw('country, count(*) as total')
-            ->groupBy('country')
+        $fac = Facilities::selectRaw('country as context, count(*) as total')
+            ->groupByRaw('1')
             ->orderBy('total', 'DESC')
             ->get();
     
@@ -96,8 +96,8 @@ class FacilitiesController extends Controller
     public function getTotalFacilitiesBySides(){
         $fac = Facilities::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
             OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
-            OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS side, COUNT(*) as total')
-            ->groupBy('side')
+            OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS context, COUNT(*) as total')
+            ->groupByRaw('1')
             ->get();
     
         return response()->json([

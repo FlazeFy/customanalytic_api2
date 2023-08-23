@@ -66,18 +66,25 @@ class CasualitiesController extends Controller
         ]);
     }
 
-    public function getTotalDeathBySides(){
-        $cst = Casualities::selectRaw('sum(military_death) as m_death, sum(civilian_death) as c_death,
-                (CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
-                OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
-                OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS side')
-                ->groupBy("side")
+    public function getTotalDeathBySides($view){
+        if($view == "military" || $view == "civilian"){
+            $cst = Casualities::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
+                    OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
+                    OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS context, sum('.$view.'_death) as total')
+                ->groupByRaw("1")
                 ->get();
-    
-        return response()->json([
-            "msg"=> count($cst)." Data retrived", 
-            "status"=>200,
-            "data"=>$cst
-        ]);
+        
+            return response()->json([
+                "msg"=> count($cst)." Data retrived", 
+                "status"=>200,
+                "data"=>$cst
+            ]);
+        } else {
+            return response()->json([
+                "msg"=> "view not found", 
+                "status"=>200,
+                "data"=>null
+            ]);
+        }
     }
 }

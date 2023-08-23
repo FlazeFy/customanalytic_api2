@@ -70,8 +70,8 @@ class ShipsController extends Controller
     }
 
     public function getTotalShipsByClass(){
-        $shp = Ships::selectRaw('class, count(*) as total')
-            ->groupBy('class')
+        $shp = Ships::selectRaw('class as context, count(*) as total')
+            ->groupByRaw('1')
             ->orderBy('total', 'DESC')
             ->get();
     
@@ -83,8 +83,8 @@ class ShipsController extends Controller
     }
 
     public function getTotalShipsByCountry(){
-        $shp = Ships::selectRaw('country, count(*) as total')
-            ->groupBy('country')
+        $shp = Ships::selectRaw('country as context, count(*) as total')
+            ->groupByRaw('1')
             ->orderBy('total', 'DESC')
             ->get();
     
@@ -98,8 +98,8 @@ class ShipsController extends Controller
     public function getTotalShipsBySides(){
         $shp = Ships::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
             OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
-            OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS side, COUNT(*) as total')
-            ->groupBy('side')
+            OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS context, COUNT(*) as total')
+            ->groupByRaw('1')
             ->get();
     
         return response()->json([
@@ -110,7 +110,7 @@ class ShipsController extends Controller
     }
 
     public function getTotalShipsByLaunchYear(){
-        $shp = Ships::selectRaw('launch_year, count(*) as total')
+        $shp = Ships::selectRaw('launch_year as context, count(*) as total')
             ->where('launch_year', '!=', 0000)
             ->whereRaw('char_length(launch_year) = 5')
             ->groupBy('launch_year')

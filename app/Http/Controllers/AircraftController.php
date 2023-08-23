@@ -61,8 +61,8 @@ class AircraftController extends Controller
     }
 
     public function getTotalAircraftByRole(){
-        $air = Aircraft::selectRaw('primary_role, count(*) as total')
-            ->groupBy('primary_role')
+        $air = Aircraft::selectRaw('primary_role as context, count(*) as total')
+            ->groupByRaw('1')
             ->orderBy('total', 'DESC')
             ->get();
     
@@ -74,8 +74,8 @@ class AircraftController extends Controller
     }
 
     public function getTotalAircraftByManufacturer($limit){
-        $air = Aircraft::selectRaw('manufacturer, count(*) as total')
-            ->groupBy('manufacturer')
+        $air = Aircraft::selectRaw('manufacturer as context, count(*) as total')
+            ->groupByRaw('1')
             ->orderBy('total', 'DESC')
             ->limit($limit)
             ->get();
@@ -90,8 +90,8 @@ class AircraftController extends Controller
     public function getTotalAircraftBySides(){
         $air = Aircraft::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
             OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
-            OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS side, COUNT(*) as total')
-            ->groupBy('side')
+            OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS context, COUNT(*) as total')
+            ->groupByRaw('1')
             ->get();
     
         return response()->json([
@@ -102,8 +102,8 @@ class AircraftController extends Controller
     }
 
     public function getTotalAircraftByCountry(){
-        $air = Aircraft::selectRaw('country, count(*) as total')
-            ->groupBy('country')
+        $air = Aircraft::selectRaw('country as context, count(*) as total')
+            ->groupByRaw('1')
             ->orderBy('total', 'DESC')
             ->get();
     

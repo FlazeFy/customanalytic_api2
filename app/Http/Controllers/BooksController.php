@@ -31,8 +31,8 @@ class BooksController extends Controller
     }
 
     public function getTotalBooksByReviewer(){
-        $bok = Books::selectRaw('reviewer, count(*) as total')
-            ->groupBy('reviewer')
+        $bok = Books::selectRaw('reviewer as context, count(*) as total')
+            ->groupByRaw('1')
             ->orderBy('total', 'DESC')
             ->get();
     

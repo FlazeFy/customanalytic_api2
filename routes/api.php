@@ -84,6 +84,6 @@ Route::prefix('/books')->group(function () {
 Route::prefix('/casualities')->group(function () {
     Route::get('/limit/{page_limit}/order/{orderby}/{ordertype}', [CasualitiesController::class, 'getAllCasualities']);
     Route::get('/totaldeath/bycountry/{order}/limit/{page_limit}', [CasualitiesController::class, 'getTotalDeathByCountry']);
-    Route::get('/totaldeath/bysides', [CasualitiesController::class, 'getTotalDeathBySides']);
+    Route::get('/totaldeath/bysides/{view}', [CasualitiesController::class, 'getTotalDeathBySides']);
     Route::get('/summary', [CasualitiesController::class, 'getCasualitiesSummary']);
 });
