@@ -32,12 +32,12 @@ class CasualitiesController extends Controller
 
     public function getTotalDeathByCountry($order, $page_limit){
         if($order != "NULL"){
-            $cst = Casualities::selectRaw('country, total_population, military_death, civilian_death, military_death + civilian_death as total')
+            $cst = Casualities::selectRaw('country as context, total_population, military_death, civilian_death, military_death + civilian_death as total')
                 ->whereRaw('military_death+civilian_death != 0')
                 ->orderBy("total", $order)
                 ->paginate($page_limit);
         } else {
-            $cst = Casualities::selectRaw('country, total_population, military_death, civilian_death, military_death + civilian_death as total')
+            $cst = Casualities::selectRaw('country as context, total_population, military_death, civilian_death, military_death + civilian_death as total')
                 ->whereRaw('military_death+civilian_death != 0')
                 ->paginate($page_limit);
         }   

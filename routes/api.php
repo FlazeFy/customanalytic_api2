@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 //use App\Http\Controllers\APIController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AircraftController;
 use App\Http\Controllers\BooksController;
 use App\Http\Controllers\CasualitiesController;
@@ -27,6 +28,10 @@ use App\Http\Controllers\WeaponsController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum']);
 
 Route::prefix('/aircraft')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [AircraftController::class, 'getAllAircraft']);
