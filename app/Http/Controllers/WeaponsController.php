@@ -86,16 +86,28 @@ class WeaponsController extends Controller
     }
 
     public function getTotalWeaponsBySides(){
-        $shp = Weapons::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
+        $wpn = Weapons::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
             OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
             OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS context, COUNT(*) as total')
             ->groupByRaw('1')
             ->get();
     
         return response()->json([
-            "msg"=> count($shp)." Data retrived", 
+            "msg"=> count($wpn)." Data retrived", 
             "status"=>200,
-            "data"=>$shp
+            "data"=>$wpn
+        ]);
+    }
+
+    public function deleteWeaponById($id){
+        $wpn = Weapons::selectRaw("concat (name, ' - ', type) as final_name")
+            ->where('id', $id)
+            ->first();
+            Weapons::destroy($id);
+
+        return response()->json([
+            "msg"=> " '".$wpn->final_name."' Data Destroyed", 
+            "status"=>200
         ]);
     }
 }

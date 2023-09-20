@@ -100,4 +100,16 @@ class VehiclesController extends Controller
             "data"=>$vhc
         ]);
     }
+
+    public function deleteVechilesById($id){
+        $vhc = Vehicles::selectRaw("concat (name, ' - ', primary_role) as final_name")
+            ->where('id', $id)
+            ->first();
+            Vehicles::destroy($id);
+
+        return response()->json([
+            "msg"=> " '".$vhc->final_name."' Data Destroyed", 
+            "status"=>200
+        ]);
+    }
 }

@@ -56,4 +56,16 @@ class BooksController extends Controller
             "data"=>$bok
         ]);
     }
+
+    public function deleteBookById($id){
+        $bok = Books::selectRaw("concat ('The Book ', title, ' by ', author) as final_name")
+            ->where('id', $id)
+            ->first();
+            Books::destroy($id);
+
+        return response()->json([
+            "msg"=> "'".$bok->final_name."' Data Destroyed", 
+            "status"=>200
+        ]);
+    }
 }

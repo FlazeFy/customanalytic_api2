@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 //use App\Http\Controllers\APIController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AircraftController;
 use App\Http\Controllers\BooksController;
 use App\Http\Controllers\CasualitiesController;
@@ -28,6 +29,10 @@ use App\Http\Controllers\WeaponsController;
 //     return $request->user();
 // });
 
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum']);
+
 Route::prefix('/aircraft')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [AircraftController::class, 'getAllAircraft']);
     Route::get('/total/byrole', [AircraftController::class, 'getTotalAircraftByRole']);
@@ -35,6 +40,7 @@ Route::prefix('/aircraft')->group(function () {
     Route::get('/total/bysides', [AircraftController::class, 'getTotalAircraftBySides']);
     Route::get('/total/bymanufacturer/{limit}', [AircraftController::class, 'getTotalAircraftByManufacturer']);
     Route::get('/summary', [AircraftController::class, 'getAircraftSummary']);
+    Route::delete('/{id}', [AircraftController::class, 'deleteAircraftById']);
 });
 
 Route::prefix('/ships')->group(function () {
@@ -44,6 +50,7 @@ Route::prefix('/ships')->group(function () {
     Route::get('/total/bysides', [ShipsController::class, 'getTotalShipsBySides']);
     Route::get('/total/bylaunchyear', [ShipsController::class, 'getTotalShipsByLaunchYear']);
     Route::get('/summary', [ShipsController::class, 'getShipsSummary']);
+    Route::delete('/{id}', [ShipsController::class, 'deleteShipById']);
 });
 
 Route::prefix('/vehicles')->group(function () {
@@ -52,6 +59,7 @@ Route::prefix('/vehicles')->group(function () {
     Route::get('/total/bycountry', [VehiclesController::class, 'getTotalVehiclesByCountry']);
     Route::get('/total/bysides', [VehiclesController::class, 'getTotalVehiclesBySides']);
     Route::get('/summary', [VehiclesController::class, 'getVehiclesSummary']);
+    Route::delete('/{id}', [VehiclesController::class, 'deleteVechilesById']);
 });
 
 Route::prefix('/facilities')->group(function () {
@@ -69,16 +77,19 @@ Route::prefix('/weapons')->group(function () {
     Route::get('/total/bycountry', [WeaponsController::class, 'getTotalWeaponsByCountry']);
     Route::get('/total/bysides', [WeaponsController::class, 'getTotalWeaponsBySides']);
     Route::get('/summary', [WeaponsController::class, 'getWeaponsSummary']);
+    Route::delete('/{id}', [WeaponsController::class, 'deleteWeaponById']);
 });
 
 Route::prefix('/events')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [EventsController::class, 'getAllEvents']);
+    Route::delete('/{id}', [EventsController::class, 'deleteEventById']);
 });
 
 Route::prefix('/books')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [BooksController::class, 'getAllBooks']);
     Route::get('/total/byreviewer', [BooksController::class, 'getTotalBooksByReviewer']);
     Route::get('/total/byyearreview', [BooksController::class, 'getTotalBooksByYearReview']);
+    Route::delete('/{id}', [BooksController::class, 'deleteBookById']);
 });
 
 Route::prefix('/casualities')->group(function () {
