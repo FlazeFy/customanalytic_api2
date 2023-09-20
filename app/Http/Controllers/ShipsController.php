@@ -123,4 +123,16 @@ class ShipsController extends Controller
             "data"=>$shp
         ]);
     }
+
+    public function deleteShipById($id){
+        $shp = Ships::selectRaw("concat (name, ' - ', class) as final_name")
+            ->where('id', $id)
+            ->first();
+            Ships::destroy($id);
+
+        return response()->json([
+            "msg"=> " '".$shp->final_name."' Data Destroyed", 
+            "status"=>200
+        ]);
+    }
 }
