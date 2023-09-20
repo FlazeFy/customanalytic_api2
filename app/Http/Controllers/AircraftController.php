@@ -113,4 +113,16 @@ class AircraftController extends Controller
             "data"=>$air
         ]);
     }
+
+    public function deleteAircraftById($id){
+        $air = Aircraft::selectRaw("concat (name, ' - ', primary_role) as final_name")
+            ->where('id', $id)
+            ->first();
+        Aircraft::destroy($id);
+
+        return response()->json([
+            "msg"=> " '".$air->final_name."' Data Destroyed", 
+            "status"=>200
+        ]);
+    }
 }
