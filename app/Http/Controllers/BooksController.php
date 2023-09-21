@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Helpers\Validation;
 
 use App\Models\Books;
 
@@ -19,7 +20,7 @@ class BooksController extends Controller
     }
 
     public function getAllBooks($page_limit, $order){
-        $bok = Books::select('id', 'title', 'author', 'reviewer', 'review_date', 'datetime')
+        $bok = Books::select('id', 'title', 'author', 'reviewer', 'review_date')
             ->orderBy('title', $order)
             ->paginate($page_limit);
     
@@ -30,10 +31,11 @@ class BooksController extends Controller
         ]);
     }
 
-    public function getTotalBooksByReviewer(){
+    public function getTotalBooksByReviewer($limit){
         $bok = Books::selectRaw('reviewer as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([
@@ -55,6 +57,31 @@ class BooksController extends Controller
             "status"=>200,
             "data"=>$bok
         ]);
+    }
+
+    public function updateBookById(Request $request, $id){
+        $validator = Validation::getValidateBook($request);
+
+        if ($validator->fails()) {
+            $errors = $validator->messages();
+
+            return response()->json([
+                "msg" => $errors, 
+                "status" => 422
+            ]);
+        } else {
+            Books::where('id', $id)->update([
+                'title' => $request->title,
+                'author' => $request->author,
+                'reviewer' => $request->reviewer,
+                'review_date' => $request->review_date,
+            ]);
+    
+            return response()->json([
+                "msg" => "'".$request->title."' Data Updated", 
+                "status" => 200
+            ]);
+        }
     }
 
     public function deleteBookById($id){

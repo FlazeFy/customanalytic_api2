@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Aircraft extends Model
 {
     use HasFactory;
-
+    public $timestamps = false;
+    
     protected $table = 'aircraft';
     protected $primaryKey = 'id';
     protected $fillable = ['name', 'primary_role', 'manufacturer', 'country'];

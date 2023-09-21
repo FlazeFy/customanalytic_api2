@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Helpers\Validation;
 
 use App\Models\Weapons;
 
@@ -59,10 +60,11 @@ class WeaponsController extends Controller
         ]);
     }
 
-    public function getTotalWeaponsByType(){
+    public function getTotalWeaponsByType($limit){
         $wpn = Weapons::selectRaw('type as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([
@@ -72,10 +74,11 @@ class WeaponsController extends Controller
         ]);
     }
 
-    public function getTotalWeaponsByCountry(){
+    public function getTotalWeaponsByCountry($limit){
         $wpn = Weapons::selectRaw('country as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([
@@ -97,6 +100,30 @@ class WeaponsController extends Controller
             "status"=>200,
             "data"=>$wpn
         ]);
+    }
+
+    public function updateWeaponById(Request $request, $id){
+        $validator = Validation::getValidateWeapon($request);
+
+        if ($validator->fails()) {
+            $errors = $validator->messages();
+
+            return response()->json([
+                "msg" => $errors, 
+                "status" => 422
+            ]);
+        } else {
+            Weapons::where('id', $id)->update([
+                'name' => $request->name,
+                'type' => $request->type,
+                'country' => $request->country,
+            ]);
+    
+            return response()->json([
+                "msg" => "'".$request->name."' Data Updated", 
+                "status" => 200
+            ]);
+        }
     }
 
     public function deleteWeaponById($id){
