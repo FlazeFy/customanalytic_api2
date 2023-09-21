@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Helpers\Validation;
 
 use App\Models\Ships;
 
@@ -123,6 +124,31 @@ class ShipsController extends Controller
             "status"=>200,
             "data"=>$shp
         ]);
+    }
+
+    public function updateShipById(Request $request, $id){
+        $validator = Validation::getValidateShips($request);
+
+        if ($validator->fails()) {
+            $errors = $validator->messages();
+
+            return response()->json([
+                "msg" => $errors, 
+                "status" => 422
+            ]);
+        } else {
+            Ships::where('id', $id)->update([
+                'name' => $request->name,
+                'class' => $request->class,
+                'country' => $request->country,
+                'launch_year' => $request->launch_year,
+            ]);
+    
+            return response()->json([
+                "msg" => "'".$request->name."' Data Updated", 
+                "status" => 200
+            ]);
+        }
     }
 
     public function deleteShipById($id){

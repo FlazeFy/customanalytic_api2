@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Helpers\Validation;
 
 use App\Models\Vehicles;
 
@@ -101,6 +102,31 @@ class VehiclesController extends Controller
             "status"=>200,
             "data"=>$vhc
         ]);
+    }
+
+    public function updateVehicleById(Request $request, $id){
+        $validator = Validation::getValidateVehicle($request);
+
+        if ($validator->fails()) {
+            $errors = $validator->messages();
+
+            return response()->json([
+                "msg" => $errors, 
+                "status" => 422
+            ]);
+        } else {
+            Vehicles::where('id', $id)->update([
+                'name' => $request->name,
+                'primary_role' => $request->primary_role,
+                'manufacturer' => $request->manufacturer,
+                'country' => $request->country,
+            ]);
+    
+            return response()->json([
+                "msg" => "'".$request->name."' Data Updated", 
+                "status" => 200
+            ]);
+        }
     }
 
     public function deleteVechilesById($id){

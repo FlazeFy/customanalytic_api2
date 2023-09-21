@@ -25,6 +25,7 @@ Route::prefix('/aircraft')->group(function () {
     Route::get('/total/bymanufacturer/{limit}', [AircraftController::class, 'getTotalAircraftByManufacturer']);
     Route::get('/summary', [AircraftController::class, 'getAircraftSummary']);
     Route::delete('/{id}', [AircraftController::class, 'deleteAircraftById']);
+    Route::put('/{id}', [AircraftController::class, 'updateAircraftById']);
 });
 
 Route::prefix('/ships')->group(function () {
@@ -35,6 +36,7 @@ Route::prefix('/ships')->group(function () {
     Route::get('/total/bylaunchyear', [ShipsController::class, 'getTotalShipsByLaunchYear']);
     Route::get('/summary', [ShipsController::class, 'getShipsSummary']);
     Route::delete('/{id}', [ShipsController::class, 'deleteShipById']);
+    Route::put('/{id}', [ShipsController::class, 'updateShipById']);
 });
 
 Route::prefix('/vehicles')->group(function () {
@@ -44,6 +46,7 @@ Route::prefix('/vehicles')->group(function () {
     Route::get('/total/bysides', [VehiclesController::class, 'getTotalVehiclesBySides']);
     Route::get('/summary', [VehiclesController::class, 'getVehiclesSummary']);
     Route::delete('/{id}', [VehiclesController::class, 'deleteVechilesById']);
+    Route::put('/{id}', [VehiclesController::class, 'updateVehicleById']);
 });
 
 Route::prefix('/facilities')->group(function () {
@@ -62,11 +65,13 @@ Route::prefix('/weapons')->group(function () {
     Route::get('/total/bysides', [WeaponsController::class, 'getTotalWeaponsBySides']);
     Route::get('/summary', [WeaponsController::class, 'getWeaponsSummary']);
     Route::delete('/{id}', [WeaponsController::class, 'deleteWeaponById']);
+    Route::put('/{id}', [WeaponsController::class, 'updateWeaponById']);
 });
 
 Route::prefix('/events')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [EventsController::class, 'getAllEvents']);
     Route::delete('/{id}', [EventsController::class, 'deleteEventById']);
+    Route::put('/{id}', [EventsController::class, 'updateEventById']);
 });
 
 Route::prefix('/books')->group(function () {
@@ -74,6 +79,7 @@ Route::prefix('/books')->group(function () {
     Route::get('/total/byreviewer/{limit}', [BooksController::class, 'getTotalBooksByReviewer']);
     Route::get('/total/byyearreview', [BooksController::class, 'getTotalBooksByYearReview']);
     Route::delete('/{id}', [BooksController::class, 'deleteBookById']);
+    Route::put('/{id}', [BooksController::class, 'updateBookById']);
 });
 
 Route::prefix('/casualities')->group(function () {

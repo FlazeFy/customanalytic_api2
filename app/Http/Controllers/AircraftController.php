@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Helpers\Validation;
 
 use App\Models\Aircraft;
 
@@ -114,6 +115,31 @@ class AircraftController extends Controller
             "status"=>200,
             "data"=>$air
         ]);
+    }
+
+    public function updateAircraftById(Request $request, $id){
+        $validator = Validation::getValidateAircraft($request);
+
+        if ($validator->fails()) {
+            $errors = $validator->messages();
+
+            return response()->json([
+                "msg" => $errors, 
+                "status" => 422
+            ]);
+        } else {
+            Aircraft::where('id', $id)->update([
+                'name' => $request->name,
+                'primary_role' => $request->primary_role,
+                'manufacturer' => $request->manufacturer,
+                'country' => $request->country,
+            ]);
+    
+            return response()->json([
+                "msg" => "'".$request->name."' Data Updated", 
+                "status" => 200
+            ]);
+        }
     }
 
     public function deleteAircraftById($id){

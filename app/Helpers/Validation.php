@@ -37,7 +37,7 @@ class Validation
         ]);
     }
 
-    public static function getValidateShip($request){
+    public static function getValidateShips($request){
         return Validator::make($request->all(), [
             'name' => 'required|max:75|string',
             'class' => 'required|max:75|string',
