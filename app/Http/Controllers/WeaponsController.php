@@ -59,10 +59,11 @@ class WeaponsController extends Controller
         ]);
     }
 
-    public function getTotalWeaponsByType(){
+    public function getTotalWeaponsByType($limit){
         $wpn = Weapons::selectRaw('type as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([
@@ -72,10 +73,11 @@ class WeaponsController extends Controller
         ]);
     }
 
-    public function getTotalWeaponsByCountry(){
+    public function getTotalWeaponsByCountry($limit){
         $wpn = Weapons::selectRaw('country as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([

@@ -19,7 +19,7 @@ class BooksController extends Controller
     }
 
     public function getAllBooks($page_limit, $order){
-        $bok = Books::select('id', 'title', 'author', 'reviewer', 'review_date', 'datetime')
+        $bok = Books::select('id', 'title', 'author', 'reviewer', 'review_date')
             ->orderBy('title', $order)
             ->paginate($page_limit);
     
@@ -30,10 +30,11 @@ class BooksController extends Controller
         ]);
     }
 
-    public function getTotalBooksByReviewer(){
+    public function getTotalBooksByReviewer($limit){
         $bok = Books::selectRaw('reviewer as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([

@@ -82,10 +82,11 @@ class ShipsController extends Controller
         ]);
     }
 
-    public function getTotalShipsByCountry(){
+    public function getTotalShipsByCountry($limit){
         $shp = Ships::selectRaw('country as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([

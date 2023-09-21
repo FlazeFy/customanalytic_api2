@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-//use App\Http\Controllers\APIController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AircraftController;
 use App\Http\Controllers\BooksController;
@@ -14,29 +13,14 @@ use App\Http\Controllers\ShipsController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\WeaponsController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum']);
 
 Route::prefix('/aircraft')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [AircraftController::class, 'getAllAircraft']);
-    Route::get('/total/byrole', [AircraftController::class, 'getTotalAircraftByRole']);
-    Route::get('/total/bycountry', [AircraftController::class, 'getTotalAircraftByCountry']);
+    Route::get('/total/byrole/{limit}', [AircraftController::class, 'getTotalAircraftByRole']);
+    Route::get('/total/bycountry/{limit}', [AircraftController::class, 'getTotalAircraftByCountry']);
     Route::get('/total/bysides', [AircraftController::class, 'getTotalAircraftBySides']);
     Route::get('/total/bymanufacturer/{limit}', [AircraftController::class, 'getTotalAircraftByManufacturer']);
     Route::get('/summary', [AircraftController::class, 'getAircraftSummary']);
@@ -46,7 +30,7 @@ Route::prefix('/aircraft')->group(function () {
 Route::prefix('/ships')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [ShipsController::class, 'getAllShips']);
     Route::get('/total/byclass', [ShipsController::class, 'getTotalShipsByClass']);
-    Route::get('/total/bycountry', [ShipsController::class, 'getTotalShipsByCountry']);
+    Route::get('/total/bycountry/{limit}', [ShipsController::class, 'getTotalShipsByCountry']);
     Route::get('/total/bysides', [ShipsController::class, 'getTotalShipsBySides']);
     Route::get('/total/bylaunchyear', [ShipsController::class, 'getTotalShipsByLaunchYear']);
     Route::get('/summary', [ShipsController::class, 'getShipsSummary']);
@@ -55,16 +39,16 @@ Route::prefix('/ships')->group(function () {
 
 Route::prefix('/vehicles')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [VehiclesController::class, 'getAllVehicles']);
-    Route::get('/total/byrole', [VehiclesController::class, 'getTotalVehiclesByRole']);
-    Route::get('/total/bycountry', [VehiclesController::class, 'getTotalVehiclesByCountry']);
+    Route::get('/total/byrole/{limit}', [VehiclesController::class, 'getTotalVehiclesByRole']);
+    Route::get('/total/bycountry/{limit}', [VehiclesController::class, 'getTotalVehiclesByCountry']);
     Route::get('/total/bysides', [VehiclesController::class, 'getTotalVehiclesBySides']);
     Route::get('/summary', [VehiclesController::class, 'getVehiclesSummary']);
     Route::delete('/{id}', [VehiclesController::class, 'deleteVechilesById']);
 });
 
 Route::prefix('/facilities')->group(function () {
-    Route::get('/total/bytype', [FacilitiesController::class, 'getTotalFacilitiesByType']);
-    Route::get('/total/bycountry', [FacilitiesController::class, 'getTotalFacilitiesByCountry']);
+    Route::get('/total/bytype/{limit}', [FacilitiesController::class, 'getTotalFacilitiesByType']);
+    Route::get('/total/bycountry/{limit}', [FacilitiesController::class, 'getTotalFacilitiesByCountry']);
     Route::get('/total/bysides', [FacilitiesController::class, 'getTotalFacilitiesBySides']);
     Route::get('/bylocation/{type}', [FacilitiesController::class, 'getFacilitiesByLocation']);
     Route::get('/type', [FacilitiesController::class, 'getFacilitiesType']);
@@ -73,8 +57,8 @@ Route::prefix('/facilities')->group(function () {
 
 Route::prefix('/weapons')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [WeaponsController::class, 'getAllWeapons']);
-    Route::get('/total/bytype', [WeaponsController::class, 'getTotalWeaponsByType']);
-    Route::get('/total/bycountry', [WeaponsController::class, 'getTotalWeaponsByCountry']);
+    Route::get('/total/bytype/{limit}', [WeaponsController::class, 'getTotalWeaponsByType']);
+    Route::get('/total/bycountry/{limit}', [WeaponsController::class, 'getTotalWeaponsByCountry']);
     Route::get('/total/bysides', [WeaponsController::class, 'getTotalWeaponsBySides']);
     Route::get('/summary', [WeaponsController::class, 'getWeaponsSummary']);
     Route::delete('/{id}', [WeaponsController::class, 'deleteWeaponById']);
@@ -87,7 +71,7 @@ Route::prefix('/events')->group(function () {
 
 Route::prefix('/books')->group(function () {
     Route::get('/limit/{page_limit}/order/{order}', [BooksController::class, 'getAllBooks']);
-    Route::get('/total/byreviewer', [BooksController::class, 'getTotalBooksByReviewer']);
+    Route::get('/total/byreviewer/{limit}', [BooksController::class, 'getTotalBooksByReviewer']);
     Route::get('/total/byyearreview', [BooksController::class, 'getTotalBooksByYearReview']);
     Route::delete('/{id}', [BooksController::class, 'deleteBookById']);
 });

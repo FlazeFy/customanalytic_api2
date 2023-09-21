@@ -60,10 +60,11 @@ class AircraftController extends Controller
         ]);
     }
 
-    public function getTotalAircraftByRole(){
+    public function getTotalAircraftByRole($limit){
         $air = Aircraft::selectRaw('primary_role as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([
@@ -101,10 +102,11 @@ class AircraftController extends Controller
         ]);
     }
 
-    public function getTotalAircraftByCountry(){
+    public function getTotalAircraftByCountry($limit){
         $air = Aircraft::selectRaw('country as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([

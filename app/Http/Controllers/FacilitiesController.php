@@ -48,10 +48,11 @@ class FacilitiesController extends Controller
         ]);
     }
 
-    public function getTotalFacilitiesByType(){
+    public function getTotalFacilitiesByType($limit){
         $fac = Facilities::selectRaw('type as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([
@@ -61,10 +62,11 @@ class FacilitiesController extends Controller
         ]);
     }
 
-    public function getTotalFacilitiesByCountry(){
+    public function getTotalFacilitiesByCountry($limit){
         $fac = Facilities::selectRaw('country as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([

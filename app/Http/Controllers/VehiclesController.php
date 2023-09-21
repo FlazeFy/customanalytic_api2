@@ -61,10 +61,11 @@ class VehiclesController extends Controller
     }
 
 
-    public function getTotalVehiclesByRole(){
+    public function getTotalVehiclesByRole($limit){
         $vhc = Vehicles::selectRaw('primary_role as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([
@@ -74,10 +75,11 @@ class VehiclesController extends Controller
         ]);
     }
 
-    public function getTotalVehiclesByCountry(){
+    public function getTotalVehiclesByCountry($limit){
         $vhc = Vehicles::selectRaw('country as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([
