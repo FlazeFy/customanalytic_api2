@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Helpers\Validation;
 
 use App\Models\Aircraft;
 
@@ -60,10 +61,11 @@ class AircraftController extends Controller
         ]);
     }
 
-    public function getTotalAircraftByRole(){
+    public function getTotalAircraftByRole($limit){
         $air = Aircraft::selectRaw('primary_role as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([
@@ -101,10 +103,11 @@ class AircraftController extends Controller
         ]);
     }
 
-    public function getTotalAircraftByCountry(){
+    public function getTotalAircraftByCountry($limit){
         $air = Aircraft::selectRaw('country as context, count(*) as total')
             ->groupByRaw('1')
             ->orderBy('total', 'DESC')
+            ->limit($limit)
             ->get();
     
         return response()->json([
@@ -112,6 +115,31 @@ class AircraftController extends Controller
             "status"=>200,
             "data"=>$air
         ]);
+    }
+
+    public function updateAircraftById(Request $request, $id){
+        $validator = Validation::getValidateAircraft($request);
+
+        if ($validator->fails()) {
+            $errors = $validator->messages();
+
+            return response()->json([
+                "msg" => $errors, 
+                "status" => 422
+            ]);
+        } else {
+            Aircraft::where('id', $id)->update([
+                'name' => $request->name,
+                'primary_role' => $request->primary_role,
+                'manufacturer' => $request->manufacturer,
+                'country' => $request->country,
+            ]);
+    
+            return response()->json([
+                "msg" => "'".$request->name."' Data Updated", 
+                "status" => 200
+            ]);
+        }
     }
 
     public function deleteAircraftById($id){
