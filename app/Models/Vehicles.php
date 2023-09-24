@@ -12,5 +12,5 @@ class Vehicles extends Model
 
     protected $table = 'vehicles';
     protected $primaryKey = 'id';
-    protected $fillable = ['name', 'primary_role', 'manufacturer', 'country'];
+    protected $fillable = ['id', 'name', 'primary_role', 'manufacturer', 'country'];
 }

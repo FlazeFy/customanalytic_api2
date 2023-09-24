@@ -12,5 +12,5 @@ class Aircraft extends Model
     
     protected $table = 'aircraft';
     protected $primaryKey = 'id';
-    protected $fillable = ['name', 'primary_role', 'manufacturer', 'country'];
+    protected $fillable = ['id', 'name', 'primary_role', 'manufacturer', 'country'];
 }
