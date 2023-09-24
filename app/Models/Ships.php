@@ -12,5 +12,5 @@ class Ships extends Model
 
     protected $table = 'ships';
     protected $primaryKey = 'id';
-    protected $fillable = ['name', 'class', 'country', 'launch_year'];
+    protected $fillable = ['id', 'name', 'class', 'country', 'launch_year'];
 }

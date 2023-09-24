@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Helpers\Validation;
+use App\Helpers\Generator;
 
 use App\Models\Books;
 
@@ -14,9 +15,41 @@ class BooksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function createBook(Request $request)
     {
-        //
+        $validator = Validation::getValidateBook($request);
+
+        if ($validator->fails()) {
+            $errors = $validator->messages();
+
+            return response()->json([
+                "msg" => $errors, 
+                "status" => 422
+            ]);
+        } else {
+            $check = Books::selectRaw('1')->where('title', $request->title)->first();
+            
+            if($check == null){
+                $uuid = Generator::getUUID();
+                Books::create([
+                    'id' => $uuid,
+                    'title' => $request->title,
+                    'author' => $request->author,
+                    'reviewer' => $request->reviewer,
+                    'review_date' => $request->review_date,
+                ]);
+        
+                return response()->json([
+                    "msg" => "'".$request->title."' Data Created", 
+                    "status" => 200
+                ]);
+            }else{
+                return response()->json([
+                    "msg" => "Data is already exist", 
+                    "status" => 422
+                ]);
+            }
+        }
     }
 
     public function getAllBooks($page_limit, $order){

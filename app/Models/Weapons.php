@@ -12,5 +12,5 @@ class Weapons extends Model
 
     protected $table = 'weapons';
     protected $primaryKey = 'id';
-    protected $fillable = ['name', 'type', 'country'];
+    protected $fillable = ['id', 'name', 'type', 'country'];
 }

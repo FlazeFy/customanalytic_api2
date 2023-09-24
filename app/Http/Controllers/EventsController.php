@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Helpers\Validation;
+use App\Helpers\Generator;
 
 use App\Models\Events;
 
@@ -14,13 +15,45 @@ class EventsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function createEvent(Request $request)
     {
-        //
+        $validator = Validation::getValidateEvent($request);
+
+        if ($validator->fails()) {
+            $errors = $validator->messages();
+
+            return response()->json([
+                "msg" => $errors, 
+                "status" => 422
+            ]);
+        } else {
+            $check = Events::selectRaw('1')->where('event', $request->event)->first();
+            
+            if($check == null){
+                $uuid = Generator::getUUID();
+                Events::create([
+                    'id' => $uuid,
+                    'event' => $request->event,
+                    'date' => $request->date,
+                    'date_start' => $request->date_start,
+                    'date_end' => $request->date_end,
+                ]);
+        
+                return response()->json([
+                    "msg" => "'".$request->event."' Data Created", 
+                    "status" => 200
+                ]);
+            }else{
+                return response()->json([
+                    "msg" => "Data is already exist", 
+                    "status" => 422
+                ]);
+            }
+        }
     }
 
     public function getAllEvents($page_limit, $order){
-        $evt = Events::select('id', 'event', 'date')
+        $evt = Events::select('id', 'event', 'date', 'date_start', 'date_end')
             ->orderBy('event', $order)
             ->paginate($page_limit);
     
