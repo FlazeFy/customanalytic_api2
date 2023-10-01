@@ -69,7 +69,7 @@ class EventsController extends Controller
         
             return response()->json([
                 'message' => count($evt)." Data retrived", 
-                "data"=>$evt
+                "data" => $evt
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
@@ -87,7 +87,7 @@ class EventsController extends Controller
                 $errors = $validator->messages();
 
                 return response()->json([
-                    "msg" => $errors, 
+                    "message" => $errors, 
                     "status" => 422
                 ]);
             } else {
@@ -98,7 +98,7 @@ class EventsController extends Controller
                 ]);
         
                 return response()->json([
-                    "msg" => "'".$request->event."' Data Updated", 
+                    "message" => "'".$request->event."' Data Updated", 
                     "status" => 'success'
                 ], Response::HTTP_OK);
             }
@@ -115,6 +115,7 @@ class EventsController extends Controller
             $evt = Events::select('event')
                 ->where('id', $id)
                 ->first();
+                
             Events::destroy($id);
 
             return response()->json([

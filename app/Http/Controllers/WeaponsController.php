@@ -26,7 +26,7 @@ class WeaponsController extends Controller
                 $errors = $validator->messages();
 
                 return response()->json([
-                    "msg" => $errors, 
+                    "message" => $errors, 
                     "status" => 422
                 ]);
             } else {
@@ -42,12 +42,12 @@ class WeaponsController extends Controller
                     ]);
             
                     return response()->json([
-                        "msg" => "'".$request->name."' Data Created", 
-                        "status" => 200
-                    ]);
+                        'message' => "'".$request->name."' Data Created", 
+                        'status' => 'success'
+                    ], Response::HTTP_OK);
                 }else{
                     return response()->json([
-                        "msg" => "Data is already exist", 
+                        "message" => "Data is already exist", 
                         "status" => 422
                     ]);
                 }
@@ -68,9 +68,9 @@ class WeaponsController extends Controller
         
             return response()->json([
                 'message' => count($wpn)." Data retrived", 
-                "status"=>200,
-                "data"=>$wpn
-            ]);
+                'status' => 'success',
+                'data' => $wpn
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -104,9 +104,9 @@ class WeaponsController extends Controller
 
             return response()->json([
                 'message' => count($wpn)." Data retrived", 
-                "status"=>200,
-                "data"=>$wpn
-            ]);
+                'status' => 'success',
+                'data' => $wpn
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -125,8 +125,8 @@ class WeaponsController extends Controller
         
             return response()->json([
                 'message' => count($wpn)." Data retrived", 
-                "status"=>200,
-                "data"=>$wpn
+                'status' => 'success',
+                'data' => $wpn
             ]);
         } catch(\Exception $e) {
             return response()->json([
@@ -146,8 +146,8 @@ class WeaponsController extends Controller
         
             return response()->json([
                 'message' => count($wpn)." Data retrived", 
-                "status"=>200,
-                "data"=>$wpn
+                'status' => 'success',
+                'data' => $wpn
             ]);
         } catch(\Exception $e) {
             return response()->json([
@@ -167,9 +167,9 @@ class WeaponsController extends Controller
         
             return response()->json([
                 'message' => count($wpn)." Data retrived", 
-                "status"=>200,
-                "data"=>$wpn
-            ]);
+                'status' => 'success',
+                'data' => $wpn
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -186,7 +186,7 @@ class WeaponsController extends Controller
                 $errors = $validator->messages();
 
                 return response()->json([
-                    "msg" => $errors, 
+                    "message" => $errors, 
                     "status" => 422
                 ]);
             } else {
@@ -197,9 +197,9 @@ class WeaponsController extends Controller
                 ]);
         
                 return response()->json([
-                    "msg" => "'".$request->name."' Data Updated", 
-                    "status" => 200
-                ]);
+                    "message" => "'".$request->name."' Data Updated", 
+                    "status" => 'success'
+                ], Response::HTTP_OK);
             }
         } catch(\Exception $e) {
             return response()->json([
@@ -214,12 +214,13 @@ class WeaponsController extends Controller
             $wpn = Weapons::selectRaw("concat (name, ' - ', type) as final_name")
                 ->where('id', $id)
                 ->first();
-                Weapons::destroy($id);
+
+            Weapons::destroy($id);
 
             return response()->json([
                 'message' => " '".$wpn->final_name."' Data Destroyed", 
-                "status"=>200
-            ]);
+                'status' => 'success'
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',

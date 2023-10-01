@@ -21,7 +21,7 @@ class ShipsController extends Controller
                 $errors = $validator->messages();
 
                 return response()->json([
-                    "msg" => $errors, 
+                    "message" => $errors, 
                     "status" => 422
                 ]);
             } else {
@@ -38,12 +38,12 @@ class ShipsController extends Controller
                     ]);
             
                     return response()->json([
-                        "msg" => "'".$request->name."' Data Created", 
+                        "message" => "'".$request->name."' Data Created", 
                         "status" => 'success'
                     ], Response::HTTP_OK);
                 }else{
                     return response()->json([
-                        "msg" => "Data is already exist", 
+                        "message" => "Data is already exist", 
                         "status" => 'failed'
                     ]);
                 }
@@ -112,7 +112,7 @@ class ShipsController extends Controller
                 'message' => count($shp)." Data retrived", 
                 "status"=> 'success',
                 "data"=> $shp
-            ]);
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -130,9 +130,9 @@ class ShipsController extends Controller
         
             return response()->json([
                 'message' => count($shp)." Data retrived", 
-                "status"=>200,
-                "data"=>$shp
-            ]);
+                'status' => 'success',
+                'data' => $shp
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -151,9 +151,9 @@ class ShipsController extends Controller
         
             return response()->json([
                 'message' => count($shp)." Data retrived", 
-                "status"=>200,
-                "data"=>$shp
-            ]);
+                'status' => 'success',
+                'data' => $shp
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -172,9 +172,9 @@ class ShipsController extends Controller
         
             return response()->json([
                 'message' => count($shp)." Data retrived", 
-                "status"=>200,
-                "data"=>$shp
-            ]);
+                'status' => 'success',
+                'data' => $shp
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -194,9 +194,9 @@ class ShipsController extends Controller
         
             return response()->json([
                 'message' => count($shp)." Data retrived", 
-                "status"=>200,
-                "data"=>$shp
-            ]);
+                'status' => 'success',
+                'data' => $shp
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -213,8 +213,8 @@ class ShipsController extends Controller
                 $errors = $validator->messages();
 
                 return response()->json([
-                    "msg" => $errors, 
-                    "status" => 422
+                    'message' => $errors, 
+                    'status' => 422
                 ]);
             } else {
                 Ships::where('id', $id)->update([
@@ -225,9 +225,9 @@ class ShipsController extends Controller
                 ]);
         
                 return response()->json([
-                    "msg" => "'".$request->name."' Data Updated", 
-                    "status" => 200
-                ]);
+                    'message' => "'".$request->name."' Data Updated", 
+                    'status' => 'success'
+                ], Response::HTTP_OK);
             }
         } catch(\Exception $e) {
             return response()->json([
@@ -242,12 +242,13 @@ class ShipsController extends Controller
             $shp = Ships::selectRaw("concat (name, ' - ', class) as final_name")
                 ->where('id', $id)
                 ->first();
-                Ships::destroy($id);
+
+            Ships::destroy($id);
 
             return response()->json([
                 'message' => " '".$shp->final_name."' Data Destroyed", 
-                "status"=>200
-            ]);
+                'status' => 'success'
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',

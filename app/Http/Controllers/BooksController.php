@@ -26,7 +26,7 @@ class BooksController extends Controller
                 $errors = $validator->messages();
 
                 return response()->json([
-                    "msg" => $errors, 
+                    "message" => $errors, 
                     "status" => 422
                 ]);
             } else {
@@ -159,7 +159,8 @@ class BooksController extends Controller
             $bok = Books::selectRaw("concat ('The Book ', title, ' by ', author) as final_name")
                 ->where('id', $id)
                 ->first();
-                Books::destroy($id);
+
+            Books::destroy($id);
 
             return response()->json([
                 'message' => "'".$bok->final_name."' Data Destroyed", 

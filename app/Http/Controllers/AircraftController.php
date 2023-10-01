@@ -26,7 +26,7 @@ class AircraftController extends Controller
                 $errors = $validator->messages();
 
                 return response()->json([
-                    "msg" => $errors, 
+                    "message" => $errors, 
                     "status" => 422
                 ]);
             } else {
@@ -43,12 +43,12 @@ class AircraftController extends Controller
                     ]);
             
                     return response()->json([
-                        "msg" => "'".$request->name."' Data Created", 
+                        "message" => "'".$request->name."' Data Created", 
                         "status" => 'success'
                     ], Response::HTTP_OK);
                 }else{
                     return response()->json([
-                        "msg" => "Data is already exist", 
+                        "message" => "Data is already exist", 
                         "status" => 'failed'
                     ]);
                 }
@@ -209,7 +209,7 @@ class AircraftController extends Controller
                 $errors = $validator->messages();
 
                 return response()->json([
-                    "msg" => $errors, 
+                    "message" => $errors, 
                     "status" => 422
                 ]);
             } else {
@@ -238,6 +238,7 @@ class AircraftController extends Controller
             $air = Aircraft::selectRaw("concat (name, ' - ', primary_role) as final_name")
                 ->where('id', $id)
                 ->first();
+                
             Aircraft::destroy($id);
 
             return response()->json([

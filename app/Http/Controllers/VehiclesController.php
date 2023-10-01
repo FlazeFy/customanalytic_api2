@@ -26,7 +26,7 @@ class VehiclesController extends Controller
                 $errors = $validator->messages();
 
                 return response()->json([
-                    "msg" => $errors, 
+                    "message" => $errors, 
                     "status" => 422
                 ]);
             } else {
@@ -43,12 +43,12 @@ class VehiclesController extends Controller
                     ]);
             
                     return response()->json([
-                        "msg" => "'".$request->name."' Data Created", 
-                        "status" => 200
-                    ]);
+                        "message" => "'".$request->name."' Data Created", 
+                        "status" => 'success'
+                    ], Response::HTTP_OK);
                 }else{
                     return response()->json([
-                        "msg" => "Data is already exist", 
+                        "message" => "Data is already exist", 
                         "status" => 422
                     ]);
                 }
@@ -69,9 +69,9 @@ class VehiclesController extends Controller
         
             return response()->json([
                 'message' => count($vhc)." Data retrived", 
-                "status"=>200,
-                "data"=>$vhc
-            ]);
+                'status' => 'success',
+                'data' => $vhc
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -106,9 +106,9 @@ class VehiclesController extends Controller
 
             return response()->json([
                 'message' => count($vch)." Data retrived", 
-                "status"=> 200,
-                "data"=> $vch
-            ]);
+                'status' => 'success',
+                'data' => $vch
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -128,9 +128,9 @@ class VehiclesController extends Controller
         
             return response()->json([
                 'message' => count($vhc)." Data retrived", 
-                "status"=>200,
-                "data"=>$vhc
-            ]);
+                'status' => 'success',
+                'data' => $vhc
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -149,9 +149,9 @@ class VehiclesController extends Controller
         
             return response()->json([
                 'message' => count($vhc)." Data retrived", 
-                "status"=>200,
-                "data"=>$vhc
-            ]);
+                'status' => 'success',
+                'data' =>$vhc
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -170,9 +170,9 @@ class VehiclesController extends Controller
         
             return response()->json([
                 'message' => count($vhc)." Data retrived", 
-                "status"=>200,
-                "data"=>$vhc
-            ]);
+                'status' => 'success',
+                'data' => $vhc
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -189,8 +189,8 @@ class VehiclesController extends Controller
                 $errors = $validator->messages();
 
                 return response()->json([
-                    "msg" => $errors, 
-                    "status" => 422
+                    'message' => $errors, 
+                    'status' => 422
                 ]);
             } else {
                 Vehicles::where('id', $id)->update([
@@ -201,9 +201,9 @@ class VehiclesController extends Controller
                 ]);
         
                 return response()->json([
-                    "msg" => "'".$request->name."' Data Updated", 
-                    "status" => 200
-                ]);
+                    'message' => "'".$request->name."' Data Updated", 
+                    'status' => 'success'
+                ], Response::HTTP_OK);
             }
         } catch(\Exception $e) {
             return response()->json([
@@ -218,12 +218,13 @@ class VehiclesController extends Controller
             $vhc = Vehicles::selectRaw("concat (name, ' - ', primary_role) as final_name")
                 ->where('id', $id)
                 ->first();
-                Vehicles::destroy($id);
+                
+            Vehicles::destroy($id);
 
             return response()->json([
                 'message' => " '".$vhc->final_name."' Data Destroyed", 
-                "status"=>200
-            ]);
+                'status' => 'success'
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',

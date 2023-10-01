@@ -68,7 +68,7 @@ class FacilitiesController extends Controller
                 'message' => count($fac)." Data retrived", 
                 'status' => 'success',
                 'data' => $fac
-            ]);
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
