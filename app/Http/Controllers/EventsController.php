@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
 use App\Helpers\Validation;
 use App\Helpers\Generator;
 
@@ -17,86 +19,113 @@ class EventsController extends Controller
      */
     public function createEvent(Request $request)
     {
-        $validator = Validation::getValidateEvent($request);
+        try {
+            $validator = Validation::getValidateEvent($request);
 
-        if ($validator->fails()) {
-            $errors = $validator->messages();
+            if ($validator->fails()) {
+                $errors = $validator->messages();
 
-            return response()->json([
-                "msg" => $errors, 
-                "status" => 422
-            ]);
-        } else {
-            $check = Events::selectRaw('1')->where('event', $request->event)->first();
+                return response()->json([
+                    "message" => $errors, 
+                    "status" => 'failed'
+                ]);
+            } else {
+                $check = Events::selectRaw('1')->where('event', $request->event)->first();
+                
+                if($check == null){
+                    $uuid = Generator::getUUID();
+                    Events::create([
+                        'id' => $uuid,
+                        'event' => $request->event,
+                        'date' => $request->date,
+                        'date_start' => $request->date_start,
+                        'date_end' => $request->date_end,
+                    ]);
             
-            if($check == null){
-                $uuid = Generator::getUUID();
-                Events::create([
-                    'id' => $uuid,
+                    return response()->json([
+                        "message" => "'".$request->event."' Data Created", 
+                        "status" => 'success'
+                    ], Response::HTTP_OK);
+                }else{
+                    return response()->json([
+                        "message" => "Data is already exist", 
+                        "status" => 'failed'
+                    ]);
+                }
+            }
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function getAllEvents($page_limit, $order){
+        try {
+            $evt = Events::selectRaw('id, event, date_start, date_end, DATEDIFF(date_end, date_start) AS period')
+                ->orderBy('event', $order)
+                ->paginate($page_limit);
+        
+            return response()->json([
+                'message' => count($evt)." Data retrived", 
+                "data"=>$evt
+            ], Response::HTTP_OK);
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function updateEventById(Request $request, $id){
+        try {
+            $validator = Validation::getValidateEvent($request);
+
+            if ($validator->fails()) {
+                $errors = $validator->messages();
+
+                return response()->json([
+                    "msg" => $errors, 
+                    "status" => 422
+                ]);
+            } else {
+                Events::where('id', $id)->update([
                     'event' => $request->event,
-                    'date' => $request->date,
                     'date_start' => $request->date_start,
                     'date_end' => $request->date_end,
                 ]);
         
                 return response()->json([
-                    "msg" => "'".$request->event."' Data Created", 
-                    "status" => 200
-                ]);
-            }else{
-                return response()->json([
-                    "msg" => "Data is already exist", 
-                    "status" => 422
-                ]);
+                    "msg" => "'".$request->event."' Data Updated", 
+                    "status" => 'success'
+                ], Response::HTTP_OK);
             }
-        }
-    }
-
-    public function getAllEvents($page_limit, $order){
-        $evt = Events::select('id', 'event', 'date', 'date_start', 'date_end')
-            ->orderBy('event', $order)
-            ->paginate($page_limit);
-    
-        return response()->json([
-            "msg"=> count($evt)." Data retrived", 
-            "status"=>200,
-            "data"=>$evt
-        ]);
-    }
-
-    public function updateEventById(Request $request, $id){
-        $validator = Validation::getValidateEvent($request);
-
-        if ($validator->fails()) {
-            $errors = $validator->messages();
-
+        } catch(\Exception $e) {
             return response()->json([
-                "msg" => $errors, 
-                "status" => 422
-            ]);
-        } else {
-            Events::where('id', $id)->update([
-                'event' => $request->event,
-                'date_start' => $request->date_start,
-                'date_end' => $request->date_end,
-            ]);
-    
-            return response()->json([
-                "msg" => "'".$request->event."' Data Updated", 
-                "status" => 200
-            ]);
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     public function deleteEventById($id){
-        $evt = Events::select('event')
-            ->where('id', $id)
-            ->first();
+        try {
+            $evt = Events::select('event')
+                ->where('id', $id)
+                ->first();
             Events::destroy($id);
 
-        return response()->json([
-            "msg"=> "'".$evt->event."' Data Destroyed", 
-            "status"=>200
-        ]);
+            return response()->json([
+                'message' => "'".$evt->event."' Data Destroyed", 
+                'status' => 'success'
+            ], Response::HTTP_OK);
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
