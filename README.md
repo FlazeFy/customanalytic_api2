@@ -1,66 +1,111 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+========================= Command =========================
+# First Run
+> composer install
+> composer update
+> php artisan key:generate
+> php artisan storage:link
+> php artisan serve
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Run Application
+> php artisan serve
 
-## About Laravel
+# Run Queue Job
+> php artisan queue:work
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+# Run Application On Custom Pors
+> php artisan serve # port=****
+ex : php artisan serve # port=9000
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# Run Migrations
+> php artisan migrate
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# Run Migrations On Specific file
+> php artisan migrate --path=database/migrations/migration/file.php
 
-## Learning Laravel
+# Run Seeder
+> php artisan db:seed class=DatabaseSeeder 
+or
+> php artisan db:seed
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+# Run Scheduler
+> php artisan schedule:run
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+# Make Controller
+> php artisan make:controller <NAMA-Controller>Controller --resource
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Make Model
+> php artisan make:model <NAMA-Model>
 
-## Laravel Sponsors
+# Make Seeder
+> php artisan make:seeder <NAMA-TABEL>Seeder
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+# Make Factories
+> php artisan make:factory <NAMA-TABEL>Factory
 
-### Premium Partners
+# Make Migrations
+> php artisan make:migration create_<NAMA-TABEL>_table
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+# Make Migrations on Specific File
+> php artisan migrate # path=/database/migrations/<NAMA-FILE>.php
 
-## Contributing
+# Make Middleware
+> php artisan make:middleware <NAMA-MIDDLEWARE>
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Make Mail
+> php artisan make:mail <NAMA-MAILER>Email
 
-## Code of Conduct
+# Make Deploy
+> php artisan route:cache
+> php artisan cache:clear
+> php artisan route:clear
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+========================= File Directory =========================
+# Assets
+CSS
+Directory               : public/css
+Access Local Path       : http://127.0.0.1:8000/css/<< CSS_FILENAME >>.css
+Access Global Path      : http://mifik.id/css/<< CSS_FILENAME >>.css
 
-## Security Vulnerabilities
+JS
+Directory               : public/js
+Access Local Path       : http://127.0.0.1:8000/js/<< JS_FILENAME >>.css
+Access Global Path      : http://mifik.id/js/<< JS_FILENAME >>.css
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+JSON
+Directory               : public/json
+Access Local Path       : http://127.0.0.1:8000/json/<< JSON_FILENAME >>.css
+Access Global Path      : http://mifik.id/json/<< JSON_FILENAME >>.css
 
-## License
+Assets (Image, Video)
+Directory               : public/assets
+Access Local Path       : http://127.0.0.1:8000/assets/<< ASSETS_FILENAME_TYPE >>
+Access Global Path      : http://mifik.id/assets/<< ASSETS_FILENAME_TYPE >>
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# API Controller
+Directory               : app/Http/Controllers/Api
+
+# Normal Controller
+Directory               : app/Http/Controllers/<< MENU_NAME/SUBMENU_NAME >>
+
+# Model
+Directory               : app/Http/Models/<< DB_TABLE_NAME >>
+
+# View
+Directory               : app/Http/Controllers/<< MENU_NAME/SUBMENU_NAME >>
+
+============================ Rules ===============================
+# Penamaan CSS 
+> << CONTEXT_NAME >>_v1.0.css                       <= Iterate 
+
+# Penamaan JS
+> << CONTEXT_NAME >>_v1.0.js                        <= Iterate
+
+# Secret JSON
+> << RANDOM_STRING >>_v1.0.js                       <= Iterate
+
+Note : 
+<< v1 + 1 >>.0  If major change
+v1.<< 1 + 1 >>  If minor change
+
+==================================================================
+Last Updated : 06 Jul 2023
