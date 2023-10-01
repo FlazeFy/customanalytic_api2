@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Helpers\Validation;
+use App\Helpers\Generator;
 
 use App\Models\Vehicles;
 
@@ -14,9 +15,41 @@ class VehiclesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function createVehicles(Request $request)
     {
-        //
+        $validator = Validation::getValidateVehicle($request);
+
+        if ($validator->fails()) {
+            $errors = $validator->messages();
+
+            return response()->json([
+                "msg" => $errors, 
+                "status" => 422
+            ]);
+        } else {
+            $check = Vehicles::selectRaw('1')->where('name', $request->name)->first();
+            
+            if($check == null){
+                $uuid = Generator::getUUID();
+                Vehicles::create([
+                    'id' => $uuid,
+                    'name' => $request->name,
+                    'primary_role' => $request->primary_role,
+                    'manufacturer' => $request->manufacturer,
+                    'country' => $request->country,
+                ]);
+        
+                return response()->json([
+                    "msg" => "'".$request->name."' Data Created", 
+                    "status" => 200
+                ]);
+            }else{
+                return response()->json([
+                    "msg" => "Data is already exist", 
+                    "status" => 422
+                ]);
+            }
+        }
     }
 
     public function getAllVehicles($page_limit, $order){
@@ -129,7 +162,7 @@ class VehiclesController extends Controller
         }
     }
 
-    public function deleteVechilesById($id){
+    public function deleteVehiclesById($id){
         $vhc = Vehicles::selectRaw("concat (name, ' - ', primary_role) as final_name")
             ->where('id', $id)
             ->first();
