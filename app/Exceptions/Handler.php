@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use App\Models\Error;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -44,7 +45,20 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            //
+            $this->storeError($e);
         });
+    }
+
+    private function storeError(Throwable $exception)
+    {
+        Error::create([
+            'id' => null,
+            'message' => $exception->getMessage(), 
+            'stack_trace' => $exception->getTraceAsString(), 
+            'file' => $exception->getFile(), 
+            'line' => $exception->getLine(), 
+            'faced_by' => null, 
+            'created_at' => date('Y-m-d H:i:s')
+        ]);
     }
 }
