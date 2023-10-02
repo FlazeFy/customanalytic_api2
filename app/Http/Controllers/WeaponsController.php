@@ -27,8 +27,8 @@ class WeaponsController extends Controller
 
                 return response()->json([
                     "message" => $errors, 
-                    "status" => 422
-                ]);
+                    "status" => 'error'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 $check = Weapons::selectRaw('1')->where('name', $request->name)->first();
                 
@@ -48,8 +48,8 @@ class WeaponsController extends Controller
                 }else{
                     return response()->json([
                         "message" => "Data is already exist", 
-                        "status" => 422
-                    ]);
+                        "status" => 'failed'
+                    ], Response::HTTP_CONFLICT);
                 }
             }
         } catch(\Exception $e) {
@@ -127,7 +127,7 @@ class WeaponsController extends Controller
                 'message' => count($wpn)." Data retrived", 
                 'status' => 'success',
                 'data' => $wpn
-            ]);
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -148,7 +148,7 @@ class WeaponsController extends Controller
                 'message' => count($wpn)." Data retrived", 
                 'status' => 'success',
                 'data' => $wpn
-            ]);
+            ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -187,8 +187,8 @@ class WeaponsController extends Controller
 
                 return response()->json([
                     "message" => $errors, 
-                    "status" => 422
-                ]);
+                    "status" => 'error'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 Weapons::where('id', $id)->update([
                     'name' => $request->name,

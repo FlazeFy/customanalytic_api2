@@ -27,8 +27,8 @@ class BooksController extends Controller
 
                 return response()->json([
                     "message" => $errors, 
-                    "status" => 422
-                ]);
+                    "status" => 'error'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 $check = Books::selectRaw('1')->where('title', $request->title)->first();
                 
@@ -50,7 +50,7 @@ class BooksController extends Controller
                     return response()->json([
                         "message" => "Data is already exist", 
                         "status" => 'failed'
-                    ]);
+                    ], Response::HTTP_CONFLICT);
                 }
             }
         } catch(\Exception $e) {
@@ -132,7 +132,7 @@ class BooksController extends Controller
                 return response()->json([
                     'message' => $errors, 
                     'status' => 'failed'
-                ]);
+                ], Response::HTTP_BAD_REQUEST);
             } else {
                 Books::where('id', $id)->update([
                     'title' => $request->title,

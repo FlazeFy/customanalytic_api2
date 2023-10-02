@@ -17,5 +17,45 @@ class Generator
         
         return $uuid;
     }
+
+    public static function getMessageTemplate($type, $ctx, $obj){
+        if($obj != null){
+            $obj = "called ".$obj;
+        } else {
+            $obj = "";
+        }
+
+        if($type == "lost_session"){
+            $res = "Session lost, please sign in again";
+        } else if($type == "api_create"){ 
+            $res = "New ".$ctx." ".$obj." has been created";
+        } else if($type == "api_create_failed"){ 
+            $res = "Failed to create ".$ctx;
+        } else if($type == "api_read"){ 
+            $res = $ctx." found";
+        } else if($type == "api_read_failed"){
+            $res = $ctx." not found";
+        } else if($type == "api_update"){ 
+            $res = "New ".$ctx." ".$obj." has been updated";
+        } else if($type == "api_update_failed"){ 
+            $res = "Failed to update ".$ctx;
+        } else if($type == "api_delete"){ 
+            $res = "New ".$ctx." ".$obj." has been deleted";
+        } else if($type == "api_delete_failed"){ 
+            $res = "Failed to delete ".$ctx;
+        } else if($type == "duplicate_data"){ 
+            $res = $ctx." already exist ";
+        } else if($type == "failed_auth"){ 
+            $res = "Lost authentication, please sign in again";
+        } else if($type == "failed_found"){ 
+            $res = $ctx." with ".$obj." has not found";
+        } else if($type == "custom"){
+            $res = $ctx;
+        } else {
+            $res = "Failed to get respond message";
+        }
+
+        return ucfirst(trim($res));
+    }
 }
 

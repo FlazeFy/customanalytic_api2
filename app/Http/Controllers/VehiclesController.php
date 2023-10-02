@@ -27,8 +27,8 @@ class VehiclesController extends Controller
 
                 return response()->json([
                     "message" => $errors, 
-                    "status" => 422
-                ]);
+                    "status" => 'error'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 $check = Vehicles::selectRaw('1')->where('name', $request->name)->first();
                 
@@ -49,8 +49,8 @@ class VehiclesController extends Controller
                 }else{
                     return response()->json([
                         "message" => "Data is already exist", 
-                        "status" => 422
-                    ]);
+                        "status" => 'error'
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 }
             }
         } catch(\Exception $e) {
@@ -190,8 +190,8 @@ class VehiclesController extends Controller
 
                 return response()->json([
                     'message' => $errors, 
-                    'status' => 422
-                ]);
+                    'status' => 'error'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 Vehicles::where('id', $id)->update([
                     'name' => $request->name,

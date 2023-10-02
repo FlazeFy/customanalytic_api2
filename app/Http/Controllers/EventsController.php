@@ -27,8 +27,8 @@ class EventsController extends Controller
 
                 return response()->json([
                     "message" => $errors, 
-                    "status" => 'failed'
-                ]);
+                    "status" => 'error'
+                ], Response::HTTP_BAD_REQUEST);
             } else {
                 $check = Events::selectRaw('1')->where('event', $request->event)->first();
                 
@@ -50,7 +50,7 @@ class EventsController extends Controller
                     return response()->json([
                         "message" => "Data is already exist", 
                         "status" => 'failed'
-                    ]);
+                    ], Response::HTTP_CONFLICT);
                 }
             }
         } catch(\Exception $e) {
@@ -88,8 +88,8 @@ class EventsController extends Controller
 
                 return response()->json([
                     "message" => $errors, 
-                    "status" => 422
-                ]);
+                    "status" => 'error'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 Events::where('id', $id)->update([
                     'event' => $request->event,
