@@ -7,9 +7,9 @@ use App\Helpers\Generator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Facilities>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Weapons>
  */
-class FacilitiesFactory extends Factory
+class WeaponsFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -26,12 +26,11 @@ class FacilitiesFactory extends Factory
             'type' => Generator::getRandomRoleType(), 
             'location' => fake()->address(), 
             'country' => Generator::getRandomCountry(),
-            'coordinate' => Generator::getRandomCoordinate(), 
 
             // Properties
-            'created_at' => Generator::getRandomDate(1, 'datetime'), 
+            'created_at' => Generator::getRandomDate(0), 
             'created_by' => Generator::getRandomUser(0), 
-            'updated_at' => Generator::getRandomDate($ran, 'datetime'), 
+            'updated_at' => Generator::getRandomDate($ran), 
             'updated_by' => Generator::getRandomUser($ran)
         ];
     }

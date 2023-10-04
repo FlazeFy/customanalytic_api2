@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Helpers\Template;
 
 return new class extends Migration
 {
@@ -14,6 +15,9 @@ return new class extends Migration
     public function up()
     {
         Schema::create('personal_access_tokens', function (Blueprint $table) {
+            // Length declaration 
+            $med = Template::getDataLength("med_char");
+
             $table->id();
             $table->morphs('tokenable');
             $table->string('name');
