@@ -20,7 +20,7 @@ ex : php artisan serve # port=9000
 > php artisan migrate
 
 # Run Migrations On Specific file
-> php artisan migrate --path=database/migrations/migration/file.php
+> php artisan migrate --path=database/migrations/file.php
 
 # Run Seeder
 > php artisan db:seed class=DatabaseSeeder 

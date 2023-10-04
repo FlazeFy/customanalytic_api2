@@ -1,5 +1,6 @@
 <?php
 namespace App\Helpers;
+use App\Models\User;
 
 class Generator
 {
@@ -56,6 +57,57 @@ class Generator
         }
 
         return ucfirst(trim($res));
+    }
+
+    public static function getRandomYear(){
+        $now = (int)date("Y");
+        $res = $now + mt_rand(-3, 6); 
+        
+        return $res;
+    }
+
+    public static function getRandomDate($is_null, $format){
+
+        if ($is_null == 1){
+            $res = null;
+        } else {
+            $start = strtotime('2018-01-01 00:00:00');
+            $end = strtotime(date("Y-m-d H:i:s"));
+            $random = mt_rand($start, $end); 
+
+            if($format == 'datetime'){
+                $res = date('Y-m-d H:i:s', $random);
+            } else if ($format == 'date'){
+                $res = date('Y-m-d', $random);
+            }
+        }
+        return $res;
+    }
+
+    public static function getRandomUser($null){
+        if($null == 0){
+            $user = User::inRandomOrder()->take(1)->get();
+
+            foreach($user as $us){
+                $res = $us->id;
+            }
+        } else {
+            $res = null;
+        }
+        
+        return $res;
+    }
+
+    public static function getRandomRoleType(){
+        return; 
+    }
+
+    public static function getRandomCountry(){
+        return; 
+    }
+    
+    public static function getRandomCoordinate(){
+        return; 
     }
 }
 

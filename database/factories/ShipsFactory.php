@@ -7,9 +7,9 @@ use App\Helpers\Generator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Facilities>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Ships>
  */
-class FacilitiesFactory extends Factory
+class ShipsFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,17 +19,16 @@ class FacilitiesFactory extends Factory
     public function definition()
     {
         $ran = mt_rand(0, 1);
-
+        
         return [
             'id' => Generator::getUUID(), 
             'name' => fake()->sentence(), 
-            'type' => Generator::getRandomRoleType(), 
-            'location' => fake()->address(), 
-            'country' => Generator::getRandomCountry(),
-            'coordinate' => Generator::getRandomCoordinate(), 
+            'class' => Generator::getRandomRoleType(),
+            'country'=> Generator::getRandomCountry(),
+            'launch_year' => Generator::getRandomYear(),
 
             // Properties
-            'created_at' => Generator::getRandomDate(1, 'datetime'), 
+            'created_at' => Generator::getRandomDate(0, 'datetime'), 
             'created_by' => Generator::getRandomUser(0), 
             'updated_at' => Generator::getRandomDate($ran, 'datetime'), 
             'updated_by' => Generator::getRandomUser($ran)

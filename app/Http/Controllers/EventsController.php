@@ -37,7 +37,6 @@ class EventsController extends Controller
                     Events::create([
                         'id' => $uuid,
                         'event' => $request->event,
-                        'date' => $request->date,
                         'date_start' => $request->date_start,
                         'date_end' => $request->date_end,
                     ]);
