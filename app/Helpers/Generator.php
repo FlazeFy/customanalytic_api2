@@ -97,6 +97,11 @@ class Generator
         return $res;
     }
 
+    public static function getRandomID($ctx){
+        
+        return;
+    }
+
     public static function getRandomRoleType($ctx){
         if($ctx == "airplane"){
             $coll = ['Medium Bomber', 'Light Bomber', 'Seaplane', 'Reconnaissance Aircraft',

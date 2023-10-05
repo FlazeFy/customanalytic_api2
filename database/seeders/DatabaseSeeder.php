@@ -15,7 +15,8 @@ use App\Models\Weapons;
 use App\Models\Vehicles;
 use App\Models\User;
 use App\Models\Stories;
-
+use App\Models\Discussions;
+use App\Models\Feedbacks;
 
 class DatabaseSeeder extends Seeder
 {
@@ -36,5 +37,7 @@ class DatabaseSeeder extends Seeder
         Vehicles::factory(10)->create();
         User::factory(10)->create();
         Stories::factory(10)->create();
+        Discussions::factory(10)->create();
+        Feedbacks::factory(10)->create();
     }
 }
