@@ -61,11 +61,20 @@ class AircraftController extends Controller
         }
     }
 
-    public function getAllAircraft($page_limit, $order){
+    public function getAllAircraft($page_limit, $order, $search){
         try {
+            $search = trim($search);
+
             $air = Aircraft::select('id', 'name', 'primary_role', 'manufacturer', 'country')
-                ->orderBy('name', $order)
-                ->paginate($page_limit);
+                ->orderBy('name', $order);
+
+            // Filtering
+            if($search != "" && $search != "%20"){
+                $air = $air->where('name', 'LIKE', '%' . $search . '%')
+                    ->orwhere('manufacturer', 'LIKE', '%' . $search . '%');
+            }
+
+            $air = $air->paginate($page_limit);
         
             return response()->json([
                 'message' => count($air)." Data retrived", 
