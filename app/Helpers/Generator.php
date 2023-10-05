@@ -109,5 +109,17 @@ class Generator
     public static function getRandomCoordinate(){
         return; 
     }
+
+    public static function getRandomLocation(){
+        return; 
+    }
+
+    public static function getRandomTag(){
+        return; 
+    }
+
+    public static function getRandomReference(){
+        return; 
+    }
 }
 

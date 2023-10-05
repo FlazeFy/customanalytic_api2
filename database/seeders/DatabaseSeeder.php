@@ -14,7 +14,7 @@ use App\Models\Ships;
 use App\Models\Weapons;
 use App\Models\Vehicles;
 use App\Models\User;
-
+use App\Models\Stories;
 
 
 class DatabaseSeeder extends Seeder
@@ -35,5 +35,6 @@ class DatabaseSeeder extends Seeder
         Weapons::factory(10)->create();
         Vehicles::factory(10)->create();
         User::factory(10)->create();
+        Stories::factory(10)->create();
     }
 }
