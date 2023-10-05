@@ -60,11 +60,19 @@ class WeaponsController extends Controller
         }
     }
 
-    public function getAllWeapons($page_limit, $order){
+    public function getAllWeapons($page_limit, $order, $search){
         try {
+            $search = trim($search);
+
             $wpn = Weapons::select('id', 'name', 'type', 'country')
-                ->orderBy('name', $order)
-                ->paginate($page_limit);
+                ->orderBy('name', $order);
+            
+            // Filtering
+            if($search != "" && $search != "%20"){
+                $wpn = $wpn->where('name', 'LIKE', '%' . $search . '%');
+            }
+
+            $wpn = $wpn->paginate($page_limit);
         
             return response()->json([
                 'message' => count($wpn)." Data retrived", 
