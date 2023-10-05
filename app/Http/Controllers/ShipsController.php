@@ -22,8 +22,8 @@ class ShipsController extends Controller
 
                 return response()->json([
                     "message" => $errors, 
-                    "status" => 422
-                ]);
+                    "status" => 'error'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 $check = Ships::selectRaw('2')->where('name', $request->name)->first();
                 
@@ -45,7 +45,7 @@ class ShipsController extends Controller
                     return response()->json([
                         "message" => "Data is already exist", 
                         "status" => 'failed'
-                    ]);
+                    ], Response::HTTP_CONFLICT);
                 }
             }
         } catch(\Exception $e) {
@@ -214,8 +214,8 @@ class ShipsController extends Controller
 
                 return response()->json([
                     'message' => $errors, 
-                    'status' => 422
-                ]);
+                    'status' => 'error'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 Ships::where('id', $id)->update([
                     'name' => $request->name,

@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
 use App\Helpers\Template;
 
 return new class extends Migration
@@ -14,16 +13,17 @@ return new class extends Migration
      * @return void
      */
     public function up()
-    {        
-        Schema::create('aircraft', function (Blueprint $table) {
+    {
+        Schema::create('vehicles', function (Blueprint $table) {
             // Length declaration 
             $short = Template::getDataLength("short_char");
             $med = Template::getDataLength("med_char");
+            $exmed = Template::getDataLength("exmed_char");
             
             $table->uuid('id')->primary();
-            $table->string('name', $short)->nullable();
+            $table->string('name', $med);
             $table->string('primary_role', $short);
-            $table->string('manufacturer', $med);
+            $table->string('manufacturer',  $exmed);
             $table->string('country', $short);
 
             // Properties
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('aircraft');
+        Schema::dropIfExists('vehicles');
     }
 };

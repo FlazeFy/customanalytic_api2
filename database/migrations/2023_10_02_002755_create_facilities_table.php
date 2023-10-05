@@ -30,9 +30,9 @@ return new class extends Migration
 
             // Properties
             $table->dateTime('created_at', $precision = 0);
-            $table->string('created_by', 36);
+            $table->string('created_by', $short);
             $table->dateTime('updated_at', $precision = 0)->nullable();
-            $table->string('updated_by', 36)->nullable();
+            $table->string('updated_by', $short)->nullable();
         });
     }
 

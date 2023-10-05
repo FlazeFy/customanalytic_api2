@@ -27,8 +27,8 @@ class AircraftController extends Controller
 
                 return response()->json([
                     "message" => $errors, 
-                    "status" => 422
-                ]);
+                    "status" => 'error'
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 $check = Aircraft::selectRaw('1')->where('name', $request->name)->first();
                 
@@ -50,7 +50,7 @@ class AircraftController extends Controller
                     return response()->json([
                         "message" => "Data is already exist", 
                         "status" => 'failed'
-                    ]);
+                    ], Response::HTTP_CONFLICT);
                 }
             }
         } catch(\Exception $e) {
@@ -210,8 +210,8 @@ class AircraftController extends Controller
 
                 return response()->json([
                     "message" => $errors, 
-                    "status" => 422
-                ]);
+                    "status" => 'error',
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
                 Aircraft::where('id', $id)->update([
                     'name' => $request->name,
