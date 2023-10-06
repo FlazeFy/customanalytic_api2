@@ -61,11 +61,21 @@ class BooksController extends Controller
         }
     }
 
-    public function getAllBooks($page_limit, $order){
+    public function getAllBooks($page_limit, $order, $search){
         try {
+            $search = trim($search);
+
             $bok = Books::select('id', 'title', 'author', 'reviewer', 'review_date')
-                ->orderBy('title', $order)
-                ->paginate($page_limit);
+                ->orderBy('title', $order);
+            
+            // Filtering
+            if($search != "" && $search != "%20"){
+                $bok = $bok->where('title', 'LIKE', '%' . $search . '%')
+                    ->orwhere('author', 'LIKE', '%' . $search . '%')
+                    ->orwhere('reviewer', 'LIKE', '%' . $search . '%');
+            }
+
+            $bok = $bok->paginate($page_limit);
         
             return response()->json([
                 'message' => count($bok)." Data retrived", 

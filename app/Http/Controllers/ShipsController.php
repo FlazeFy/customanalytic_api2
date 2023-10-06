@@ -56,11 +56,19 @@ class ShipsController extends Controller
         }
     }
 
-    public function getAllShips($page_limit, $order){
+    public function getAllShips($page_limit, $order, $search){
         try {
+            $search = trim($search);
+
             $shp = Ships::select('id', 'name', 'class', 'country', 'launch_year')
-                ->orderBy('name', $order)
-                ->paginate($page_limit);
+                ->orderBy('name', $order);
+
+            // Filtering
+            if($search != "" && $search != "%20"){
+                $shp = $shp->where('name', 'LIKE', '%' . $search . '%');
+            }
+
+            $shp = $shp->paginate($page_limit);
         
             return response()->json([
                 'message' => count($shp)." Data retrived", 

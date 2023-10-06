@@ -61,11 +61,20 @@ class VehiclesController extends Controller
         }
     }
 
-    public function getAllVehicles($page_limit, $order){
+    public function getAllVehicles($page_limit, $order, $search){
         try {
+            $search = trim($search);
+
             $vhc = Vehicles::select('id', 'name', 'primary_role', 'manufacturer', 'country')
-                ->orderBy('name', $order)
-                ->paginate($page_limit);
+                ->orderBy('name', $order);
+
+            // Filtering
+            if($search != "" && $search != "%20"){
+                $vhc = $vhc->where('name', 'LIKE', '%' . $search . '%')
+                    ->orwhere('manufacturer', 'LIKE', '%' . $search . '%');
+            }
+
+            $vhc = $vhc->paginate($page_limit);
         
             return response()->json([
                 'message' => count($vhc)." Data retrived", 
