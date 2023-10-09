@@ -48,7 +48,7 @@ class DiscussionsController extends Controller
                     ]);
             
                     return response()->json([
-                        'message' => "'".$request->stories_id."' Data Created", 
+                        'message' => Generator::getMessageTemplate("api_create", "discussion", $request->stories_id),
                         'status' => 'success'
                     ], Response::HTTP_OK);
                 }else{

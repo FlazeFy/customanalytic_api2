@@ -9,6 +9,7 @@ class Ships extends Model
 {
     use HasFactory;
     public $timestamps = false;
+    public $incrementing = false;
 
     protected $table = 'ships';
     protected $primaryKey = 'id';

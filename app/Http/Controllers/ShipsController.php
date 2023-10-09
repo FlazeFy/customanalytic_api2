@@ -39,7 +39,6 @@ class ShipsController extends Controller
                         'created_by' => "1",
                         'updated_at' => null,
                         'updated_by' => null,
-
                     ]);
             
                     return response()->json([
@@ -76,7 +75,8 @@ class ShipsController extends Controller
             $shp = $shp->paginate($page_limit);
         
             return response()->json([
-                'message' => count($shp)." Data retrived", 
+                //'message' => count($shp)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'ship', null),
                 'status' => 'success',
                 'data' => $shp
             ], Response::HTTP_OK);
@@ -122,7 +122,8 @@ class ShipsController extends Controller
                 ->get();
 
             return response()->json([
-                'message' => count($shp)." Data retrived", 
+                //'message' => count($shp)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'ship', null),
                 "status"=> 'success',
                 "data"=> $shp
             ], Response::HTTP_OK);
@@ -163,7 +164,8 @@ class ShipsController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($shp)." Data retrived", 
+                //'message' => count($shp)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'ship', null),
                 'status' => 'success',
                 'data' => $shp
             ], Response::HTTP_OK);
@@ -184,7 +186,8 @@ class ShipsController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($shp)." Data retrived", 
+                //'message' => count($shp)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'ship', null),
                 'status' => 'success',
                 'data' => $shp
             ], Response::HTTP_OK);
@@ -206,7 +209,8 @@ class ShipsController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($shp)." Data retrived", 
+                //'message' => count($shp)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'ship', null),
                 'status' => 'success',
                 'data' => $shp
             ], Response::HTTP_OK);
@@ -235,10 +239,12 @@ class ShipsController extends Controller
                     'class' => $request->class,
                     'country' => $request->country,
                     'launch_year' => $request->launch_year,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'updated_by' => null,
                 ]);
         
                 return response()->json([
-                    'message' => "'".$request->name."' Data Updated", 
+                    'message' => Generator::getMessageTemplate("api_update", "ship", $request->name), 
                     'status' => 'success'
                 ], Response::HTTP_OK);
             }
@@ -259,7 +265,7 @@ class ShipsController extends Controller
             Ships::destroy($id);
 
             return response()->json([
-                'message' => " '".$shp->final_name."' Data Destroyed", 
+                'message' => Generator::getMessageTemplate("api_delete", "airplane", $shp->final_name), 
                 'status' => 'success'
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
