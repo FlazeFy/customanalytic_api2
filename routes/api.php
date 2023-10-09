@@ -7,11 +7,14 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AircraftController;
 use App\Http\Controllers\BooksController;
 use App\Http\Controllers\CasualitiesController;
+use App\Http\Controllers\DiscussionsController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\FacilitiesController;
+use App\Http\Controllers\FeedbacksController;
 use App\Http\Controllers\ShipsController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\WeaponsController;
+use Spatie\LaravelIgnition\Solutions\LivewireDiscoverSolution;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -93,4 +96,14 @@ Route::prefix('/casualities')->group(function () {
     Route::get('/totaldeath/bycountry/{order}/limit/{page_limit}', [CasualitiesController::class, 'getTotalDeathByCountry']);
     Route::get('/totaldeath/bysides/{view}', [CasualitiesController::class, 'getTotalDeathBySides']);
     Route::get('/summary', [CasualitiesController::class, 'getCasualitiesSummary']);
+});
+
+Route::prefix('/discussions')->group(function () {
+    Route::post('/', [DiscussionsController::class, 'createDiscussion']);
+    Route::get('/limit/{page_limit}/order/{order}', [DiscussionsController::class, 'getAllDiscussions']); // belum implement
+});
+
+Route::prefix('/feedbacks')->group(function () {
+    Route::post('/', [FeedbacksController::class, 'createFeedback']);
+    Route::get('/limit/{page_limit}/order/{order}', [FeedbacksController::class, 'getAllFeedback']);
 });

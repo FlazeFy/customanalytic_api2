@@ -25,13 +25,13 @@ class BooksFactory extends Factory
             'title' => fake()->sentence(), 
             'author' => fake()->name(),
             'reviewer' => fake()->name(), 
-            'review_date' => Generator::getRandomDate(0), 
+            'review_date' => Generator::getRandomDate($ran, 'date'), 
 
             // Properties
-            'created_at' => Generator::getRandomDate(0), 
+            'created_at' => Generator::getRandomDate(1, 'datetime'), 
             'created_by' => Generator::getRandomUser(0), 
-            'updated_at' => Generator::getRandomDate($ran), 
-            'updated_by' => Generator::getRandomUser($ran) 
+            'updated_at' => Generator::getRandomDate($ran, 'datetime'), 
+            'updated_by' => Generator::getRandomUser($ran)
         ];
     }
 }

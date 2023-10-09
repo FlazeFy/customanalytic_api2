@@ -18,7 +18,6 @@ class FeedbacksFactory extends Factory
      */
     public function definition()
     {
-        $ran = mt_rand(0, 1);
         $rate = mt_rand(0, 5);
 
         return [

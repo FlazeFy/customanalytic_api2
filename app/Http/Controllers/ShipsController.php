@@ -35,10 +35,15 @@ class ShipsController extends Controller
                         'class' => $request->class,
                         'country' => $request->country,
                         'launch_year' => $request->launch_year,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'created_by' => "1",
+                        'updated_at' => null,
+                        'updated_by' => null,
+
                     ]);
             
                     return response()->json([
-                        "message" => "'".$request->name."' Data Created", 
+                        "message" => Generator::getMessageTemplate("api_create", "ship", $request->name), 
                         "status" => 'success'
                     ], Response::HTTP_OK);
                 }else{
