@@ -9,8 +9,9 @@ class Weapons extends Model
 {
     use HasFactory;
     public $timestamps = false;
+    public $incrementing = false;
 
     protected $table = 'weapons';
     protected $primaryKey = 'id';
-    protected $fillable = ['id', 'name', 'type', 'country'];
+    protected $fillable = ['id', 'name', 'type', 'country', 'created_at', 'created_by', 'updated_at', 'updated_by'];
 }

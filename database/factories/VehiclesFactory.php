@@ -19,11 +19,12 @@ class VehiclesFactory extends Factory
     public function definition()
     {
         $ran = mt_rand(0, 1);
+        $ctx = "vehicles";
 
         return [
             'id' => Generator::getUUID(), 
             'name' => fake()->sentence(), 
-            'primary_role' => Generator::GetRandomRoleType(),
+            'primary_role' => Generator::GetRandomRoleType($ctx),
             'manufacturer' => fake()->sentence(),
             'country' => Generator::getRandomCountry(),
 

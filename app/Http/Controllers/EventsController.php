@@ -39,10 +39,14 @@ class EventsController extends Controller
                         'event' => $request->event,
                         'date_start' => $request->date_start,
                         'date_end' => $request->date_end,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'created_by' => "1",
+                        'updated_at' => null,
+                        'updated_by' => null,
                     ]);
             
                     return response()->json([
-                        "message" => "'".$request->event."' Data Created", 
+                        "message" => Generator::getMessageTemplate("api_create", "event", $request->event),
                         "status" => 'success'
                     ], Response::HTTP_OK);
                 }else{
@@ -67,7 +71,8 @@ class EventsController extends Controller
                 ->paginate($page_limit);
         
             return response()->json([
-                'message' => count($evt)." Data retrived", 
+                //'message' => count($evt)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'event', null),
                 "data" => $evt
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
@@ -94,10 +99,12 @@ class EventsController extends Controller
                     'event' => $request->event,
                     'date_start' => $request->date_start,
                     'date_end' => $request->date_end,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'updated_by' => null,
                 ]);
         
                 return response()->json([
-                    "message" => "'".$request->event."' Data Updated", 
+                    "message" => Generator::getMessageTemplate("api_update", "airplane", $request->event),
                     "status" => 'success'
                 ], Response::HTTP_OK);
             }
@@ -118,7 +125,7 @@ class EventsController extends Controller
             Events::destroy($id);
 
             return response()->json([
-                'message' => "'".$evt->event."' Data Destroyed", 
+                'message' => Generator::getMessageTemplate("api_delete", "event",$evt->event), 
                 'status' => 'success'
             ], Response::HTTP_OK);
         } catch(\Exception $e) {

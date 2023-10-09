@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Feedbacks extends Model
 {
     use HasFactory;
+    public $timestamps = false;
+    public $incrementing = false;
 
     protected $table = 'feedbacks';
     protected $primaryKey = 'id';

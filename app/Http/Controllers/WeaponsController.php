@@ -39,10 +39,14 @@ class WeaponsController extends Controller
                         'name' => $request->name,
                         'type' => $request->type,
                         'country' => $request->country,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'created_by' => "1",
+                        'updated_at' => null,
+                        'updated_by' => null,
                     ]);
             
                     return response()->json([
-                        'message' => "'".$request->name."' Data Created", 
+                        'message' => Generator::getMessageTemplate("api_create", "weapon", $request->name), 
                         'status' => 'success'
                     ], Response::HTTP_OK);
                 }else{
@@ -75,7 +79,8 @@ class WeaponsController extends Controller
             $wpn = $wpn->paginate($page_limit);
         
             return response()->json([
-                'message' => count($wpn)." Data retrived", 
+                //'message' => count($wpn)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
                 'status' => 'success',
                 'data' => $wpn
             ], Response::HTTP_OK);
@@ -111,7 +116,8 @@ class WeaponsController extends Controller
                 ->get();
 
             return response()->json([
-                'message' => count($wpn)." Data retrived", 
+                //'message' => count($wpn)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
                 'status' => 'success',
                 'data' => $wpn
             ], Response::HTTP_OK);
@@ -132,7 +138,8 @@ class WeaponsController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($wpn)." Data retrived", 
+                //'message' => count($wpn)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
                 'status' => 'success',
                 'data' => $wpn
             ], Response::HTTP_OK);
@@ -153,7 +160,8 @@ class WeaponsController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($wpn)." Data retrived", 
+                //'message' => count($wpn)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
                 'status' => 'success',
                 'data' => $wpn
             ], Response::HTTP_OK);
@@ -174,7 +182,8 @@ class WeaponsController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($wpn)." Data retrived", 
+                //'message' => count($wpn)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
                 'status' => 'success',
                 'data' => $wpn
             ], Response::HTTP_OK);
@@ -202,10 +211,12 @@ class WeaponsController extends Controller
                     'name' => $request->name,
                     'type' => $request->type,
                     'country' => $request->country,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'updated_by' => null,
                 ]);
         
                 return response()->json([
-                    "message" => "'".$request->name."' Data Updated", 
+                    "message" => Generator::getMessageTemplate("api_update", "weapon", $request->name),
                     "status" => 'success'
                 ], Response::HTTP_OK);
             }
@@ -226,7 +237,7 @@ class WeaponsController extends Controller
             Weapons::destroy($id);
 
             return response()->json([
-                'message' => " '".$wpn->final_name."' Data Destroyed", 
+                'message' => Generator::getMessageTemplate("api_delete", "airplane", $wpn->final_name),
                 'status' => 'success'
             ], Response::HTTP_OK);
         } catch(\Exception $e) {

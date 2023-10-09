@@ -141,6 +141,10 @@ class Generator
                 'Bombsight', 'Other Weapons', 'Headgear', 'Aircraft Autocannon',
                 'Uniform', 'Munitions Fuze', 'Shotgun', 'Submachine Gun'
             ];
+        } else if($ctx == "users"){ 
+            $coll = ['visitor', 'creator'];
+        } else if($ctx == "stories"){ 
+            $coll = ['battle', 'biography'];
         }
 
         $idx = array_rand($coll);

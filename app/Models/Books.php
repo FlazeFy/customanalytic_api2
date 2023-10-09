@@ -9,8 +9,9 @@ class Books extends Model
 {
     use HasFactory;
     public $timestamps = false;
+    public $incrementing = false;
 
     protected $table = 'books';
     protected $primaryKey = 'id';
-    protected $fillable = ['id', 'title', 'author', 'reviewer', 'review_date', 'datetime'];
+    protected $fillable = ['id', 'title', 'author', 'reviewer', 'review_date', 'created_at', 'created_by','updated_at', 'updated_by'];
 }

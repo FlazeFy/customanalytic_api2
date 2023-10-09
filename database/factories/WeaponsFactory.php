@@ -19,18 +19,20 @@ class WeaponsFactory extends Factory
     public function definition()
     {
         $ran = mt_rand(0, 1);
+        $ctx = "weapons";
 
         return [
             'id' => Generator::getUUID(), 
             'name' => fake()->sentence(), 
-            'type' => Generator::getRandomRoleType(), 
+            'type' => Generator::getRandomRoleType($ctx), 
             'location' => fake()->address(), 
             'country' => Generator::getRandomCountry(),
 
             // Properties
-            'created_at' => Generator::getRandomDate(0), 
+            // Properties
+            'created_at' => Generator::getRandomDate(0, 'datetime'), 
             'created_by' => Generator::getRandomUser(0), 
-            'updated_at' => Generator::getRandomDate($ran), 
+            'updated_at' => Generator::getRandomDate($ran, 'datetime'), 
             'updated_by' => Generator::getRandomUser($ran)
         ];
     }
