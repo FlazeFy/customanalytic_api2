@@ -106,4 +106,6 @@ Route::prefix('/discussions')->group(function () {
 Route::prefix('/feedbacks')->group(function () {
     Route::post('/', [FeedbacksController::class, 'createFeedback']);
     Route::get('/limit/{page_limit}/order/{order}', [FeedbacksController::class, 'getAllFeedback']);
+    Route::delete('/{id}', [FeedbacksController::class, 'deleteFeedbackById']);
+
 });

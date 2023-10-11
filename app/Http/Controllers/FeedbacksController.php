@@ -48,7 +48,7 @@ class FeedbacksController extends Controller
                     return response()->json([
                         'message' => Generator::getMessageTemplate("custom", "Feedback has sended", null), 
                         'status' => 'success'
-                    ], Response::HTTP_OK);
+                    ], Response::HTTP_CREATED);
                 }else{
                     return response()->json([
                         "message" => "Data is already exist", 
@@ -64,12 +64,6 @@ class FeedbacksController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function getAllFeedback($page_limit, $order)
     {
         try {
@@ -89,26 +83,15 @@ class FeedbacksController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    //hard delete, admin only
+    public function deleteFeedbackById($id)
     {
-        //
-    }
+        $feedback = Feedbacks::select('stories_id')->where('id', $id)->first();
+        Feedbacks::destroy($id);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return response()->json([
+            "msg" => Generator::getMessageTemplate("custom", "Feedback has deleted", null),
+            "status" => 200
+        ]);
     }
 }
