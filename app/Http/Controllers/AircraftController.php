@@ -40,10 +40,14 @@ class AircraftController extends Controller
                         'primary_role' => $request->primary_role,
                         'manufacturer' => $request->manufacturer,
                         'country' => $request->country,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'created_by' => "1",
+                        'updated_at' => null,
+                        'updated_by' => null,
                     ]);
             
                     return response()->json([
-                        "message" => "'".$request->name."' Data Created", 
+                        "message" => Generator::getMessageTemplate("api_create", "airplane", $request->name), 
                         "status" => 'success'
                     ], Response::HTTP_OK);
                 }else{
@@ -77,7 +81,8 @@ class AircraftController extends Controller
             $air = $air->paginate($page_limit);
         
             return response()->json([
-                'message' => count($air)." Data retrived", 
+                //'message' => count($air)." Data retrived", //masih belum clear
+                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
                 "status" => 'success',
                 "data" => $air
             ], Response::HTTP_OK);
@@ -114,9 +119,10 @@ class AircraftController extends Controller
                 ->get();
 
             return response()->json([
-                'message' => count($air)." Data retrived", 
-                "status" => 'success',
-                "data" => $air
+                //'message' => count($air)." Data retrived",  //masih belum clear
+                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
+                'status' => 'success',
+                'data' => $air
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
@@ -135,9 +141,10 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($air)." Data retrived", 
-                "status" => 'success',
-                "data" => $air
+                //'message' => count($air)." Data retrived", //masih belum clear
+                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
+                'status' => 'success',
+                'data' => $air
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
@@ -156,9 +163,10 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($air)." Data retrived", 
-                "status" => 'success',
-                "data" => $air
+                //'message' => count($air)." Data retrived",  //masih belum clear
+                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
+                'status' => 'success',
+                'data' => $air
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
@@ -177,7 +185,8 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($air)." Data retrived", 
+                //'message' => count($air)." Data retrived", //masih belum clear
+                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
                 'status' => 'success',
                 'data' => $air
             ], Response::HTTP_OK);
@@ -198,7 +207,8 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($air)." Data retrived", 
+                //'message' => count($air)." Data retrived",  //masih belum clear
+                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
                 'status' => 'success',
                 'data' => $air
             ], Response::HTTP_OK);
@@ -227,10 +237,12 @@ class AircraftController extends Controller
                     'primary_role' => $request->primary_role,
                     'manufacturer' => $request->manufacturer,
                     'country' => $request->country,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'updated_by' => null,
                 ]);
         
                 return response()->json([
-                    "message" => "'".$request->name."' Data Updated", 
+                    "message" => Generator::getMessageTemplate("api_update", "airplane", $request->name), 
                     "status" => 'success'
                 ], Response::HTTP_OK);
             }
@@ -251,7 +263,7 @@ class AircraftController extends Controller
             Aircraft::destroy($id);
 
             return response()->json([
-                'message' => " '".$air->final_name."' Data Destroyed", 
+                'message' => Generator::getMessageTemplate("api_delete", "airplane", $air->final_name),
                 "status" => 'success'
             ], Response::HTTP_OK);
         } catch(\Exception $e) {

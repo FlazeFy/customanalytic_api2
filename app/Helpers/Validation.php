@@ -62,4 +62,21 @@ class Validation
             'country' => 'required|max:36|string',
         ]);
     }
+
+    public static function GetValidateDiscussion($request){
+        return Validator::make($request->all(), [
+            'stories_id' => 'required|max:36|string',
+            'reply_id' => 'nullable|max:36|string',
+            'body' => 'required|max:2000|string',
+            'attachment' => 'nullable|string',
+        ]);
+    }
+
+    public static function getValidateFeedback($request){
+        return Validator::make($request->all(), [
+            'stories_id' => 'required|max:36|string',
+            'body' => 'required|max:255|string',
+            'rate' => 'required|max:10|numeric',
+        ]);
+    }
 }

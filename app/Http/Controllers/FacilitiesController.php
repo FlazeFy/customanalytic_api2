@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use App\Models\Facilities;
+use App\Helpers\Generator;
 
 class FacilitiesController extends Controller
 {
@@ -44,7 +45,8 @@ class FacilitiesController extends Controller
                 ->get();
 
             return response()->json([
-                'message' => count($fac)." Data retrived", 
+                //'message' => count($fac)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'facilities', null),
                 'status' => 'success',
                 'data' => $fac
             ], Response::HTTP_OK);
@@ -65,7 +67,8 @@ class FacilitiesController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($fac)." Data retrived", 
+                //'message' => count($fac)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'facilities', null),
                 'status' => 'success',
                 'data' => $fac
             ], Response::HTTP_OK);
@@ -86,7 +89,8 @@ class FacilitiesController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($fac)." Data retrived", 
+                //'message' => count($fac)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'facilities', null),
                 'status' => 'success',
                 'data' => $fac
             ], Response::HTTP_OK);
@@ -112,7 +116,8 @@ class FacilitiesController extends Controller
             }
         
             return response()->json([
-                'message' => count($fac)." Data retrived", 
+                //'message' => count($fac)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'facilities', null),
                 'status' => 'success',
                 'data' => $fac
             ], Response::HTTP_OK);
@@ -133,7 +138,8 @@ class FacilitiesController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($fac)." Data retrived", 
+                //'message' => count($fac)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'facilities', null),
                 'status' => 'success',
                 'data' => $fac
             ], Response::HTTP_OK);
@@ -152,7 +158,8 @@ class FacilitiesController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($fac)." Data retrived", 
+                //'message' => count($fac)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'facilities', null),
                 'status' => 'success',
                 'data' => $fac
             ], Response::HTTP_OK);

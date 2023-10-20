@@ -27,7 +27,7 @@ return new class extends Migration
 
             // Properties
             $table->dateTime('created_at', $precision = 0);
-            $table->dateTime('created_by', $precision = 0)->nullable();
+            $table->string('created_by', $short)->nullable();
         });
     }
 

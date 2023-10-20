@@ -19,12 +19,13 @@ class StoriesFactory extends Factory
     public function definition()
     {
         $ran = mt_rand(0, 1);
+        $ctx = "stories";
 
         return [
             'id' => Generator::getUUID(), 
             'main_title' => fake()->sentence(), 
             'is_finished' => $ran,
-            'story_type' => Generator::getRandomRoleType(),
+            'story_type' => Generator::getRandomRoleType($ctx),
             'date_start' => fake()->dateTimeBetween('now', '+2 days'),
             'date_end' => fake()->dateTimeBetween('+7 days', '+7 years'),
             'story_result' => null,

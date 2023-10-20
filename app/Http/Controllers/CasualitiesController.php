@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use App\Models\Casualities;
+use App\Helpers\Generator;
 
 class CasualitiesController extends Controller
 {
@@ -26,7 +27,8 @@ class CasualitiesController extends Controller
                 ->paginate($page_limit);
         
             return response()->json([
-                'message' => count($cst)." Data retrived", 
+                //'message' => count($cst)." Data retrived", //belum clear kalau ada count
+                'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
                 'status' => 'success',
                 'data' => $cst
             ], Response::HTTP_OK);
@@ -52,7 +54,8 @@ class CasualitiesController extends Controller
             }   
         
             return response()->json([
-                'message' => count($cst)." Data retrived", 
+                //'message' => count($cst)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
                 'status' => 'success',
                 'data' => $cst
             ], Response::HTTP_OK);
@@ -76,7 +79,8 @@ class CasualitiesController extends Controller
                 ->get();
 
             return response()->json([
-                'message' => count($cst)." Data retrived", 
+                //'message' => count($cst)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
                 'status' => 'success',
                 'data' => $cst
             ], Response::HTTP_OK);
@@ -98,9 +102,10 @@ class CasualitiesController extends Controller
                     ->get();
             
                 return response()->json([
-                    'message' => count($cst)." Data retrived", 
-                    "status" => 'success',
-                    "data" => $cst
+                    //'message' => count($cst)." Data retrived", 
+                    'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
+                    'status' => 'success',
+                    'data' => $cst
                 ], Response::HTTP_OK);
             } else {
                 return response()->json([

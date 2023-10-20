@@ -40,10 +40,14 @@ class VehiclesController extends Controller
                         'primary_role' => $request->primary_role,
                         'manufacturer' => $request->manufacturer,
                         'country' => $request->country,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'created_by' => "1",
+                        'updated_at' => null,
+                        'updated_by' => null,
                     ]);
             
                     return response()->json([
-                        "message" => "'".$request->name."' Data Created", 
+                        "message" => Generator::getMessageTemplate("api_create", "vehicle", $request->name),
                         "status" => 'success'
                     ], Response::HTTP_OK);
                 }else{
@@ -77,7 +81,8 @@ class VehiclesController extends Controller
             $vhc = $vhc->paginate($page_limit);
         
             return response()->json([
-                'message' => count($vhc)." Data retrived", 
+                //'message' => count($vhc)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
                 'status' => 'success',
                 'data' => $vhc
             ], Response::HTTP_OK);
@@ -114,7 +119,8 @@ class VehiclesController extends Controller
                 ->get();
 
             return response()->json([
-                'message' => count($vch)." Data retrived", 
+                //'message' => count($vch)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
                 'status' => 'success',
                 'data' => $vch
             ], Response::HTTP_OK);
@@ -136,7 +142,8 @@ class VehiclesController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($vhc)." Data retrived", 
+                //'message' => count($vhc)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
                 'status' => 'success',
                 'data' => $vhc
             ], Response::HTTP_OK);
@@ -157,7 +164,8 @@ class VehiclesController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($vhc)." Data retrived", 
+                //'message' => count($vhc)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
                 'status' => 'success',
                 'data' =>$vhc
             ], Response::HTTP_OK);
@@ -178,7 +186,8 @@ class VehiclesController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($vhc)." Data retrived", 
+                //'message' => count($vhc)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
                 'status' => 'success',
                 'data' => $vhc
             ], Response::HTTP_OK);
@@ -207,10 +216,12 @@ class VehiclesController extends Controller
                     'primary_role' => $request->primary_role,
                     'manufacturer' => $request->manufacturer,
                     'country' => $request->country,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'updated_by' => null,
                 ]);
         
                 return response()->json([
-                    'message' => "'".$request->name."' Data Updated", 
+                    'message' => Generator::getMessageTemplate("api_update", "vehicle", $request->name), 
                     'status' => 'success'
                 ], Response::HTTP_OK);
             }
@@ -231,7 +242,7 @@ class VehiclesController extends Controller
             Vehicles::destroy($id);
 
             return response()->json([
-                'message' => " '".$vhc->final_name."' Data Destroyed", 
+                'message' => Generator::getMessageTemplate("api_delete", "airplane", $vhc->final_name), 
                 'status' => 'success'
             ], Response::HTTP_OK);
         } catch(\Exception $e) {

@@ -19,11 +19,12 @@ class ShipsFactory extends Factory
     public function definition()
     {
         $ran = mt_rand(0, 1);
+        $ctx = "ships";
         
         return [
             'id' => Generator::getUUID(), 
             'name' => fake()->sentence(), 
-            'class' => Generator::getRandomRoleType(),
+            'class' => Generator::getRandomRoleType($ctx),
             'country'=> Generator::getRandomCountry(),
             'launch_year' => Generator::getRandomYear(),
 

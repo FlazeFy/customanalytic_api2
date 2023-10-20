@@ -40,10 +40,14 @@ class BooksController extends Controller
                         'author' => $request->author,
                         'reviewer' => $request->reviewer,
                         'review_date' => $request->review_date,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'created_by' => "1",
+                        'updated_at' => null,
+                        'updated_by' => null,
                     ]);
             
                     return response()->json([
-                        'message' => "'".$request->title."' Data Created", 
+                        "message" => Generator::getMessageTemplate("api_create", "book", $request->title), 
                         'status' => 'success'
                     ], Response::HTTP_OK);
                 }else{
@@ -78,7 +82,7 @@ class BooksController extends Controller
             $bok = $bok->paginate($page_limit);
         
             return response()->json([
-                'message' => count($bok)." Data retrived", 
+                'message' => Generator::getMessageTemplate("api_read", "book", null), 
                 'status' => 'success',
                 'data' => $bok
             ], Response::HTTP_OK);
@@ -99,7 +103,8 @@ class BooksController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($bok)." Data retrived", 
+                //'message' => count($bok)." Data retrived", //masih belum clear
+                'message' => Generator::getMessageTemplate("api_read", 'book', null),
                 'status' => 'success',
                 'data' => $bok
             ], Response::HTTP_OK);
@@ -120,7 +125,8 @@ class BooksController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => count($bok)." Data retrived", 
+                //'message' => count($bok)." Data retrived",  //masih belum clear
+                'message' => Generator::getMessageTemplate("api_read", 'book', null),
                 'status' => 'success',
                 'data' => $bok
             ], Response::HTTP_OK);
@@ -149,10 +155,12 @@ class BooksController extends Controller
                     'author' => $request->author,
                     'reviewer' => $request->reviewer,
                     'review_date' => $request->review_date,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                    'updated_by' => null,
                 ]);
         
                 return response()->json([
-                    'message' => "'".$request->title."' Data Updated", 
+                    'message' => Generator::getMessageTemplate("api_update", "book", $request->title), //masi belum fix
                     'status' => 'success'
                 ], Response::HTTP_OK);
             }
@@ -166,14 +174,14 @@ class BooksController extends Controller
 
     public function deleteBookById($id){
         try {
-            $bok = Books::selectRaw("concat ('The Book ', title, ' by ', author) as final_name")
+            $bok = Books::selectRaw("concat (title, ' by ', author) as final_name")
                 ->where('id', $id)
                 ->first();
 
             Books::destroy($id);
 
             return response()->json([
-                'message' => "'".$bok->final_name."' Data Destroyed", 
+                'message' => Generator::getMessageTemplate("api_delete", "book", $bok->final_name),
                 'status' => 'success'
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
