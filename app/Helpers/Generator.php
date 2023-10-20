@@ -145,6 +145,8 @@ class Generator
             $coll = ['visitor', 'creator'];
         } else if($ctx == "stories"){ 
             $coll = ['battle', 'biography'];
+        } else if($ctx == "histories"){ 
+            $coll = ['stories', 'user', 'admin', 'weapons', 'vehicles', 'ships', 'facilities', 'airplane'];
         }
 
         $idx = array_rand($coll);
