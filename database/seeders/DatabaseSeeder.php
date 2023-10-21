@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\Stories;
 use App\Models\Discussions;
 use App\Models\Feedbacks;
+use App\Models\Histories;
 
 class DatabaseSeeder extends Seeder
 {
@@ -39,5 +40,6 @@ class DatabaseSeeder extends Seeder
         Stories::factory(10)->create();
         Discussions::factory(10)->create();
         Feedbacks::factory(10)->create();
+        Histories::factory(10)->create();
     }
 }

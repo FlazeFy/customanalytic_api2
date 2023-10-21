@@ -9,6 +9,7 @@ use App\Helpers\Validation;
 use App\Helpers\Generator;
 
 use App\Models\Books;
+use App\Models\Histories;
 
 class BooksController extends Controller
 {
@@ -30,31 +31,58 @@ class BooksController extends Controller
                     "status" => 'error'
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
-                $check = Books::selectRaw('1')->where('title', $request->title)->first();
+                $msg = Generator::getMessageTemplate("api_create", "book", $request->title);
+                $data = new Request();
+                $obj = [
+                    'type' => "book",
+                    'body' => $msg
+                ];
+                $data->merge($obj);
+
+                $validatorHistory = Validation::getValidateHistory($data);
+
+                if ($validatorHistory->fails()) {
+                    $errors = $validatorHistory->messages();
+
+                    return response()->json([
+                        'status' => 'failed',
+                        'result' => $errors,
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                } else {
+                    $check = Books::selectRaw('1')->where('title', $request->title)->first();
+                    
+                    if($check == null){
+                        $uuid = Generator::getUUID();
+                        Books::create([
+                            'id' => $uuid,
+                            'title' => $request->title,
+                            'author' => $request->author,
+                            'reviewer' => $request->reviewer,
+                            'review_date' => $request->review_date,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'created_by' => "1",
+                            'updated_at' => null,
+                            'updated_by' => null,
+                        ]);
+
+                        Histories::create([
+                            'id' => Generator::getUUID(),
+                            'history_type' => $data->type, 
+                            'body' => $data->body,
+                            'created_at' => date("Y-m-d H:i:s"),
+                            'created_by' => '1' // for now
+                        ]);
                 
-                if($check == null){
-                    $uuid = Generator::getUUID();
-                    Books::create([
-                        'id' => $uuid,
-                        'title' => $request->title,
-                        'author' => $request->author,
-                        'reviewer' => $request->reviewer,
-                        'review_date' => $request->review_date,
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'created_by' => "1",
-                        'updated_at' => null,
-                        'updated_by' => null,
-                    ]);
-            
-                    return response()->json([
-                        "message" => Generator::getMessageTemplate("api_create", "book", $request->title), 
-                        'status' => 'success'
-                    ], Response::HTTP_OK);
-                }else{
-                    return response()->json([
-                        "message" => "Data is already exist", 
-                        "status" => 'failed'
-                    ], Response::HTTP_CONFLICT);
+                        return response()->json([
+                            "message" => $msg, 
+                            'status' => 'success'
+                        ], Response::HTTP_OK);
+                    }else{
+                        return response()->json([
+                            "message" => "Data is already exist", 
+                            "status" => 'failed'
+                        ], Response::HTTP_CONFLICT);
+                    }
                 }
             }
         } catch(\Exception $e) {
@@ -150,19 +178,46 @@ class BooksController extends Controller
                     'status' => 'failed'
                 ], Response::HTTP_BAD_REQUEST);
             } else {
-                Books::where('id', $id)->update([
-                    'title' => $request->title,
-                    'author' => $request->author,
-                    'reviewer' => $request->reviewer,
-                    'review_date' => $request->review_date,
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'updated_by' => null,
-                ]);
-        
-                return response()->json([
-                    'message' => Generator::getMessageTemplate("api_update", "book", $request->title), //masi belum fix
-                    'status' => 'success'
-                ], Response::HTTP_OK);
+                $msg = Generator::getMessageTemplate("api_update", "book", $request->title);
+                $data = new Request();
+                $obj = [
+                    'type' => "book",
+                    'body' => $msg
+                ];
+                $data->merge($obj);
+
+                $validatorHistory = Validation::getValidateHistory($data);
+
+                if ($validatorHistory->fails()) {
+                    $errors = $validatorHistory->messages();
+
+                    return response()->json([
+                        'status' => 'failed',
+                        'result' => $errors,
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                } else {
+                    Books::where('id', $id)->update([
+                        'title' => $request->title,
+                        'author' => $request->author,
+                        'reviewer' => $request->reviewer,
+                        'review_date' => $request->review_date,
+                        'updated_at' => date('Y-m-d H:i:s'),
+                        'updated_by' => null,
+                    ]);
+
+                    Histories::create([
+                        'id' => Generator::getUUID(),
+                        'history_type' => $data->type, 
+                        'body' => $data->body,
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'created_by' => '1' // for now
+                    ]);
+            
+                    return response()->json([
+                        'message' => $msg, //masi belum fix
+                        'status' => 'success'
+                    ], Response::HTTP_OK);
+                }
             }
         } catch(\Exception $e) {
             return response()->json([
@@ -177,13 +232,40 @@ class BooksController extends Controller
             $bok = Books::selectRaw("concat (title, ' by ', author) as final_name")
                 ->where('id', $id)
                 ->first();
+            
+            $msg = Generator::getMessageTemplate("api_delete", "book", $bok->final_name);
+            $data = new Request();
+            $obj = [
+                'type' => "book",
+                'body' => $msg
+            ];
+            $data->merge($obj);
 
-            Books::destroy($id);
+            $validatorHistory = Validation::getValidateHistory($data);
 
-            return response()->json([
-                'message' => Generator::getMessageTemplate("api_delete", "book", $bok->final_name),
-                'status' => 'success'
-            ], Response::HTTP_OK);
+            if ($validatorHistory->fails()) {
+                $errors = $validatorHistory->messages();
+
+                return response()->json([
+                    'status' => 'failed',
+                    'result' => $errors,
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            } else {
+                Books::destroy($id);
+
+                Histories::create([
+                    'id' => Generator::getUUID(),
+                    'history_type' => $data->type, 
+                    'body' => $data->body,
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'created_by' => '1' // for now
+                ]);
+
+                return response()->json([
+                    'message' => $msg,
+                    'status' => 'success'
+                ], Response::HTTP_OK);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',

@@ -37,11 +37,11 @@ class Generator
         } else if($type == "api_read_failed"){
             $res = $ctx." not found";
         } else if($type == "api_update"){ 
-            $res = "New ".$ctx." ".$obj." has been updated";
+            $res = $ctx." ".$obj." has been updated";
         } else if($type == "api_update_failed"){ 
             $res = "Failed to update ".$ctx;
         } else if($type == "api_delete"){ 
-            $res = "New ".$ctx." ".$obj." has been deleted";
+            $res = $ctx." ".$obj." has been deleted";
         } else if($type == "api_delete_failed"){ 
             $res = "Failed to delete ".$ctx;
         } else if($type == "duplicate_data"){ 
@@ -145,6 +145,8 @@ class Generator
             $coll = ['visitor', 'creator'];
         } else if($ctx == "stories"){ 
             $coll = ['battle', 'biography'];
+        } else if($ctx == "histories"){ 
+            $coll = ['stories', 'user', 'admin', 'weapons', 'vehicles', 'ships', 'facilities', 'airplane'];
         }
 
         $idx = array_rand($coll);

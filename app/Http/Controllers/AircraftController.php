@@ -9,6 +9,7 @@ use App\Helpers\Validation;
 use App\Helpers\Generator;
 
 use App\Models\Aircraft;
+use App\Models\Histories;
 
 class AircraftController extends Controller
 {
@@ -30,31 +31,58 @@ class AircraftController extends Controller
                     "status" => 'error'
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
-                $check = Aircraft::selectRaw('1')->where('name', $request->name)->first();
+                $msg = Generator::getMessageTemplate("api_create", "airplane", $request->name);
+                $data = new Request();
+                $obj = [
+                    'type' => "airplane",
+                    'body' => $msg
+                ];
+                $data->merge($obj);
+
+                $validatorHistory = Validation::getValidateHistory($data);
+
+                if ($validatorHistory->fails()) {
+                    $errors = $validatorHistory->messages();
+
+                    return response()->json([
+                        'status' => 'failed',
+                        'result' => $errors,
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                } else {
+                    $check = Aircraft::selectRaw('1')->where('name', $request->name)->first();
+                    
+                    if($check == null){
+                        $uuid = Generator::getUUID();
+                        Aircraft::create([
+                            'id' => $uuid,
+                            'name' => $request->name,
+                            'primary_role' => $request->primary_role,
+                            'manufacturer' => $request->manufacturer,
+                            'country' => $request->country,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'created_by' => "1",
+                            'updated_at' => null,
+                            'updated_by' => null,
+                        ]);
+
+                        Histories::create([
+                            'id' => Generator::getUUID(),
+                            'history_type' => $data->type, 
+                            'body' => $data->body,
+                            'created_at' => date("Y-m-d H:i:s"),
+                            'created_by' => '1' // for now
+                        ]);
                 
-                if($check == null){
-                    $uuid = Generator::getUUID();
-                    Aircraft::create([
-                        'id' => $uuid,
-                        'name' => $request->name,
-                        'primary_role' => $request->primary_role,
-                        'manufacturer' => $request->manufacturer,
-                        'country' => $request->country,
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'created_by' => "1",
-                        'updated_at' => null,
-                        'updated_by' => null,
-                    ]);
-            
-                    return response()->json([
-                        "message" => Generator::getMessageTemplate("api_create", "airplane", $request->name), 
-                        "status" => 'success'
-                    ], Response::HTTP_OK);
-                }else{
-                    return response()->json([
-                        "message" => "Data is already exist", 
-                        "status" => 'failed'
-                    ], Response::HTTP_CONFLICT);
+                        return response()->json([
+                            "message" => $msg, 
+                            "status" => 'success'
+                        ], Response::HTTP_OK);
+                    }else{
+                        return response()->json([
+                            "message" => "Data is already exist", 
+                            "status" => 'failed'
+                        ], Response::HTTP_CONFLICT);
+                    }
                 }
             }
         } catch(\Exception $e) {
@@ -232,19 +260,46 @@ class AircraftController extends Controller
                     "status" => 'error',
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
-                Aircraft::where('id', $id)->update([
-                    'name' => $request->name,
-                    'primary_role' => $request->primary_role,
-                    'manufacturer' => $request->manufacturer,
-                    'country' => $request->country,
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'updated_by' => null,
-                ]);
-        
-                return response()->json([
-                    "message" => Generator::getMessageTemplate("api_update", "airplane", $request->name), 
-                    "status" => 'success'
-                ], Response::HTTP_OK);
+                $msg = Generator::getMessageTemplate("api_update", "airplane", $request->name);
+                $data = new Request();
+                $obj = [
+                    'type' => "airplane",
+                    'body' => $msg
+                ];
+                $data->merge($obj);
+
+                $validatorHistory = Validation::getValidateHistory($data);
+
+                if ($validatorHistory->fails()) {
+                    $errors = $validatorHistory->messages();
+
+                    return response()->json([
+                        'status' => 'failed',
+                        'result' => $errors,
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                } else {
+                    Aircraft::where('id', $id)->update([
+                        'name' => $request->name,
+                        'primary_role' => $request->primary_role,
+                        'manufacturer' => $request->manufacturer,
+                        'country' => $request->country,
+                        'updated_at' => date('Y-m-d H:i:s'),
+                        'updated_by' => null,
+                    ]);
+
+                    Histories::create([
+                        'id' => Generator::getUUID(),
+                        'history_type' => $data->type, 
+                        'body' => $data->body,
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'created_by' => '1' // for now
+                    ]);
+            
+                    return response()->json([
+                        "message" => $msg, 
+                        "status" => 'success'
+                    ], Response::HTTP_OK);
+                }
             }
         } catch(\Exception $e) {
             return response()->json([
@@ -259,13 +314,40 @@ class AircraftController extends Controller
             $air = Aircraft::selectRaw("concat (name, ' - ', primary_role) as final_name")
                 ->where('id', $id)
                 ->first();
-                
-            Aircraft::destroy($id);
 
-            return response()->json([
-                'message' => Generator::getMessageTemplate("api_delete", "airplane", $air->final_name),
-                "status" => 'success'
-            ], Response::HTTP_OK);
+            $msg = Generator::getMessageTemplate("api_delete", "airplane", $air->final_name);
+            $data = new Request();
+            $obj = [
+                'type' => "airplane",
+                'body' => $msg
+            ];
+            $data->merge($obj);
+
+            $validatorHistory = Validation::getValidateHistory($data);
+
+            if ($validatorHistory->fails()) {
+                $errors = $validatorHistory->messages();
+
+                return response()->json([
+                    'status' => 'failed',
+                    'result' => $errors,
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            } else {     
+                Aircraft::destroy($id);
+
+                Histories::create([
+                    'id' => Generator::getUUID(),
+                    'history_type' => $data->type, 
+                    'body' => $data->body,
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'created_by' => '1' // for now
+                ]);
+
+                return response()->json([
+                    'message' => $msg,
+                    "status" => 'success'
+                ], Response::HTTP_OK);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',

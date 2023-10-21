@@ -9,6 +9,7 @@ use App\Helpers\Validation;
 use App\Helpers\Generator;
 
 use App\Models\Vehicles;
+use App\Models\Histories;
 
 class VehiclesController extends Controller
 {
@@ -30,31 +31,58 @@ class VehiclesController extends Controller
                     "status" => 'error'
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
-                $check = Vehicles::selectRaw('1')->where('name', $request->name)->first();
-                
-                if($check == null){
-                    $uuid = Generator::getUUID();
-                    Vehicles::create([
-                        'id' => $uuid,
-                        'name' => $request->name,
-                        'primary_role' => $request->primary_role,
-                        'manufacturer' => $request->manufacturer,
-                        'country' => $request->country,
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'created_by' => "1",
-                        'updated_at' => null,
-                        'updated_by' => null,
-                    ]);
-            
+                $msg = Generator::getMessageTemplate("api_create", "vehicle", $request->name);
+                $data = new Request();
+                $obj = [
+                    'type' => "vehicle",
+                    'body' => $msg
+                ];
+                $data->merge($obj);
+
+                $validatorHistory = Validation::getValidateHistory($data);
+
+                if ($validatorHistory->fails()) {
+                    $errors = $validatorHistory->messages();
+
                     return response()->json([
-                        "message" => Generator::getMessageTemplate("api_create", "vehicle", $request->name),
-                        "status" => 'success'
-                    ], Response::HTTP_OK);
-                }else{
-                    return response()->json([
-                        "message" => "Data is already exist", 
-                        "status" => 'error'
+                        'status' => 'failed',
+                        'result' => $errors,
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                } else {
+                    $check = Vehicles::selectRaw('1')->where('name', $request->name)->first();
+                    
+                    if($check == null){
+                        $uuid = Generator::getUUID();
+                        Vehicles::create([
+                            'id' => $uuid,
+                            'name' => $request->name,
+                            'primary_role' => $request->primary_role,
+                            'manufacturer' => $request->manufacturer,
+                            'country' => $request->country,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'created_by' => "1",
+                            'updated_at' => null,
+                            'updated_by' => null,
+                        ]);
+
+                        Histories::create([
+                            'id' => Generator::getUUID(),
+                            'history_type' => $data->type, 
+                            'body' => $data->body,
+                            'created_at' => date("Y-m-d H:i:s"),
+                            'created_by' => '1' // for now
+                        ]);
+                
+                        return response()->json([
+                            "message" => $msg,
+                            "status" => 'success'
+                        ], Response::HTTP_OK);
+                    }else{
+                        return response()->json([
+                            "message" => "Data is already exist", 
+                            "status" => 'error'
+                        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                    }
                 }
             }
         } catch(\Exception $e) {
@@ -211,19 +239,46 @@ class VehiclesController extends Controller
                     'status' => 'error'
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
-                Vehicles::where('id', $id)->update([
-                    'name' => $request->name,
-                    'primary_role' => $request->primary_role,
-                    'manufacturer' => $request->manufacturer,
-                    'country' => $request->country,
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'updated_by' => null,
-                ]);
-        
-                return response()->json([
-                    'message' => Generator::getMessageTemplate("api_update", "vehicle", $request->name), 
-                    'status' => 'success'
-                ], Response::HTTP_OK);
+                $msg = Generator::getMessageTemplate("api_update", "vehicle", $request->name);
+                $data = new Request();
+                $obj = [
+                    'type' => "vehicle",
+                    'body' => $msg
+                ];
+                $data->merge($obj);
+
+                $validatorHistory = Validation::getValidateHistory($data);
+
+                if ($validatorHistory->fails()) {
+                    $errors = $validatorHistory->messages();
+
+                    return response()->json([
+                        'status' => 'failed',
+                        'result' => $errors,
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                } else {
+                    Vehicles::where('id', $id)->update([
+                        'name' => $request->name,
+                        'primary_role' => $request->primary_role,
+                        'manufacturer' => $request->manufacturer,
+                        'country' => $request->country,
+                        'updated_at' => date('Y-m-d H:i:s'),
+                        'updated_by' => null,
+                    ]);
+
+                    Histories::create([
+                        'id' => Generator::getUUID(),
+                        'history_type' => $data->type, 
+                        'body' => $data->body,
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'created_by' => '1' // for now
+                    ]);
+            
+                    return response()->json([
+                        'message' => $msg, 
+                        'status' => 'success'
+                    ], Response::HTTP_OK);
+                }
             }
         } catch(\Exception $e) {
             return response()->json([
@@ -238,13 +293,40 @@ class VehiclesController extends Controller
             $vhc = Vehicles::selectRaw("concat (name, ' - ', primary_role) as final_name")
                 ->where('id', $id)
                 ->first();
-                
-            Vehicles::destroy($id);
+            
+            $msg = Generator::getMessageTemplate("api_delete", "vehicle", $vhc->final_name);
+            $data = new Request();
+            $obj = [
+                'type' => "vehicle",
+                'body' => $msg
+            ];
+            $data->merge($obj);
 
-            return response()->json([
-                'message' => Generator::getMessageTemplate("api_delete", "airplane", $vhc->final_name), 
-                'status' => 'success'
-            ], Response::HTTP_OK);
+            $validatorHistory = Validation::getValidateHistory($data);
+
+            if ($validatorHistory->fails()) {
+                $errors = $validatorHistory->messages();
+
+                return response()->json([
+                    'status' => 'failed',
+                    'result' => $errors,
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            } else {
+                Vehicles::destroy($id);
+
+                Histories::create([
+                    'id' => Generator::getUUID(),
+                    'history_type' => $data->type, 
+                    'body' => $data->body,
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'created_by' => '1' // for now
+                ]);
+
+                return response()->json([
+                    'message' => $msg, 
+                    'status' => 'success'
+                ], Response::HTTP_OK);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
