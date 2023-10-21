@@ -37,11 +37,11 @@ class Generator
         } else if($type == "api_read_failed"){
             $res = $ctx." not found";
         } else if($type == "api_update"){ 
-            $res = "New ".$ctx." ".$obj." has been updated";
+            $res = $ctx." ".$obj." has been updated";
         } else if($type == "api_update_failed"){ 
             $res = "Failed to update ".$ctx;
         } else if($type == "api_delete"){ 
-            $res = "New ".$ctx." ".$obj." has been deleted";
+            $res = $ctx." ".$obj." has been deleted";
         } else if($type == "api_delete_failed"){ 
             $res = "Failed to delete ".$ctx;
         } else if($type == "duplicate_data"){ 
