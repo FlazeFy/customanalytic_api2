@@ -9,6 +9,7 @@ use App\Helpers\Validation;
 use App\Helpers\Generator;
 
 use App\Models\Weapons;
+use App\Models\Histories;
 
 class WeaponsController extends Controller
 {
@@ -33,22 +34,49 @@ class WeaponsController extends Controller
                 $check = Weapons::selectRaw('1')->where('name', $request->name)->first();
                 
                 if($check == null){
-                    $uuid = Generator::getUUID();
-                    Weapons::create([
-                        'id' => $uuid,
-                        'name' => $request->name,
-                        'type' => $request->type,
-                        'country' => $request->country,
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'created_by' => "1",
-                        'updated_at' => null,
-                        'updated_by' => null,
-                    ]);
-            
-                    return response()->json([
-                        'message' => Generator::getMessageTemplate("api_create", "weapon", $request->name), 
-                        'status' => 'success'
-                    ], Response::HTTP_OK);
+                    $msg = Generator::getMessageTemplate("api_create", "weapon", $request->name);
+                    $data = new Request();
+                    $obj = [
+                        'type' => "weapon",
+                        'body' => $msg
+                    ];
+                    $data->merge($obj);
+
+                    $validatorHistory = Validation::getValidateHistory($data);
+
+                    if ($validatorHistory->fails()) {
+                        $errors = $validatorHistory->messages();
+
+                        return response()->json([
+                            'status' => 'failed',
+                            'result' => $errors,
+                        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                    } else {  
+                        $uuid = Generator::getUUID();
+                        Weapons::create([
+                            'id' => $uuid,
+                            'name' => $request->name,
+                            'type' => $request->type,
+                            'country' => $request->country,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'created_by' => "1",
+                            'updated_at' => null,
+                            'updated_by' => null,
+                        ]);
+
+                        Histories::create([
+                            'id' => Generator::getUUID(),
+                            'history_type' => $data->type, 
+                            'body' => $data->body,
+                            'created_at' => date("Y-m-d H:i:s"),
+                            'created_by' => '1' // for now
+                        ]);
+                
+                        return response()->json([
+                            'message' => $msg, 
+                            'status' => 'success'
+                        ], Response::HTTP_OK);
+                    }
                 }else{
                     return response()->json([
                         "message" => "Data is already exist", 
@@ -207,18 +235,45 @@ class WeaponsController extends Controller
                     "status" => 'error'
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
-                Weapons::where('id', $id)->update([
-                    'name' => $request->name,
-                    'type' => $request->type,
-                    'country' => $request->country,
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'updated_by' => null,
-                ]);
-        
-                return response()->json([
-                    "message" => Generator::getMessageTemplate("api_update", "weapon", $request->name),
-                    "status" => 'success'
-                ], Response::HTTP_OK);
+                $msg = Generator::getMessageTemplate("api_update", "weapon", $request->name);
+                $data = new Request();
+                $obj = [
+                    'type' => "weapon",
+                    'body' => $msg
+                ];
+                $data->merge($obj);
+
+                $validatorHistory = Validation::getValidateHistory($data);
+
+                if ($validatorHistory->fails()) {
+                    $errors = $validatorHistory->messages();
+
+                    return response()->json([
+                        'status' => 'failed',
+                        'result' => $errors,
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                } else {  
+                    Weapons::where('id', $id)->update([
+                        'name' => $request->name,
+                        'type' => $request->type,
+                        'country' => $request->country,
+                        'updated_at' => date('Y-m-d H:i:s'),
+                        'updated_by' => null,
+                    ]);
+
+                    Histories::create([
+                        'id' => Generator::getUUID(),
+                        'history_type' => $data->type, 
+                        'body' => $data->body,
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'created_by' => '1' // for now
+                    ]);
+            
+                    return response()->json([
+                        "message" => $msg,
+                        "status" => 'success'
+                    ], Response::HTTP_OK);
+                }
             }
         } catch(\Exception $e) {
             return response()->json([
@@ -234,12 +289,39 @@ class WeaponsController extends Controller
                 ->where('id', $id)
                 ->first();
 
-            Weapons::destroy($id);
+            $msg = Generator::getMessageTemplate("api_delete", "weapon", $wpn->final_name);
+            $data = new Request();
+            $obj = [
+                'type' => "weapon",
+                'body' => $msg
+            ];
+            $data->merge($obj);
 
-            return response()->json([
-                'message' => Generator::getMessageTemplate("api_delete", "airplane", $wpn->final_name),
-                'status' => 'success'
-            ], Response::HTTP_OK);
+            $validatorHistory = Validation::getValidateHistory($data);
+
+            if ($validatorHistory->fails()) {
+                $errors = $validatorHistory->messages();
+
+                return response()->json([
+                    'status' => 'failed',
+                    'result' => $errors,
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            } else {  
+                Weapons::destroy($id);
+
+                Histories::create([
+                    'id' => Generator::getUUID(),
+                    'history_type' => $data->type, 
+                    'body' => $data->body,
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'created_by' => '1' // for now
+                ]);
+
+                return response()->json([
+                    'message' => $msg,
+                    'status' => 'success'
+                ], Response::HTTP_OK);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
