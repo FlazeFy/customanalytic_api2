@@ -9,6 +9,7 @@ use App\Helpers\Validation;
 use App\Helpers\Generator;
 
 use App\Models\Ships;
+use App\Models\Histories;
 
 class ShipsController extends Controller
 {
@@ -28,23 +29,51 @@ class ShipsController extends Controller
                 $check = Ships::selectRaw('2')->where('name', $request->name)->first();
                 
                 if($check == null){
-                    $uuid = Generator::getUUID();
-                    Ships::create([
-                        'id' => $uuid,
-                        'name' => $request->name,
-                        'class' => $request->class,
-                        'country' => $request->country,
-                        'launch_year' => $request->launch_year,
-                        'created_at' => date('Y-m-d H:i:s'),
-                        'created_by' => "1",
-                        'updated_at' => null,
-                        'updated_by' => null,
-                    ]);
-            
-                    return response()->json([
-                        "message" => Generator::getMessageTemplate("api_create", "ship", $request->name), 
-                        "status" => 'success'
-                    ], Response::HTTP_OK);
+                    $msg = Generator::getMessageTemplate("api_create", "ships", $request->name);
+                    $data = new Request();
+                    $obj = [
+                        'type' => "ships",
+                        'body' => $msg
+                    ];
+                    $data->merge($obj);
+
+                    $validatorHistory = Validation::getValidateHistory($data);
+
+                    if ($validatorHistory->fails()) {
+                        $errors = $validatorHistory->messages();
+
+                        return response()->json([
+                            'status' => 'failed',
+                            'result' => $errors,
+                        ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                    } else {     
+                        $uuid = Generator::getUUID();
+
+                        Ships::create([
+                            'id' => $uuid,
+                            'name' => $request->name,
+                            'class' => $request->class,
+                            'country' => $request->country,
+                            'launch_year' => $request->launch_year,
+                            'created_at' => date('Y-m-d H:i:s'),
+                            'created_by' => "1",
+                            'updated_at' => null,
+                            'updated_by' => null,
+                        ]);
+
+                        Histories::create([
+                            'id' => Generator::getUUID(),
+                            'history_type' => $data->type, 
+                            'body' => $data->body,
+                            'created_at' => date("Y-m-d H:i:s"),
+                            'created_by' => '1' // for now
+                        ]);
+                
+                        return response()->json([
+                            "message" => $msg, 
+                            "status" => 'success'
+                        ], Response::HTTP_OK);
+                    }
                 }else{
                     return response()->json([
                         "message" => "Data is already exist", 
@@ -234,19 +263,47 @@ class ShipsController extends Controller
                     'status' => 'error'
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
-                Ships::where('id', $id)->update([
-                    'name' => $request->name,
-                    'class' => $request->class,
-                    'country' => $request->country,
-                    'launch_year' => $request->launch_year,
-                    'updated_at' => date('Y-m-d H:i:s'),
-                    'updated_by' => null,
-                ]);
-        
-                return response()->json([
-                    'message' => Generator::getMessageTemplate("api_update", "ship", $request->name), 
-                    'status' => 'success'
-                ], Response::HTTP_OK);
+                $msg = Generator::getMessageTemplate("api_update", "ships", $request->name);
+                $data = new Request();
+                $obj = [
+                    'type' => "ships",
+                    'body' => $msg
+                ];
+                $data->merge($obj);
+
+                $validatorHistory = Validation::getValidateHistory($data);
+
+                if ($validatorHistory->fails()) {
+                    $errors = $validatorHistory->messages();
+
+                    return response()->json([
+                        'status' => 'failed',
+                        'result' => $errors,
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                } else {     
+                    
+                    Ships::where('id', $id)->update([
+                        'name' => $request->name,
+                        'class' => $request->class,
+                        'country' => $request->country,
+                        'launch_year' => $request->launch_year,
+                        'updated_at' => date('Y-m-d H:i:s'),
+                        'updated_by' => null,
+                    ]);
+
+                    Histories::create([
+                        'id' => Generator::getUUID(),
+                        'history_type' => $data->type, 
+                        'body' => $data->body,
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'created_by' => '1' // for now
+                    ]);
+            
+                    return response()->json([
+                        'message' => $msg, 
+                        'status' => 'success'
+                    ], Response::HTTP_OK);
+                }
             }
         } catch(\Exception $e) {
             return response()->json([
@@ -261,13 +318,40 @@ class ShipsController extends Controller
             $shp = Ships::selectRaw("concat (name, ' - ', class) as final_name")
                 ->where('id', $id)
                 ->first();
+            
+            $msg = Generator::getMessageTemplate("api_delete", "ships", $shp->final_name);
+            $data = new Request();
+            $obj = [
+                'type' => "ships",
+                'body' => $msg
+            ];
+            $data->merge($obj);
 
-            Ships::destroy($id);
+            $validatorHistory = Validation::getValidateHistory($data);
 
-            return response()->json([
-                'message' => Generator::getMessageTemplate("api_delete", "airplane", $shp->final_name), 
-                'status' => 'success'
-            ], Response::HTTP_OK);
+            if ($validatorHistory->fails()) {
+                $errors = $validatorHistory->messages();
+
+                return response()->json([
+                    'status' => 'failed',
+                    'result' => $errors,
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            } else {     
+                Ships::destroy($id);
+
+                Histories::create([
+                    'id' => Generator::getUUID(),
+                    'history_type' => $data->type, 
+                    'body' => $data->body,
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'created_by' => '1' // for now
+                ]);
+
+                return response()->json([
+                    'message' => $msg, 
+                    'status' => 'success'
+                ], Response::HTTP_OK);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',

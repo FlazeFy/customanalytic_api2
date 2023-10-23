@@ -109,7 +109,6 @@ class AircraftController extends Controller
             $air = $air->paginate($page_limit);
         
             return response()->json([
-                //'message' => count($air)." Data retrived", //masih belum clear
                 'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
                 "status" => 'success',
                 "data" => $air
@@ -147,7 +146,6 @@ class AircraftController extends Controller
                 ->get();
 
             return response()->json([
-                //'message' => count($air)." Data retrived",  //masih belum clear
                 'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
                 'status' => 'success',
                 'data' => $air
@@ -169,7 +167,6 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                //'message' => count($air)." Data retrived", //masih belum clear
                 'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
                 'status' => 'success',
                 'data' => $air
@@ -191,7 +188,6 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                //'message' => count($air)." Data retrived",  //masih belum clear
                 'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
                 'status' => 'success',
                 'data' => $air
@@ -213,7 +209,6 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                //'message' => count($air)." Data retrived", //masih belum clear
                 'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
                 'status' => 'success',
                 'data' => $air
@@ -235,7 +230,6 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                //'message' => count($air)." Data retrived",  //masih belum clear
                 'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
                 'status' => 'success',
                 'data' => $air

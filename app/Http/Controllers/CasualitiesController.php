@@ -27,7 +27,6 @@ class CasualitiesController extends Controller
                 ->paginate($page_limit);
         
             return response()->json([
-                //'message' => count($cst)." Data retrived", //belum clear kalau ada count
                 'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
                 'status' => 'success',
                 'data' => $cst
@@ -54,7 +53,6 @@ class CasualitiesController extends Controller
             }   
         
             return response()->json([
-                //'message' => count($cst)." Data retrived", 
                 'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
                 'status' => 'success',
                 'data' => $cst
@@ -79,7 +77,6 @@ class CasualitiesController extends Controller
                 ->get();
 
             return response()->json([
-                //'message' => count($cst)." Data retrived", 
                 'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
                 'status' => 'success',
                 'data' => $cst

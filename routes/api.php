@@ -14,6 +14,7 @@ use App\Http\Controllers\FeedbacksController;
 use App\Http\Controllers\ShipsController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\WeaponsController;
+use App\Http\Controllers\StoriesController;
 use Spatie\LaravelIgnition\Solutions\LivewireDiscoverSolution;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -106,4 +107,10 @@ Route::prefix('/discussions')->group(function () {
 Route::prefix('/feedbacks')->group(function () {
     Route::post('/', [FeedbacksController::class, 'createFeedback']);
     Route::get('/limit/{page_limit}/order/{order}', [FeedbacksController::class, 'getAllFeedback']);
+});
+
+Route::prefix('/stories')->group(function () {
+    Route::get('/limit/{page_limit}/order/{order}', [StoriesController::class, 'getAllStories']);
+    Route::get('/detail/{slug}', [StoriesController::class, 'getStoriesBySlug']);
+    Route::get('/type/{type}/creator/{creator}', [StoriesController::class, 'getSimiliarStories']);
 });

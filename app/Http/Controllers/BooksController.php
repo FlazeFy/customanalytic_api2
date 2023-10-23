@@ -131,7 +131,6 @@ class BooksController extends Controller
                 ->get();
         
             return response()->json([
-                //'message' => count($bok)." Data retrived", //masih belum clear
                 'message' => Generator::getMessageTemplate("api_read", 'book', null),
                 'status' => 'success',
                 'data' => $bok
@@ -153,7 +152,6 @@ class BooksController extends Controller
                 ->get();
         
             return response()->json([
-                //'message' => count($bok)." Data retrived",  //masih belum clear
                 'message' => Generator::getMessageTemplate("api_read", 'book', null),
                 'status' => 'success',
                 'data' => $bok
