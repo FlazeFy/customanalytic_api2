@@ -18,7 +18,7 @@ class EventsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    /
+
     public function createEvent(Request $request)
     {
         try {
