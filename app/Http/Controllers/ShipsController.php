@@ -13,6 +13,29 @@ use App\Models\Histories;
 
 class ShipsController extends Controller
 {
+    /**
+     * @OA\POST(
+     *     path="/api/ships",
+     *     summary="Add ship",
+     *     tags={"Ships"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="New ships ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Data is already exist"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function createShip(Request $request)
     {
         try {
@@ -89,6 +112,21 @@ class ShipsController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/ships/limit/{page_limit}/order/{order}/find/{search}",
+     *     summary="Show all ships with pagination, ordering, and search",
+     *     tags={"Ships"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="ship found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getAllShips($page_limit, $order, $search){
         try {
             $search = trim($search);
@@ -117,6 +155,21 @@ class ShipsController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/ships/summary",
+     *     summary="Show ship summary",
+     *     tags={"Ships"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="ship found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getShipsSummary(){
         try {
             $shp = Ships::selectRaw("class as most_produced, count(*) as 'total', 
@@ -164,6 +217,21 @@ class ShipsController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/ships/total/byclass",
+     *     summary="Total ship by class",
+     *     tags={"Ships"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="ship found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalShipsByClass(){
         try {
             $shp = Ships::selectRaw('class as context, count(*) as total')
@@ -184,6 +252,21 @@ class ShipsController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/ships/total/bycountry/{limit}",
+     *     summary="Total ship by country",
+     *     tags={"Ships"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="ship found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalShipsByCountry($limit){
         try {
             $shp = Ships::selectRaw('country as context, count(*) as total')
@@ -206,6 +289,21 @@ class ShipsController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/ships/total/bysides",
+     *     summary="Total ship by sides",
+     *     tags={"Ships"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="ship found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalShipsBySides(){
         try {
             $shp = Ships::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
@@ -228,6 +326,21 @@ class ShipsController extends Controller
         }
     }
 
+     /**
+     * @OA\GET(
+     *     path="/api/ships/total/bylaunchyear/{limit}",
+     *     summary="Total ship by launch year",
+     *     tags={"Ships"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="ship found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalShipsByLaunchYear(){
         try {
             $shp = Ships::selectRaw('launch_year as context, count(*) as total')
@@ -251,6 +364,25 @@ class ShipsController extends Controller
         }
     }
 
+    /**
+     * @OA\PUT(
+     *     path="/api/ships/{id}",
+     *     summary="Update ships by id",
+     *     tags={"Ships"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="ships ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function updateShipById(Request $request, $id){
         try {
             $validator = Validation::getValidateShips($request);
@@ -313,6 +445,25 @@ class ShipsController extends Controller
         }
     }
 
+     /**
+     * @OA\DELETE(
+     *     path="/api/ships/{id}",
+     *     summary="Delete ship by id",
+     *     tags={"Ships"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="ships ... has been deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function deleteShipById($id){
         try {
             $shp = Ships::selectRaw("concat (name, ' - ', class) as final_name")

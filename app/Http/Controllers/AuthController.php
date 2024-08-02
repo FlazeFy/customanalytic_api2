@@ -10,8 +10,42 @@ use App\Models\Admin;
 
 use App\Helpers\Validation;
 
+/**
+ * @OA\Info(
+ *     title="Custom Analytic - WW2 API",
+ *     version="1.0.0",
+ *     description="API Documentation for Custom Analytic - WW2",
+ *     @OA\Contact(
+ *         email="flazen.edu@gmail.com"
+ *     )
+ * )
+*/
+
 class AuthController extends Controller
 {
+    /**
+     * @OA\POST(
+     *     path="/api/login",
+     *     summary="Sign in to the Apps",
+     *     tags={"Auth"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="{user_data}"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Wrong username or password"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function login(Request $request)
     {
         try {
@@ -22,7 +56,7 @@ class AuthController extends Controller
 
                 return response()->json([
                     'status' => 'failed',
-                    'result' => $errors,
+                    'message' => $errors,
                     'token' => null
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
@@ -35,7 +69,7 @@ class AuthController extends Controller
                 if (!$user || !Hash::check($request->password, $user->password)) {
                     return response()->json([
                         'status' => 'failed',
-                        'result' => 'Wrong username or password',
+                        'message' => 'Wrong username or password',
                         'token' => null
                     ], Response::HTTP_UNAUTHORIZED);
                 } else {
@@ -56,13 +90,29 @@ class AuthController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/logout",
+     *     summary="Sign out from Apps",
+     *     tags={"Auth"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logout success"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function logout(Request $request)
     {
         try {
             $request->user()->currentAccessToken()->delete();
 
             return response()->json([
-                'message' => 'logout success'
+                'status' => 'success',
+                'message' => 'Logout success'
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([

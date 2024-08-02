@@ -14,9 +14,27 @@ use App\Models\Histories;
 class AircraftController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\POST(
+     *     path="/api/aircraft",
+     *     summary="Add aircraft",
+     *     tags={"Aircraft"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="New aircraft ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Data is already exist"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
      */
     public function createAircraft(Request $request)
     {
@@ -31,10 +49,10 @@ class AircraftController extends Controller
                     "status" => 'error'
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
-                $msg = Generator::getMessageTemplate("api_create", "airplane", $request->name);
+                $msg = Generator::getMessageTemplate("api_create", "aircraft", $request->name);
                 $data = new Request();
                 $obj = [
-                    'type' => "airplane",
+                    'type' => "aircraft",
                     'body' => $msg
                 ];
                 $data->merge($obj);
@@ -45,7 +63,7 @@ class AircraftController extends Controller
                     $errors = $validatorHistory->messages();
 
                     return response()->json([
-                        'status' => 'failed',
+                        'status' => 'error',
                         'result' => $errors,
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 } else {
@@ -93,6 +111,21 @@ class AircraftController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/aircraft/limit/{page_limit}/order/{order}/find/{search}",
+     *     summary="Show all aircraft with pagination, ordering, and search",
+     *     tags={"Aircraft"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="aircraft found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getAllAircraft($page_limit, $order, $search){
         try {
             $search = trim($search);
@@ -109,7 +142,7 @@ class AircraftController extends Controller
             $air = $air->paginate($page_limit);
         
             return response()->json([
-                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
+                'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),
                 "status" => 'success',
                 "data" => $air
             ], Response::HTTP_OK);
@@ -121,6 +154,21 @@ class AircraftController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/aircraft/summary",
+     *     summary="Show aircraft summary",
+     *     tags={"Aircraft"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="aircraft found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getAircraftSummary(){
         try {
             $air = Aircraft::selectRaw("primary_role as most_produced, count(*) as 'total', 
@@ -146,7 +194,7 @@ class AircraftController extends Controller
                 ->get();
 
             return response()->json([
-                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
+                'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),
                 'status' => 'success',
                 'data' => $air
             ], Response::HTTP_OK);
@@ -158,6 +206,21 @@ class AircraftController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/aircraft/total/byrole/{limit}",
+     *     summary="Total aircraft by role",
+     *     tags={"Aircraft"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="aircraft found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalAircraftByRole($limit){
         try {
             $air = Aircraft::selectRaw('primary_role as context, count(*) as total')
@@ -167,7 +230,7 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
+                'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),
                 'status' => 'success',
                 'data' => $air
             ], Response::HTTP_OK);
@@ -179,6 +242,21 @@ class AircraftController extends Controller
         }
     }
 
+     /**
+     * @OA\GET(
+     *     path="/api/aircraft/total/bymanufacturer/{limit}",
+     *     summary="Total aircraft by manufacturer",
+     *     tags={"Aircraft"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="aircraft found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalAircraftByManufacturer($limit){
         try {
             $air = Aircraft::selectRaw('manufacturer as context, count(*) as total')
@@ -188,7 +266,7 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
+                'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),
                 'status' => 'success',
                 'data' => $air
             ], Response::HTTP_OK);
@@ -200,6 +278,21 @@ class AircraftController extends Controller
         }
     }
 
+     /**
+     * @OA\GET(
+     *     path="/api/aircraft/total/bysides",
+     *     summary="Total aircraft by sides",
+     *     tags={"Aircraft"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="aircraft found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalAircraftBySides(){
         try {
             $air = Aircraft::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
@@ -209,7 +302,7 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
+                'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),
                 'status' => 'success',
                 'data' => $air
             ], Response::HTTP_OK);
@@ -221,6 +314,21 @@ class AircraftController extends Controller
         }
     }
 
+     /**
+     * @OA\GET(
+     *     path="/api/aircraft/total/bycountry/{limit}",
+     *     summary="Total aircraft by country",
+     *     tags={"Aircraft"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="aircraft found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalAircraftByCountry($limit){
         try {
             $air = Aircraft::selectRaw('country as context, count(*) as total')
@@ -230,7 +338,7 @@ class AircraftController extends Controller
                 ->get();
         
             return response()->json([
-                'message' => Generator::getMessageTemplate("api_read", 'airplane', null),
+                'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),
                 'status' => 'success',
                 'data' => $air
             ], Response::HTTP_OK);
@@ -242,6 +350,25 @@ class AircraftController extends Controller
         }
     }
 
+    /**
+     * @OA\PUT(
+     *     path="/api/aircraft/{id}",
+     *     summary="Update aircraft by id",
+     *     tags={"Aircraft"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="aircraft ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function updateAircraftById(Request $request, $id){
         try {
             $validator = Validation::getValidateAircraft($request);
@@ -254,10 +381,10 @@ class AircraftController extends Controller
                     "status" => 'error',
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
-                $msg = Generator::getMessageTemplate("api_update", "airplane", $request->name);
+                $msg = Generator::getMessageTemplate("api_update", "aircraft", $request->name);
                 $data = new Request();
                 $obj = [
-                    'type' => "airplane",
+                    'type' => "aircraft",
                     'body' => $msg
                 ];
                 $data->merge($obj);
@@ -303,16 +430,35 @@ class AircraftController extends Controller
         }
     }
 
+    /**
+     * @OA\DELETE(
+     *     path="/api/aircraft/{id}",
+     *     summary="Delete aircraft by id",
+     *     tags={"Aircraft"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="aircraft ... has been deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function deleteAircraftById($id){
         try {
             $air = Aircraft::selectRaw("concat (name, ' - ', primary_role) as final_name")
                 ->where('id', $id)
                 ->first();
 
-            $msg = Generator::getMessageTemplate("api_delete", "airplane", $air->final_name);
+            $msg = Generator::getMessageTemplate("api_delete", "aircraft", $air->final_name);
             $data = new Request();
             $obj = [
-                'type' => "airplane",
+                'type' => "aircraft",
                 'body' => $msg
             ];
             $data->merge($obj);
