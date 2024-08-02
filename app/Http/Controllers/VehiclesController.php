@@ -14,9 +14,27 @@ use App\Models\Histories;
 class VehiclesController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\POST(
+     *     path="/api/vehicles",
+     *     summary="Add vehicle",
+     *     tags={"Vehicle"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="New vehicle ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Data is already exist"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
      */
     public function createVehicles(Request $request)
     {
@@ -93,6 +111,21 @@ class VehiclesController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/vehicles/limit/{page_limit}/order/{order}/find/{search}",
+     *     summary="Show all vehicles with pagination, ordering, and search",
+     *     tags={"Vehicle"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="vehicles found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getAllVehicles($page_limit, $order, $search){
         try {
             $search = trim($search);
@@ -122,6 +155,21 @@ class VehiclesController extends Controller
         }
     }
 
+     /**
+     * @OA\GET(
+     *     path="/api/vehicles/summary",
+     *     summary="Show vehicle summary",
+     *     tags={"Vehicle"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="vehicle found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getVehiclesSummary(){
         try {
             $vch = Vehicles::selectRaw("primary_role as most_produced, count(*) as 'total', 
@@ -161,6 +209,21 @@ class VehiclesController extends Controller
     }
 
 
+    /**
+     * @OA\GET(
+     *     path="/api/vehicles/total/byrole/{limit}",
+     *     summary="Total vehicle by role",
+     *     tags={"Vehicle"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="vehicle found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalVehiclesByRole($limit){
         try {
             $vhc = Vehicles::selectRaw('primary_role as context, count(*) as total')
@@ -183,6 +246,21 @@ class VehiclesController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/vehicles/total/bycountry/{limit}",
+     *     summary="Total vehicle by country",
+     *     tags={"Vehicle"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="vehicle found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalVehiclesByCountry($limit){
         try {
             $vhc = Vehicles::selectRaw('country as context, count(*) as total')
@@ -205,6 +283,21 @@ class VehiclesController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/vehicles/total/bysides",
+     *     summary="Total vehicle by sides",
+     *     tags={"Vehicle"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="vehicle found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalVehiclesBySides(){
         try {
             $vhc = Vehicles::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
@@ -227,6 +320,25 @@ class VehiclesController extends Controller
         }
     }
 
+    /**
+     * @OA\PUT(
+     *     path="/api/vehicles/{id}",
+     *     summary="Update vehicle by id",
+     *     tags={"Vehicle"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="vehicle ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function updateVehicleById(Request $request, $id){
         try {
             $validator = Validation::getValidateVehicle($request);
@@ -288,6 +400,21 @@ class VehiclesController extends Controller
         }
     }
 
+     /**
+     * @OA\DELETE(
+     *     path="/api/vehicles/{id}",
+     *     summary="Delete vehicle by id",
+     *     tags={"Vehicle"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="vehicle ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function deleteVehiclesById($id){
         try {
             $vhc = Vehicles::selectRaw("concat (name, ' - ', primary_role) as final_name")

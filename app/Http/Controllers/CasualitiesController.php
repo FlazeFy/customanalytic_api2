@@ -10,16 +10,21 @@ use App\Helpers\Generator;
 
 class CasualitiesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+   /**
+     * @OA\GET(
+     *     path="/api/casualities/limit/{page_limit}/order/{orderby}/{ordertype}",
+     *     summary="Show all casualities with ordering",
+     *     tags={"Casualities"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="casualities found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
      */
-    public function index()
-    {
-        //
-    }
-
     public function getAllCasualities($page_limit, $orderby, $ordertype){
         try {
             $cst = Casualities::select('id', 'country', 'continent', 'total_population', 'military_death', 'civilian_death', 'total_death', 'death_per_pop', 'avg_death_per_pop', 'military_wounded')
@@ -39,6 +44,21 @@ class CasualitiesController extends Controller
         }
     }
 
+     /**
+     * @OA\GET(
+     *     path="/api/casualities/totaldeath/bycountry/{order}/limit/{page_limit}",
+     *     summary="Total death by country",
+     *     tags={"Casualities"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="casualities found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalDeathByCountry($order, $page_limit){
         try {
             if($order != "NULL"){
@@ -65,6 +85,21 @@ class CasualitiesController extends Controller
         }
     }
 
+     /**
+     * @OA\GET(
+     *     path="/api/casualities/summary",
+     *     summary="Show casualities summary",
+     *     tags={"Casualities"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="casualities found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getCasualitiesSummary(){
         try {
             $cst = Casualities::selectRaw("(SELECT cast(avg(military_death + civilian_death) as decimal(10,0)) from casualities) as average_death, 
@@ -89,6 +124,21 @@ class CasualitiesController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/casualities/totaldeath/bysides/{view}",
+     *     summary="Total death by sides",
+     *     tags={"Casualities"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="casualities found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalDeathBySides($view){
         try {
             if($view == "military" || $view == "civilian"){

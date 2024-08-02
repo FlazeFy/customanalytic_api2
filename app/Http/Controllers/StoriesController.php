@@ -15,16 +15,20 @@ use App\Models\Histories;
 class StoriesController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\GET(
+     *     path="/api/stories/detail/{slug}",
+     *     summary="Show stories by slug",
+     *     tags={"Stories"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="stories found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
      */
-    public function index()
-    {
-        //
-    }
-
-   
     public function getStoriesBySlug($slug)
     {
         try {
@@ -61,6 +65,21 @@ class StoriesController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/stories/limit/{page_limit}/order/{order}",
+     *     summary="Show all stories with pagination and ordering",
+     *     tags={"Stories"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="stories found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getAllStories($page_limit, $order)
     {
         try {
@@ -90,6 +109,21 @@ class StoriesController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/stories/type/{type}/creator/{creator}",
+     *     summary="Show all similiar stories by type and creator",
+     *     tags={"Stories"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="stories found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getSimiliarStories($type, $creator)
     {
         try {

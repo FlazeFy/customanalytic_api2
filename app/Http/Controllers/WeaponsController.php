@@ -14,9 +14,27 @@ use App\Models\Histories;
 class WeaponsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\POST(
+     *     path="/api/weapons",
+     *     summary="Add weapon",
+     *     tags={"Weapon"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="New weapon ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Data is already exist"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
      */
     public function createWeapon(Request $request)
     {
@@ -92,6 +110,21 @@ class WeaponsController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/weapons/limit/{page_limit}/order/{order}/find/{search}",
+     *     summary="Show all weapons with pagination, ordering, and search",
+     *     tags={"Weapon"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="weapon found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getAllWeapons($page_limit, $order, $search){
         try {
             $search = trim($search);
@@ -120,6 +153,21 @@ class WeaponsController extends Controller
         }
     }
 
+     /**
+     * @OA\GET(
+     *     path="/api/weapons/summary",
+     *     summary="Show weapon summary",
+     *     tags={"Weapon"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="weapon found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getWeaponsSummary(){
         try {
             $wpn = Weapons::selectRaw("type as most_produced, count(*) as 'total', 
@@ -157,6 +205,21 @@ class WeaponsController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/weapons/total/bytype/{limit}",
+     *     summary="Total weapon by type",
+     *     tags={"Weapon"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="weapon found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalWeaponsByType($limit){
         try {
             $wpn = Weapons::selectRaw('type as context, count(*) as total')
@@ -179,6 +242,21 @@ class WeaponsController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/weapons/total/bycountry/{limit}",
+     *     summary="Total weapon by country",
+     *     tags={"Weapon"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="weapon found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalWeaponsByCountry($limit){
         try {
             $wpn = Weapons::selectRaw('country as context, count(*) as total')
@@ -201,6 +279,21 @@ class WeaponsController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/weapons/total/bysides",
+     *     summary="Total weapon by sides",
+     *     tags={"Weapon"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="weapon found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalWeaponsBySides(){
         try {
             $wpn = Weapons::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
@@ -223,6 +316,25 @@ class WeaponsController extends Controller
         }
     }
 
+    /**
+     * @OA\PUT(
+     *     path="/api/weapons/{id}",
+     *     summary="Update weapon by id",
+     *     tags={"Weapon"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="weapon ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function updateWeaponById(Request $request, $id){
         try {
             $validator = Validation::getValidateWeapon($request);
@@ -283,6 +395,21 @@ class WeaponsController extends Controller
         }
     }
 
+     /**
+     * @OA\DELETE(
+     *     path="/api/weapons/{id}",
+     *     summary="Delete weapon by id",
+     *     tags={"Weapon"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="weapon ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function deleteWeaponById($id){
         try {
             $wpn = Weapons::selectRaw("concat (name, ' - ', type) as final_name")

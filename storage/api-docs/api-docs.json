@@ -1,0 +1,1197 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Custom Analytic - WW2 API",
+        "description": "API Documentation for Custom Analytic - WW2",
+        "contact": {
+            "email": "flazen.edu@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/aircraft": {
+            "post": {
+                "tags": [
+                    "Aircraft"
+                ],
+                "summary": "Add aircraft",
+                "operationId": "8c7f9d6a0c59a9391edb65788acdb44e",
+                "responses": {
+                    "200": {
+                        "description": "New aircraft ... has been created"
+                    },
+                    "409": {
+                        "description": "Data is already exist"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/aircraft/limit/{page_limit}/order/{order}/find/{search}": {
+            "get": {
+                "tags": [
+                    "Aircraft"
+                ],
+                "summary": "Show all aircraft with pagination, ordering, and search",
+                "operationId": "325a43aab7c7ae9d9fbd43dd9dec573e",
+                "responses": {
+                    "200": {
+                        "description": "aircraft found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/aircraft/summary": {
+            "get": {
+                "tags": [
+                    "Aircraft"
+                ],
+                "summary": "Show aircraft summary",
+                "operationId": "3655b06802b4a374f6f37688ad4bb83d",
+                "responses": {
+                    "200": {
+                        "description": "aircraft found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/aircraft/total/byrole/{limit}": {
+            "get": {
+                "tags": [
+                    "Aircraft"
+                ],
+                "summary": "Total aircraft by role",
+                "operationId": "86721f354fdaa5c6c4fe931a692510cb",
+                "responses": {
+                    "200": {
+                        "description": "aircraft found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/aircraft/total/bymanufacturer/{limit}": {
+            "get": {
+                "tags": [
+                    "Aircraft"
+                ],
+                "summary": "Total aircraft by manufacturer",
+                "operationId": "c8cdf67e6eb3116f51d8b298b097db5c",
+                "responses": {
+                    "200": {
+                        "description": "aircraft found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/aircraft/total/bysides": {
+            "get": {
+                "tags": [
+                    "Aircraft"
+                ],
+                "summary": "Total aircraft by sides",
+                "operationId": "69d787263b94e0c1244e5dde786a4891",
+                "responses": {
+                    "200": {
+                        "description": "aircraft found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/aircraft/total/bycountry/{limit}": {
+            "get": {
+                "tags": [
+                    "Aircraft"
+                ],
+                "summary": "Total aircraft by country",
+                "operationId": "8438062cc4073c0cef01044617e144ca",
+                "responses": {
+                    "200": {
+                        "description": "aircraft found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/aircraft/{id}": {
+            "put": {
+                "tags": [
+                    "Aircraft"
+                ],
+                "summary": "Update aircraft by id",
+                "operationId": "110265732d53cc6346e5b4555d482eb6",
+                "responses": {
+                    "200": {
+                        "description": "aircraft ... has been updated"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Aircraft"
+                ],
+                "summary": "Delete aircraft by id",
+                "operationId": "79638bccea88a136f57024ab11926ab4",
+                "responses": {
+                    "200": {
+                        "description": "aircraft ... has been deleted"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Sign in to the Apps",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "responses": {
+                    "200": {
+                        "description": "{user_data}"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "401": {
+                        "description": "Wrong username or password"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Sign out from Apps",
+                "operationId": "3f19b742e4ead13f81ba0d6c0d46ac1b",
+                "responses": {
+                    "200": {
+                        "description": "Logout success"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/books": {
+            "post": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Add book",
+                "operationId": "e11705649c7570aefd1c7e5681f6039f",
+                "responses": {
+                    "200": {
+                        "description": "New book ... has been created"
+                    },
+                    "409": {
+                        "description": "Data is already exist"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/books/limit/{page_limit}/order/{order}/find/{search}": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Show all books with pagination, ordering, and search",
+                "operationId": "22801a4b60876b7c73aa9ec923f575bc",
+                "responses": {
+                    "200": {
+                        "description": "books found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/books/total/byreviewer/{limit}": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Total book by reviewer",
+                "operationId": "66ac360396c09cd53aa7d4f8fcc924bf",
+                "responses": {
+                    "200": {
+                        "description": "book found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/books/total/byyearreview": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Total book by year reviewe",
+                "operationId": "803051e3bdd22d00b2c2e107e109979d",
+                "responses": {
+                    "200": {
+                        "description": "book found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/books/{id}": {
+            "put": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Update book by id",
+                "operationId": "2951dc63ad2a2ff59df3b19efc11f63d",
+                "responses": {
+                    "200": {
+                        "description": "book ... has been updated"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Delete book by id",
+                "operationId": "042657021377632b3b71c834ec499e23",
+                "responses": {
+                    "200": {
+                        "description": "book ... has been updated"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/casualities/limit/{page_limit}/order/{orderby}/{ordertype}": {
+            "get": {
+                "tags": [
+                    "Casualities"
+                ],
+                "summary": "Show all casualities with ordering",
+                "operationId": "d919840e5e5a64a70798938f5c322423",
+                "responses": {
+                    "200": {
+                        "description": "casualities found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/casualities/totaldeath/bycountry/{order}/limit/{page_limit}": {
+            "get": {
+                "tags": [
+                    "Casualities"
+                ],
+                "summary": "Total death by country",
+                "operationId": "2104d2bf6084687beff41494563558df",
+                "responses": {
+                    "200": {
+                        "description": "casualities found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/casualities/summary": {
+            "get": {
+                "tags": [
+                    "Casualities"
+                ],
+                "summary": "Show casualities summary",
+                "operationId": "aaefae1ab88e5268272e349100e7de01",
+                "responses": {
+                    "200": {
+                        "description": "casualities found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/casualities/totaldeath/bysides/{view}": {
+            "get": {
+                "tags": [
+                    "Casualities"
+                ],
+                "summary": "Total death by sides",
+                "operationId": "32c0dd44813f4d123eb9fcb57bbb60a8",
+                "responses": {
+                    "200": {
+                        "description": "casualities found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/discussions": {
+            "post": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Add discussion",
+                "operationId": "fc114d34f253cf44c5b08313d3d532c3",
+                "responses": {
+                    "200": {
+                        "description": "New discussion ... has been created"
+                    },
+                    "409": {
+                        "description": "Data is already exist"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/discussions/limit/{page_limit}/order/{order}": {
+            "get": {
+                "tags": [
+                    "Discussion"
+                ],
+                "summary": "Show all discussions with ordering",
+                "operationId": "418ad27cd777cc5b99a45d07899ab4b5",
+                "responses": {
+                    "200": {
+                        "description": "discussion found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/events": {
+            "post": {
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Add event",
+                "operationId": "7465366b2c961c723536f7b8b4247aea",
+                "responses": {
+                    "200": {
+                        "description": "New event ... has been created"
+                    },
+                    "409": {
+                        "description": "Data is already exist"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/events/limit/{page_limit}/order/{order}": {
+            "get": {
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Show all event with ordering",
+                "operationId": "0bdfd894df8765ae82d25fba9f8a6867",
+                "responses": {
+                    "200": {
+                        "description": "event found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/events/{id}": {
+            "put": {
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Update event by id",
+                "operationId": "2a8545b7f61390cbe32cfecf176883e4",
+                "responses": {
+                    "200": {
+                        "description": "event ... has been updated"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Event"
+                ],
+                "summary": "Delete event by id",
+                "operationId": "2cd6945db2483a3ac142253e6493eb65",
+                "responses": {
+                    "200": {
+                        "description": "event ... has been updated"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/facilities/summary": {
+            "get": {
+                "tags": [
+                    "Facility"
+                ],
+                "summary": "Show facilities summary",
+                "operationId": "bbab88a2e5f981c36b7559c70fe398d1",
+                "responses": {
+                    "200": {
+                        "description": "facilities found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/facilities/total/bytype/{limit}": {
+            "get": {
+                "tags": [
+                    "Facility"
+                ],
+                "summary": "Total facilities by type",
+                "operationId": "bc7cd01fe97871b63ea2a54cb1796572",
+                "responses": {
+                    "200": {
+                        "description": "facilities found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/facilities/total/bycountry/{limit}": {
+            "get": {
+                "tags": [
+                    "Facility"
+                ],
+                "summary": "Total facilities by country",
+                "operationId": "a0e2ed5390e24afad15f90c038cbf623",
+                "responses": {
+                    "200": {
+                        "description": "facilities found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/facilities/total/bylocation/{type}": {
+            "get": {
+                "tags": [
+                    "Facility"
+                ],
+                "summary": "Total facilities by location and type",
+                "operationId": "a17158ce2d2ff0f3bec482858397015d",
+                "responses": {
+                    "200": {
+                        "description": "facilities found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/facilities/total/bysides": {
+            "get": {
+                "tags": [
+                    "Facility"
+                ],
+                "summary": "Total facilities by side",
+                "operationId": "12373d25ef9f3acc2e4b96c445565da7",
+                "responses": {
+                    "200": {
+                        "description": "facilities found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/facilities/type": {
+            "get": {
+                "tags": [
+                    "Facility"
+                ],
+                "summary": "Show all facility type",
+                "operationId": "d5e419ea3ce6f1cfd15c60f76698fc07",
+                "responses": {
+                    "200": {
+                        "description": "facilities found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/feedbacks": {
+            "post": {
+                "tags": [
+                    "Feedback"
+                ],
+                "summary": "Add feedback",
+                "operationId": "d32093aef824dfefbb986bc67cf96a27",
+                "responses": {
+                    "200": {
+                        "description": "New feedback ... has been created"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/feedbacks/limit/{page_limit}/order/{order}": {
+            "get": {
+                "tags": [
+                    "Feedback"
+                ],
+                "summary": "Show all feedbacks with pagination, ordering, and search",
+                "operationId": "d59ebb07dc868ac6664a5c7736c7940a",
+                "responses": {
+                    "200": {
+                        "description": "feedback found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/ships": {
+            "post": {
+                "tags": [
+                    "Ships"
+                ],
+                "summary": "Add ship",
+                "operationId": "aa946e33b272f457b3ba826945e7696c",
+                "responses": {
+                    "200": {
+                        "description": "New ships ... has been created"
+                    },
+                    "409": {
+                        "description": "Data is already exist"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/ships/limit/{page_limit}/order/{order}/find/{search}": {
+            "get": {
+                "tags": [
+                    "Ships"
+                ],
+                "summary": "Show all ships with pagination, ordering, and search",
+                "operationId": "6e27a590e917fff5de74fdbbe185d026",
+                "responses": {
+                    "200": {
+                        "description": "ship found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/ships/summary": {
+            "get": {
+                "tags": [
+                    "Ships"
+                ],
+                "summary": "Show ship summary",
+                "operationId": "43bf5c16343a88ad2d996246fe0573dd",
+                "responses": {
+                    "200": {
+                        "description": "ship found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/ships/total/byclass": {
+            "get": {
+                "tags": [
+                    "Ships"
+                ],
+                "summary": "Total ship by class",
+                "operationId": "1233a5614352b7327cf1d7e747ad16ad",
+                "responses": {
+                    "200": {
+                        "description": "ship found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/ships/total/bycountry/{limit}": {
+            "get": {
+                "tags": [
+                    "Ships"
+                ],
+                "summary": "Total ship by country",
+                "operationId": "d089f7797162dc742ac7a4a571a41562",
+                "responses": {
+                    "200": {
+                        "description": "ship found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/ships/total/bysides": {
+            "get": {
+                "tags": [
+                    "Ships"
+                ],
+                "summary": "Total ship by sides",
+                "operationId": "894d2183188bc8f80b0cee76a68f7ba1",
+                "responses": {
+                    "200": {
+                        "description": "ship found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/ships/total/bylaunchyear/{limit}": {
+            "get": {
+                "tags": [
+                    "Ships"
+                ],
+                "summary": "Total ship by launch year",
+                "operationId": "c51cf71e2efa54a3f787879a13a21b19",
+                "responses": {
+                    "200": {
+                        "description": "ship found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/ships/{id}": {
+            "put": {
+                "tags": [
+                    "Ships"
+                ],
+                "summary": "Update ships by id",
+                "operationId": "64d244d3387d1f5222d0d7432d331c13",
+                "responses": {
+                    "200": {
+                        "description": "ships ... has been updated"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Ships"
+                ],
+                "summary": "Delete ship by id",
+                "operationId": "bc704835f62695fce1e7bea02a5602a7",
+                "responses": {
+                    "200": {
+                        "description": "ships ... has been deleted"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/stories/detail/{slug}": {
+            "get": {
+                "tags": [
+                    "Stories"
+                ],
+                "summary": "Show stories by slug",
+                "operationId": "3338718948ca20440cbf189368f83660",
+                "responses": {
+                    "200": {
+                        "description": "stories found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/stories/limit/{page_limit}/order/{order}": {
+            "get": {
+                "tags": [
+                    "Stories"
+                ],
+                "summary": "Show all stories with pagination and ordering",
+                "operationId": "f40752e1897c302a73c5b435dc6e2836",
+                "responses": {
+                    "200": {
+                        "description": "stories found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/stories/type/{type}/creator/{creator}": {
+            "get": {
+                "tags": [
+                    "Stories"
+                ],
+                "summary": "Show all similiar stories by type and creator",
+                "operationId": "9fff087f144dd7ad2d3af46b085a0184",
+                "responses": {
+                    "200": {
+                        "description": "stories found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/vehicles": {
+            "post": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Add vehicle",
+                "operationId": "cbac2f296f5a32e254cf6d0de35e2b4e",
+                "responses": {
+                    "200": {
+                        "description": "New vehicle ... has been created"
+                    },
+                    "409": {
+                        "description": "Data is already exist"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/vehicles/limit/{page_limit}/order/{order}/find/{search}": {
+            "get": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Show all vehicles with pagination, ordering, and search",
+                "operationId": "6c463be2ef9ed5cf3190579b795a036f",
+                "responses": {
+                    "200": {
+                        "description": "vehicles found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/vehicles/summary": {
+            "get": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Show vehicle summary",
+                "operationId": "3f77f8c995cb36d03fc41ad2a14bc7c0",
+                "responses": {
+                    "200": {
+                        "description": "vehicle found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/vehicles/total/byrole/{limit}": {
+            "get": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Total vehicle by role",
+                "operationId": "142369555dedc674854c3ee26f387aa5",
+                "responses": {
+                    "200": {
+                        "description": "vehicle found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/vehicles/total/bycountry/{limit}": {
+            "get": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Total vehicle by country",
+                "operationId": "83f8b102d5c180a3dbc0999679b7da60",
+                "responses": {
+                    "200": {
+                        "description": "vehicle found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/vehicles/total/bysides": {
+            "get": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Total vehicle by sides",
+                "operationId": "b42a7973fd5db79109f8dc897a980e60",
+                "responses": {
+                    "200": {
+                        "description": "vehicle found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/vehicles/{id}": {
+            "put": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Update vehicle by id",
+                "operationId": "ee5b61dd5b7c44672b87e8e82b1ac35c",
+                "responses": {
+                    "200": {
+                        "description": "vehicle ... has been updated"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Delete vehicle by id",
+                "operationId": "efefe1b25ad0d463f90651eaf66b90ce",
+                "responses": {
+                    "200": {
+                        "description": "vehicle ... has been updated"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/weapons": {
+            "post": {
+                "tags": [
+                    "Weapon"
+                ],
+                "summary": "Add weapon",
+                "operationId": "9e27dd955d3b457e55c6eef217bb612a",
+                "responses": {
+                    "200": {
+                        "description": "New weapon ... has been created"
+                    },
+                    "409": {
+                        "description": "Data is already exist"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/weapons/limit/{page_limit}/order/{order}/find/{search}": {
+            "get": {
+                "tags": [
+                    "Weapon"
+                ],
+                "summary": "Show all weapons with pagination, ordering, and search",
+                "operationId": "0c23320a23a60fa5bd1191af5aa180d3",
+                "responses": {
+                    "200": {
+                        "description": "weapon found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/weapons/summary": {
+            "get": {
+                "tags": [
+                    "Weapon"
+                ],
+                "summary": "Show weapon summary",
+                "operationId": "3d5ff4cbb52c431d1e2afa69a2201089",
+                "responses": {
+                    "200": {
+                        "description": "weapon found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/weapons/total/bytype/{limit}": {
+            "get": {
+                "tags": [
+                    "Weapon"
+                ],
+                "summary": "Total weapon by type",
+                "operationId": "ef2b293732f7d1d2711c4cb05355a735",
+                "responses": {
+                    "200": {
+                        "description": "weapon found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/weapons/total/bycountry/{limit}": {
+            "get": {
+                "tags": [
+                    "Weapon"
+                ],
+                "summary": "Total weapon by country",
+                "operationId": "37b4d36817b1d7ad2c405de4ceef5f4d",
+                "responses": {
+                    "200": {
+                        "description": "weapon found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/weapons/total/bysides": {
+            "get": {
+                "tags": [
+                    "Weapon"
+                ],
+                "summary": "Total weapon by sides",
+                "operationId": "bdd42b2dacf11e8be8865c9a90c007ed",
+                "responses": {
+                    "200": {
+                        "description": "weapon found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/weapons/{id}": {
+            "put": {
+                "tags": [
+                    "Weapon"
+                ],
+                "summary": "Update weapon by id",
+                "operationId": "b57d0dd761aee19592ef6a4c81b45539",
+                "responses": {
+                    "200": {
+                        "description": "weapon ... has been updated"
+                    },
+                    "422": {
+                        "description": "{validation_msg}"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Weapon"
+                ],
+                "summary": "Delete weapon by id",
+                "operationId": "1e15e2b6981efb646255f379c28dea01",
+                "responses": {
+                    "200": {
+                        "description": "weapon ... has been updated"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Aircraft",
+            "description": "Aircraft"
+        },
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Books",
+            "description": "Books"
+        },
+        {
+            "name": "Casualities",
+            "description": "Casualities"
+        },
+        {
+            "name": "Discussion",
+            "description": "Discussion"
+        },
+        {
+            "name": "Event",
+            "description": "Event"
+        },
+        {
+            "name": "Facility",
+            "description": "Facility"
+        },
+        {
+            "name": "Feedback",
+            "description": "Feedback"
+        },
+        {
+            "name": "Ships",
+            "description": "Ships"
+        },
+        {
+            "name": "Stories",
+            "description": "Stories"
+        },
+        {
+            "name": "Vehicle",
+            "description": "Vehicle"
+        },
+        {
+            "name": "Weapon",
+            "description": "Weapon"
+        }
+    ]
+}

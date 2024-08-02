@@ -14,9 +14,27 @@ use App\Models\Histories;
 class BooksController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\POST(
+     *     path="/api/books",
+     *     summary="Add book",
+     *     tags={"Books"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="New book ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Data is already exist"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
      */
     public function createBook(Request $request)
     {
@@ -93,6 +111,21 @@ class BooksController extends Controller
         }
     }
 
+     /**
+     * @OA\GET(
+     *     path="/api/books/limit/{page_limit}/order/{order}/find/{search}",
+     *     summary="Show all books with pagination, ordering, and search",
+     *     tags={"Books"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="books found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getAllBooks($page_limit, $order, $search){
         try {
             $search = trim($search);
@@ -122,6 +155,21 @@ class BooksController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/books/total/byreviewer/{limit}",
+     *     summary="Total book by reviewer",
+     *     tags={"Books"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="book found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalBooksByReviewer($limit){
         try {
             $bok = Books::selectRaw('reviewer as context, count(*) as total')
@@ -143,6 +191,21 @@ class BooksController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/books/total/byyearreview",
+     *     summary="Total book by year reviewe",
+     *     tags={"Books"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="book found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getTotalBooksByYearReview(){
         try {
             $bok = Books::selectRaw('YEAR(datetime) as year_review, count(*) as total')
@@ -164,6 +227,25 @@ class BooksController extends Controller
         }
     }
 
+    /**
+     * @OA\PUT(
+     *     path="/api/books/{id}",
+     *     summary="Update book by id",
+     *     tags={"Books"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="book ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function updateBookById(Request $request, $id){
         try {
             $validator = Validation::getValidateBook($request);
@@ -225,6 +307,21 @@ class BooksController extends Controller
         }
     }
 
+    /**
+     * @OA\DELETE(
+     *     path="/api/books/{id}",
+     *     summary="Delete book by id",
+     *     tags={"Books"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="book ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function deleteBookById($id){
         try {
             $bok = Books::selectRaw("concat (title, ' by ', author) as final_name")
