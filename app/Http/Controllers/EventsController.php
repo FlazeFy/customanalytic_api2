@@ -14,11 +14,28 @@ use App\Models\Histories;
 class EventsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\POST(
+     *     path="/api/events",
+     *     summary="Add event",
+     *     tags={"Event"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="New event ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Data is already exist"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
      */
-
     public function createEvent(Request $request)
     {
         try {
@@ -93,6 +110,21 @@ class EventsController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/events/limit/{page_limit}/order/{order}",
+     *     summary="Show all event with ordering",
+     *     tags={"Event"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="event found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getAllEvents($page_limit, $order){
         try {
             $evt = Events::selectRaw('id, event, date_start, date_end, DATEDIFF(date_end, date_start) AS period')
@@ -112,6 +144,25 @@ class EventsController extends Controller
         }
     }
 
+    /**
+     * @OA\PUT(
+     *     path="/api/events/{id}",
+     *     summary="Update event by id",
+     *     tags={"Event"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="event ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function updateEventById(Request $request, $id){
         try {
             $validator = Validation::getValidateEvent($request);
@@ -172,6 +223,21 @@ class EventsController extends Controller
         }
     }
 
+    /**
+     * @OA\DELETE(
+     *     path="/api/events/{id}",
+     *     summary="Delete event by id",
+     *     tags={"Event"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="event ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function deleteEventById($id){
         try {
             $evt = Events::select('event')

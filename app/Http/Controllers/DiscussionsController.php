@@ -13,11 +13,28 @@ use App\Models\Histories;
 
 class DiscussionsController extends Controller
 {
-
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @OA\POST(
+     *     path="/api/discussions",
+     *     summary="Add discussion",
+     *     tags={"Discussion"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="New discussion ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="Data is already exist"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="{validation_msg}"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
      */
     public function createDiscussion(Request $request)
     {
@@ -94,6 +111,21 @@ class DiscussionsController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/discussions/limit/{page_limit}/order/{order}",
+     *     summary="Show all discussions with ordering",
+     *     tags={"Discussion"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="discussion found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getAllDiscussion($page_limit, $order)
     {
         try {
