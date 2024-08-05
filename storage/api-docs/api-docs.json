@@ -1144,6 +1144,728 @@
             }
         }
     },
+    "components": {
+        "schemas": {
+            "Admins": {
+                "required": [
+                    "id",
+                    "username",
+                    "fullname",
+                    "email",
+                    "password",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "username": {
+                        "description": "Unique Identifier for admin",
+                        "type": "string"
+                    },
+                    "fullname": {
+                        "description": "Admin's fullname",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email for Auth and Task Scheduling",
+                        "type": "string"
+                    },
+                    "password": {
+                        "description": "Sanctum Hashed Password",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the admin was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the admin profile was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Aircraft": {
+                "required": [
+                    "id",
+                    "name",
+                    "primary_role",
+                    "manufacturer",
+                    "country",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "description": "Name of the aircraft",
+                        "type": "string"
+                    },
+                    "primary_role": {
+                        "description": "The primary role of the aircraft",
+                        "type": "string"
+                    },
+                    "manufacturer": {
+                        "description": "Manufacturer / Company of the aircraft",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "The country who invented the aircraft",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the aircraft data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the aircraft data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Books": {
+                "required": [
+                    "id",
+                    "title",
+                    "author",
+                    "reviewer",
+                    "review_date",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "description": "Title of the book",
+                        "type": "string"
+                    },
+                    "author": {
+                        "description": "Name of the book's author",
+                        "type": "string"
+                    },
+                    "reviewer": {
+                        "description": "Name of the book's reviewer",
+                        "type": "string"
+                    },
+                    "review_date": {
+                        "description": "Date when the book is reviewed",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the book data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the book data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Casualities": {
+                "required": [
+                    "id",
+                    "country",
+                    "continent",
+                    "total_population",
+                    "military_death",
+                    "civilian_death",
+                    "death_per_pop",
+                    "avg_death_per_pop"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "country": {
+                        "description": "Name of the country",
+                        "type": "string"
+                    },
+                    "continent": {
+                        "description": "Continent where the country is located",
+                        "type": "string"
+                    },
+                    "total_population": {
+                        "description": "Total population of the country",
+                        "type": "string"
+                    },
+                    "military_death": {
+                        "description": "Number of military deaths",
+                        "type": "integer"
+                    },
+                    "civilian_death": {
+                        "description": "Number of civilian deaths",
+                        "type": "integer"
+                    },
+                    "death_per_pop": {
+                        "description": "Death per population ratio",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "avg_death_per_pop": {
+                        "description": "Average death per population ratio",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "military_wounded": {
+                        "description": "Number of military wounded",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the casualties data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the casualties data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Discussions": {
+                "required": [
+                    "id",
+                    "stories_id",
+                    "body",
+                    "reviewer",
+                    "review_date",
+                    "created_at",
+                    "created_by"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "stories_id": {
+                        "description": "Id of the story",
+                        "type": "string"
+                    },
+                    "reply_id": {
+                        "description": "Id of the other discussion who got replied",
+                        "type": "string"
+                    },
+                    "body": {
+                        "description": "The body of the message",
+                        "type": "string"
+                    },
+                    "attachment": {
+                        "description": "Detail of attachment attached in the discussion. Contain attachment url, attachment type, and attachment name",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the story data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the story data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_by": {
+                        "description": "ID of the user / admin who created the discussion",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "updated_by": {
+                        "description": "ID of the user / admin who updated the discussion",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "Error": {
+                "required": [
+                    "id",
+                    "message",
+                    "stack_trace",
+                    "file",
+                    "line",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "description": "Message or description of the error",
+                        "type": "string"
+                    },
+                    "stack_trace": {
+                        "description": "Trail of function calls leading up to the error",
+                        "type": "string"
+                    },
+                    "file": {
+                        "description": "Path of the file where the error is faced",
+                        "type": "string"
+                    },
+                    "line": {
+                        "description": "Line of code in specific file where the error is faced",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the error was faced",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "fixed_at": {
+                        "description": "Timestamp when the dev team finally fix and deploy the bug / error fix",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "faced_by": {
+                        "description": "ID of the user who specific faced the error",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "Events": {
+                "required": [
+                    "id",
+                    "event",
+                    "date_start",
+                    "date_end",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "event": {
+                        "description": "Name of the event",
+                        "type": "string"
+                    },
+                    "date_start": {
+                        "description": "Date of event when the event was start",
+                        "type": "string"
+                    },
+                    "date_end": {
+                        "description": "Date of event when the event was end",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the book data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the book data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Facilities": {
+                "required": [
+                    "id",
+                    "name",
+                    "type",
+                    "location",
+                    "country",
+                    "coordinate",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "description": "Name of the facility",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "Type of the facility",
+                        "type": "string"
+                    },
+                    "location": {
+                        "description": "Location name of the facility",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Country of the facility located",
+                        "type": "string"
+                    },
+                    "coordinate": {
+                        "description": "Date of event when the event was end",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the facility data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the facility data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Feedbacks": {
+                "required": [
+                    "id",
+                    "stories_id",
+                    "body",
+                    "rate",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "stories_id": {
+                        "description": "Id of the story",
+                        "type": "string"
+                    },
+                    "body": {
+                        "description": "The body of feedback",
+                        "type": "string"
+                    },
+                    "rate": {
+                        "description": "Rate of the feedback",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the feedback data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_by": {
+                        "description": "Id of user who created the feedback",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "Histories": {
+                "required": [
+                    "id",
+                    "history_type",
+                    "body",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "history_type": {
+                        "description": "Id of the story",
+                        "type": "string"
+                    },
+                    "body": {
+                        "description": "The body of feedback",
+                        "type": "string"
+                    },
+                    "rate": {
+                        "description": "Rate of the feedback",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the feedback data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_by": {
+                        "description": "Id of the user who created the history",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "Ships": {
+                "required": [
+                    "id",
+                    "name",
+                    "class",
+                    "country",
+                    "year",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "description": "Name of the ship",
+                        "type": "string"
+                    },
+                    "class": {
+                        "description": "Class of the ship",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Country of the ship",
+                        "type": "string"
+                    },
+                    "year": {
+                        "description": "Year when the ships is launched",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the ship data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the ship data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Stories": {
+                "required": [
+                    "id",
+                    "slug_name",
+                    "main_title",
+                    "is_finished",
+                    "story_type",
+                    "date_start",
+                    "story_location",
+                    "story_tag",
+                    "story_detail",
+                    "story_reference",
+                    "created_at",
+                    "created_by"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "slug_name": {
+                        "description": "Slug name of the story",
+                        "type": "string"
+                    },
+                    "main_title": {
+                        "description": "Main title of the story",
+                        "type": "string"
+                    },
+                    "is_finished": {
+                        "description": "Indicates if the story is finished",
+                        "type": "boolean"
+                    },
+                    "story_type": {
+                        "description": "Type of the story",
+                        "type": "string"
+                    },
+                    "date_start": {
+                        "description": "Date when the story was started",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "date_end": {
+                        "description": "Date when the story was end",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "story_result": {
+                        "description": "Result of the story",
+                        "type": "string"
+                    },
+                    "story_location": {
+                        "description": "Location of the story",
+                        "type": "string"
+                    },
+                    "story_tag": {
+                        "description": "Tags associated with the story",
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "story_detail": {
+                        "description": "Detailed description of the story",
+                        "type": "string"
+                    },
+                    "story_stats": {
+                        "description": "Statistics related to the story",
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "story_reference": {
+                        "description": "References for the story",
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the story was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_by": {
+                        "description": "User who created the story",
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the story was last updated",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_by": {
+                        "description": "User who last updated the story",
+                        "type": "string"
+                    },
+                    "deleted_at": {
+                        "description": "Timestamp when the story was deleted",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deleted_by": {
+                        "description": "User who deleted the story",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Users": {
+                "required": [
+                    "id",
+                    "username",
+                    "fullname",
+                    "email",
+                    "role",
+                    "password",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "username": {
+                        "description": "Unique Identifier for admin",
+                        "type": "string"
+                    },
+                    "fullname": {
+                        "description": "Admin's fullname",
+                        "type": "string"
+                    },
+                    "role": {
+                        "description": "User's role for get access to the apps feature",
+                        "type": "string"
+                    },
+                    "profile_img": {
+                        "description": "Profile image of user",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email for Auth and Task Scheduling",
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "description": "Timestamp when the email is validated",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "password": {
+                        "description": "Sanctum Hashed Password",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the user was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the user profile was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Weapons": {
+                "required": [
+                    "id",
+                    "name",
+                    "type",
+                    "country",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "description": "Name of the weapon",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "Class of the weapon",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Country of the weapon",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the weapon data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the weapon data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
     "tags": [
         {
             "name": "Aircraft",
