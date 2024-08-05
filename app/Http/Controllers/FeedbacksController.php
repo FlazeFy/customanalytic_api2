@@ -64,13 +64,15 @@ class FeedbacksController extends Controller
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 } else {  
                     $uuid = Generator::getUUID();
+                    $user_id = $request->user()->id;
+
                     Feedbacks::create([
                         'id' => $uuid,
                         'stories_id' => $request->stories_id,
                         'body' => $request->body,
                         'rate' => $request->rate,
                         'created_at' => $request->created_at,
-                        'created_by' => $request->created_by,
+                        'created_by' => $user_id,
                     ]);
 
                     Histories::create([
@@ -97,9 +99,39 @@ class FeedbacksController extends Controller
 
     /**
      * @OA\GET(
-     *     path="/api/feedbacks/limit/{page_limit}/order/{order}",
-     *     summary="Show all feedbacks with pagination, ordering, and search",
+     *     path="/api/feedbacks/limit/{limit}/order/{order}/{id}",
+     *     summary="Show all feedbacks per stories with pagination, ordering, and search",
      *     tags={"Feedback"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of feedback per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="asc"
+     *         ),
+     *         description="Order by field created at"
+     *     ),
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="10e62495-d508-b32f-2e8e-66fa84f43fe8"
+     *         ),
+     *         description="ID of the stories"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="feedback found"
@@ -110,13 +142,13 @@ class FeedbacksController extends Controller
      *     ),
      * )
      */
-    public function getAllFeedback($page_limit, $order, $id)
+    public function getAllFeedback($limit, $order, $id)
     {
         try {
             $evt = Feedbacks::selectRaw('id, stories_id, body, rate, created_at, created_by')
                 ->where('stories_id', $id)
-                ->orderBy('stories_id', $order)
-                ->paginate($page_limit);
+                ->orderBy('created_at', $order)
+                ->paginate($limit);
         
             return response()->json([
                 'message' => count($evt)." Data retrived", 

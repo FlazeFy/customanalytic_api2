@@ -19,6 +19,16 @@ class StoriesController extends Controller
      *     path="/api/stories/detail/{slug}",
      *     summary="Show stories by slug",
      *     tags={"Stories"},
+     *     @OA\Parameter(
+     *         name="slug",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="lorem"
+     *         ),
+     *         description="Slug of the stories"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="stories found"
@@ -67,9 +77,29 @@ class StoriesController extends Controller
 
     /**
      * @OA\GET(
-     *     path="/api/stories/limit/{page_limit}/order/{order}",
+     *     path="/api/stories/limit/{limit}/order/{order}",
      *     summary="Show all stories with pagination and ordering",
      *     tags={"Stories"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of stories per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="asc"
+     *         ),
+     *         description="Order by field created at"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="stories found"
@@ -80,7 +110,7 @@ class StoriesController extends Controller
      *     ),
      * )
      */
-    public function getAllStories($page_limit, $order)
+    public function getAllStories($limit, $order)
     {
         try {
             // Template
@@ -94,7 +124,7 @@ class StoriesController extends Controller
                 ->groupBy($main_table.'.id')
                 ->orderBy($main_table.'.created_at', $order);
 
-            $str = $str->paginate($page_limit);
+            $str = $str->paginate($limit);
         
             return response()->json([
                 'message' => Generator::getMessageTemplate("api_read", $main_table, null), 
@@ -114,6 +144,26 @@ class StoriesController extends Controller
      *     path="/api/stories/type/{type}/creator/{creator}",
      *     summary="Show all similiar stories by type and creator",
      *     tags={"Stories"},
+     *     @OA\Parameter(
+     *         name="type",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="battle"
+     *         ),
+     *         description="Type of the story"
+     *     ),
+     *     @OA\Parameter(
+     *         name="creator",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="jhon"
+     *         ),
+     *         description="Name of the story creator"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="stories found"

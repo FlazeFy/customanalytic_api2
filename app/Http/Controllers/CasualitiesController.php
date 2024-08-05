@@ -12,8 +12,38 @@ class CasualitiesController extends Controller
 {
    /**
      * @OA\GET(
-     *     path="/api/casualities/limit/{page_limit}/order/{orderby}/{ordertype}",
+     *     path="/api/casualities/limit/{limit}/order/{orderby}/{ordertype}",
      *     summary="Show all casualities with ordering",
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of country per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="orderby",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="military_death"
+     *         ),
+     *         description="Field name to order"
+     *     ),
+     *     @OA\Parameter(
+     *         name="ordertype",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="desc"
+     *         ),
+     *         description="Order by field that used in param orderby"
+     *     ),
      *     tags={"Casualities"},
      *     @OA\Response(
      *         response=200,
@@ -25,11 +55,11 @@ class CasualitiesController extends Controller
      *     ),
      * )
      */
-    public function getAllCasualities($page_limit, $orderby, $ordertype){
+    public function getAllCasualities($limit, $orderby, $ordertype){
         try {
             $cst = Casualities::select('id', 'country', 'continent', 'total_population', 'military_death', 'civilian_death', 'total_death', 'death_per_pop', 'avg_death_per_pop', 'military_wounded')
                 ->orderBy($orderby, $ordertype)
-                ->paginate($page_limit);
+                ->paginate($limit);
         
             return response()->json([
                 'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
@@ -46,9 +76,29 @@ class CasualitiesController extends Controller
 
      /**
      * @OA\GET(
-     *     path="/api/casualities/totaldeath/bycountry/{order}/limit/{page_limit}",
+     *     path="/api/casualities/totaldeath/bycountry/{order}/limit/{limit}",
      *     summary="Total death by country",
      *     tags={"Casualities"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of country per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="asc"
+     *         ),
+     *         description="Order by field total (military_death + civilian_death)"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="casualities found"
@@ -59,17 +109,17 @@ class CasualitiesController extends Controller
      *     ),
      * )
      */
-    public function getTotalDeathByCountry($order, $page_limit){
+    public function getTotalDeathByCountry($order, $limit){
         try {
             if($order != "NULL"){
                 $cst = Casualities::selectRaw('country as context, total_population, military_death, civilian_death, military_death + civilian_death as total')
                     ->whereRaw('military_death+civilian_death != 0')
                     ->orderBy("total", $order)
-                    ->paginate($page_limit);
+                    ->paginate($limit);
             } else {
                 $cst = Casualities::selectRaw('country as context, total_population, military_death, civilian_death, military_death + civilian_death as total')
                     ->whereRaw('military_death+civilian_death != 0')
-                    ->paginate($page_limit);
+                    ->paginate($limit);
             }   
         
             return response()->json([
@@ -129,6 +179,16 @@ class CasualitiesController extends Controller
      *     path="/api/casualities/totaldeath/bysides/{view}",
      *     summary="Total death by sides",
      *     tags={"Casualities"},
+     *     @OA\Parameter(
+     *         name="view",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="military"
+     *         ),
+     *         description="View mode based on military or civilian"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="casualities found"

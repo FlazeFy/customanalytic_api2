@@ -68,6 +68,16 @@ class FacilitiesController extends Controller
      *     path="/api/facilities/total/bytype/{limit}",
      *     summary="Total facilities by type",
      *     tags={"Facility"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of facility per page"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="facilities found"
@@ -105,6 +115,16 @@ class FacilitiesController extends Controller
      *     path="/api/facilities/total/bycountry/{limit}",
      *     summary="Total facilities by country",
      *     tags={"Facility"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of facility per page"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="facilities found"
@@ -142,6 +162,16 @@ class FacilitiesController extends Controller
      *     path="/api/facilities/total/bylocation/{type}",
      *     summary="Total facilities by location and type",
      *     tags={"Facility"},
+     *     @OA\Parameter(
+     *         name="type",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="Airfield"
+     *         ),
+     *         description="Filter by field type. Can be facility type or 'NULL'"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="facilities found"

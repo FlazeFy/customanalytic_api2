@@ -68,7 +68,8 @@ class AircraftController extends Controller
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 } else {
                     $check = Aircraft::selectRaw('1')->where('name', $request->name)->first();
-                    
+                    $user_id = $request->user()->id;
+
                     if($check == null){
                         $uuid = Generator::getUUID();
                         Aircraft::create([
@@ -78,7 +79,7 @@ class AircraftController extends Controller
                             'manufacturer' => $request->manufacturer,
                             'country' => $request->country,
                             'created_at' => date('Y-m-d H:i:s'),
-                            'created_by' => "1",
+                            'created_by' => $user_id,
                             'updated_at' => null,
                             'updated_by' => null,
                         ]);
@@ -113,9 +114,39 @@ class AircraftController extends Controller
 
     /**
      * @OA\GET(
-     *     path="/api/aircraft/limit/{page_limit}/order/{order}/find/{search}",
+     *     path="/api/aircraft/limit/{limit}/order/{order}/find/{search}",
      *     summary="Show all aircraft with pagination, ordering, and search",
      *     tags={"Aircraft"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of aircraft per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="asc"
+     *         ),
+     *         description="Order by field name"
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="Ar"
+     *         ),
+     *         description="Search term based on the field name or manufacturer"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="aircraft found"
@@ -126,7 +157,7 @@ class AircraftController extends Controller
      *     ),
      * )
      */
-    public function getAllAircraft($page_limit, $order, $search){
+    public function getAllAircraft($limit, $order, $search){
         try {
             $search = trim($search);
 
@@ -139,7 +170,7 @@ class AircraftController extends Controller
                     ->orwhere('manufacturer', 'LIKE', '%' . $search . '%');
             }
 
-            $air = $air->paginate($page_limit);
+            $air = $air->paginate($limit);
         
             return response()->json([
                 'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),
@@ -211,6 +242,16 @@ class AircraftController extends Controller
      *     path="/api/aircraft/total/byrole/{limit}",
      *     summary="Total aircraft by role",
      *     tags={"Aircraft"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of aircraft per page"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="aircraft found"
@@ -247,6 +288,16 @@ class AircraftController extends Controller
      *     path="/api/aircraft/total/bymanufacturer/{limit}",
      *     summary="Total aircraft by manufacturer",
      *     tags={"Aircraft"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of aircraft per page"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="aircraft found"
@@ -319,6 +370,16 @@ class AircraftController extends Controller
      *     path="/api/aircraft/total/bycountry/{limit}",
      *     summary="Total aircraft by country",
      *     tags={"Aircraft"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of aircraft per page"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="aircraft found"

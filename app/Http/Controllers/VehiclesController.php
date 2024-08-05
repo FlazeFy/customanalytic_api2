@@ -71,6 +71,8 @@ class VehiclesController extends Controller
                     
                     if($check == null){
                         $uuid = Generator::getUUID();
+                        $user_id = $request->user()->id;
+
                         Vehicles::create([
                             'id' => $uuid,
                             'name' => $request->name,
@@ -78,7 +80,7 @@ class VehiclesController extends Controller
                             'manufacturer' => $request->manufacturer,
                             'country' => $request->country,
                             'created_at' => date('Y-m-d H:i:s'),
-                            'created_by' => "1",
+                            'created_by' => $user_id,
                             'updated_at' => null,
                             'updated_by' => null,
                         ]);
@@ -113,9 +115,39 @@ class VehiclesController extends Controller
 
     /**
      * @OA\GET(
-     *     path="/api/vehicles/limit/{page_limit}/order/{order}/find/{search}",
+     *     path="/api/vehicles/limit/{limit}/order/{order}/find/{search}",
      *     summary="Show all vehicles with pagination, ordering, and search",
      *     tags={"Vehicle"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of vehicle per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="asc"
+     *         ),
+     *         description="Order by field name"
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="SdKfz"
+     *         ),
+     *         description="Search term based on the field name or manufacturer"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="vehicles found"
@@ -126,7 +158,7 @@ class VehiclesController extends Controller
      *     ),
      * )
      */
-    public function getAllVehicles($page_limit, $order, $search){
+    public function getAllVehicles($limit, $order, $search){
         try {
             $search = trim($search);
 
@@ -139,7 +171,7 @@ class VehiclesController extends Controller
                     ->orwhere('manufacturer', 'LIKE', '%' . $search . '%');
             }
 
-            $vhc = $vhc->paginate($page_limit);
+            $vhc = $vhc->paginate($limit);
         
             return response()->json([
                 //'message' => count($vhc)." Data retrived", 
@@ -214,6 +246,16 @@ class VehiclesController extends Controller
      *     path="/api/vehicles/total/byrole/{limit}",
      *     summary="Total vehicle by role",
      *     tags={"Vehicle"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of vehicle per page"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="vehicle found"
@@ -251,6 +293,16 @@ class VehiclesController extends Controller
      *     path="/api/vehicles/total/bycountry/{limit}",
      *     summary="Total vehicle by country",
      *     tags={"Vehicle"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of vehicle per page"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="vehicle found"

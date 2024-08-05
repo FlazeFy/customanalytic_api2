@@ -71,6 +71,8 @@ class BooksController extends Controller
                     
                     if($check == null){
                         $uuid = Generator::getUUID();
+                        $user_id = $request->user()->id;
+
                         Books::create([
                             'id' => $uuid,
                             'title' => $request->title,
@@ -78,7 +80,7 @@ class BooksController extends Controller
                             'reviewer' => $request->reviewer,
                             'review_date' => $request->review_date,
                             'created_at' => date('Y-m-d H:i:s'),
-                            'created_by' => "1",
+                            'created_by' => $user_id,
                             'updated_at' => null,
                             'updated_by' => null,
                         ]);
@@ -113,9 +115,39 @@ class BooksController extends Controller
 
      /**
      * @OA\GET(
-     *     path="/api/books/limit/{page_limit}/order/{order}/find/{search}",
+     *     path="/api/books/limit/{limit}/order/{order}/find/{search}",
      *     summary="Show all books with pagination, ordering, and search",
      *     tags={"Books"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of book per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="asc"
+     *         ),
+     *         description="Order by field title"
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="Peter"
+     *         ),
+     *         description="Search term based on the field author or reviewer"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="books found"
@@ -126,7 +158,7 @@ class BooksController extends Controller
      *     ),
      * )
      */
-    public function getAllBooks($page_limit, $order, $search){
+    public function getAllBooks($limit, $order, $search){
         try {
             $search = trim($search);
 
@@ -140,7 +172,7 @@ class BooksController extends Controller
                     ->orwhere('reviewer', 'LIKE', '%' . $search . '%');
             }
 
-            $bok = $bok->paginate($page_limit);
+            $bok = $bok->paginate($limit);
         
             return response()->json([
                 'message' => Generator::getMessageTemplate("api_read", "book", null), 
@@ -160,6 +192,16 @@ class BooksController extends Controller
      *     path="/api/books/total/byreviewer/{limit}",
      *     summary="Total book by reviewer",
      *     tags={"Books"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of book per page"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="book found"

@@ -23,7 +23,7 @@ Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanc
 
 Route::prefix('/aircraft')->group(function () {
     Route::post('/', [AircraftController::class, 'createAircraft']);
-    Route::get('/limit/{page_limit}/order/{order}/find/{search}', [AircraftController::class, 'getAllAircraft']);
+    Route::get('/limit/{limit}/order/{order}/find/{search}', [AircraftController::class, 'getAllAircraft']);
     Route::get('/total/byrole/{limit}', [AircraftController::class, 'getTotalAircraftByRole']);
     Route::get('/total/bycountry/{limit}', [AircraftController::class, 'getTotalAircraftByCountry']);
     Route::get('/total/bysides', [AircraftController::class, 'getTotalAircraftBySides']);
@@ -35,7 +35,7 @@ Route::prefix('/aircraft')->group(function () {
 
 Route::prefix('/ships')->group(function () {
     Route::post('/', [ShipsController::class, 'createShip']);
-    Route::get('/limit/{page_limit}/order/{order}/find/{search}', [ShipsController::class, 'getAllShips']);
+    Route::get('/limit/{limit}/order/{order}/find/{search}', [ShipsController::class, 'getAllShips']);
     Route::get('/total/byclass', [ShipsController::class, 'getTotalShipsByClass']);
     Route::get('/total/bycountry/{limit}', [ShipsController::class, 'getTotalShipsByCountry']);
     Route::get('/total/bysides', [ShipsController::class, 'getTotalShipsBySides']);
@@ -47,7 +47,7 @@ Route::prefix('/ships')->group(function () {
 
 Route::prefix('/vehicles')->group(function () {
     Route::post('/', [VehiclesController::class, 'createVehicles']);
-    Route::get('/limit/{page_limit}/order/{order}/find/{search}', [VehiclesController::class, 'getAllVehicles']);
+    Route::get('/limit/{limit}/order/{order}/find/{search}', [VehiclesController::class, 'getAllVehicles']);
     Route::get('/total/byrole/{limit}', [VehiclesController::class, 'getTotalVehiclesByRole']);
     Route::get('/total/bycountry/{limit}', [VehiclesController::class, 'getTotalVehiclesByCountry']);
     Route::get('/total/bysides', [VehiclesController::class, 'getTotalVehiclesBySides']);
@@ -67,7 +67,7 @@ Route::prefix('/facilities')->group(function () {
 
 Route::prefix('/weapons')->group(function () {
     Route::post('/', [WeaponsController::class, 'createWeapon']);
-    Route::get('/limit/{page_limit}/order/{order}/find/{search}', [WeaponsController::class, 'getAllWeapons']);
+    Route::get('/limit/{limit}/order/{order}/find/{search}', [WeaponsController::class, 'getAllWeapons']);
     Route::get('/total/bytype/{limit}', [WeaponsController::class, 'getTotalWeaponsByType']);
     Route::get('/total/bycountry/{limit}', [WeaponsController::class, 'getTotalWeaponsByCountry']);
     Route::get('/total/bysides', [WeaponsController::class, 'getTotalWeaponsBySides']);
@@ -78,14 +78,14 @@ Route::prefix('/weapons')->group(function () {
 
 Route::prefix('/events')->group(function () {
     Route::post('/', [EventsController::class, 'createEvent']);
-    Route::get('/limit/{page_limit}/order/{order}', [EventsController::class, 'getAllEvents']);
+    Route::get('/limit/{limit}/order/{order}', [EventsController::class, 'getAllEvents']);
     Route::delete('/{id}', [EventsController::class, 'deleteEventById']);
     Route::put('/{id}', [EventsController::class, 'updateEventById']);
 });
 
 Route::prefix('/books')->group(function () {
     Route::post('/', [BooksController::class, 'createBook']);
-    Route::get('/limit/{page_limit}/order/{order}/find/{search}', [BooksController::class, 'getAllBooks']);
+    Route::get('/limit/{limit}/order/{order}/find/{search}', [BooksController::class, 'getAllBooks']);
     Route::get('/total/byreviewer/{limit}', [BooksController::class, 'getTotalBooksByReviewer']);
     Route::get('/total/byyearreview', [BooksController::class, 'getTotalBooksByYearReview']);
     Route::delete('/{id}', [BooksController::class, 'deleteBookById']);
@@ -93,24 +93,24 @@ Route::prefix('/books')->group(function () {
 });
 
 Route::prefix('/casualities')->group(function () {
-    Route::get('/limit/{page_limit}/order/{orderby}/{ordertype}', [CasualitiesController::class, 'getAllCasualities']);
-    Route::get('/totaldeath/bycountry/{order}/limit/{page_limit}', [CasualitiesController::class, 'getTotalDeathByCountry']);
+    Route::get('/limit/{limit}/order/{orderby}/{ordertype}', [CasualitiesController::class, 'getAllCasualities']);
+    Route::get('/totaldeath/bycountry/{order}/limit/{limit}', [CasualitiesController::class, 'getTotalDeathByCountry']);
     Route::get('/totaldeath/bysides/{view}', [CasualitiesController::class, 'getTotalDeathBySides']);
     Route::get('/summary', [CasualitiesController::class, 'getCasualitiesSummary']);
 });
 
 Route::prefix('/discussions')->group(function () {
     Route::post('/', [DiscussionsController::class, 'createDiscussion']);
-    Route::get('/limit/{page_limit}/order/{order}', [DiscussionsController::class, 'getAllDiscussions']); // belum implement
+    Route::get('/limit/{limit}/order/{order}', [DiscussionsController::class, 'getAllDiscussions']); // belum implement
 });
 
 Route::prefix('/feedbacks')->group(function () {
     Route::post('/', [FeedbacksController::class, 'createFeedback']);
-    Route::get('/limit/{page_limit}/order/{order}', [FeedbacksController::class, 'getAllFeedback']);
+    Route::get('/limit/{limit}/order/{order}/{id}', [FeedbacksController::class, 'getAllFeedback']);
 });
 
 Route::prefix('/stories')->group(function () {
-    Route::get('/limit/{page_limit}/order/{order}', [StoriesController::class, 'getAllStories']);
+    Route::get('/limit/{limit}/order/{order}', [StoriesController::class, 'getAllStories']);
     Route::get('/detail/{slug}', [StoriesController::class, 'getStoriesBySlug']);
     Route::get('/type/{type}/creator/{creator}', [StoriesController::class, 'getSimiliarStories']);
 });

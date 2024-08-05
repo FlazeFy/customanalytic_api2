@@ -71,13 +71,15 @@ class WeaponsController extends Controller
                         ], Response::HTTP_UNPROCESSABLE_ENTITY);
                     } else {  
                         $uuid = Generator::getUUID();
+                        $user_id = $request->user()->id;
+
                         Weapons::create([
                             'id' => $uuid,
                             'name' => $request->name,
                             'type' => $request->type,
                             'country' => $request->country,
                             'created_at' => date('Y-m-d H:i:s'),
-                            'created_by' => "1",
+                            'created_by' => $user_id,
                             'updated_at' => null,
                             'updated_by' => null,
                         ]);
@@ -112,9 +114,39 @@ class WeaponsController extends Controller
 
     /**
      * @OA\GET(
-     *     path="/api/weapons/limit/{page_limit}/order/{order}/find/{search}",
+     *     path="/api/weapons/limit/{limit}/order/{order}/find/{search}",
      *     summary="Show all weapons with pagination, ordering, and search",
      *     tags={"Weapon"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of weapon per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="asc"
+     *         ),
+     *         description="Order by field name"
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="75 mm"
+     *         ),
+     *         description="Search term based on the field name"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="weapon found"
@@ -125,7 +157,7 @@ class WeaponsController extends Controller
      *     ),
      * )
      */
-    public function getAllWeapons($page_limit, $order, $search){
+    public function getAllWeapons($limit, $order, $search){
         try {
             $search = trim($search);
 
@@ -137,7 +169,7 @@ class WeaponsController extends Controller
                 $wpn = $wpn->where('name', 'LIKE', '%' . $search . '%');
             }
 
-            $wpn = $wpn->paginate($page_limit);
+            $wpn = $wpn->paginate($limit);
         
             return response()->json([
                 //'message' => count($wpn)." Data retrived", 
@@ -210,6 +242,16 @@ class WeaponsController extends Controller
      *     path="/api/weapons/total/bytype/{limit}",
      *     summary="Total weapon by type",
      *     tags={"Weapon"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of weapon per page"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="weapon found"
@@ -247,6 +289,16 @@ class WeaponsController extends Controller
      *     path="/api/weapons/total/bycountry/{limit}",
      *     summary="Total weapon by country",
      *     tags={"Weapon"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of weapon per page"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="weapon found"
