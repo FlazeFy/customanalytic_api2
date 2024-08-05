@@ -32,13 +32,45 @@
                 }
             }
         },
-        "/api/aircraft/limit/{page_limit}/order/{order}/find/{search}": {
+        "/api/aircraft/limit/{limit}/order/{order}/find/{search}": {
             "get": {
                 "tags": [
                     "Aircraft"
                 ],
                 "summary": "Show all aircraft with pagination, ordering, and search",
-                "operationId": "325a43aab7c7ae9d9fbd43dd9dec573e",
+                "operationId": "e35ab7a5e47baf72a239e43adcf891c9",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of aircraft per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order by field name",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "path",
+                        "description": "Search term based on the field name or manufacturer",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Ar"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "aircraft found"
@@ -73,6 +105,18 @@
                 ],
                 "summary": "Total aircraft by role",
                 "operationId": "86721f354fdaa5c6c4fe931a692510cb",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of aircraft per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "aircraft found"
@@ -90,6 +134,18 @@
                 ],
                 "summary": "Total aircraft by manufacturer",
                 "operationId": "c8cdf67e6eb3116f51d8b298b097db5c",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of aircraft per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "aircraft found"
@@ -124,6 +180,18 @@
                 ],
                 "summary": "Total aircraft by country",
                 "operationId": "8438062cc4073c0cef01044617e144ca",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of aircraft per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "aircraft found"
@@ -235,13 +303,45 @@
                 }
             }
         },
-        "/api/books/limit/{page_limit}/order/{order}/find/{search}": {
+        "/api/books/limit/{limit}/order/{order}/find/{search}": {
             "get": {
                 "tags": [
                     "Books"
                 ],
                 "summary": "Show all books with pagination, ordering, and search",
-                "operationId": "22801a4b60876b7c73aa9ec923f575bc",
+                "operationId": "3f3903cee7245081d0d0ec2c80ed25be",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of book per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order by field title",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "path",
+                        "description": "Search term based on the field author or reviewer",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Peter"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "books found"
@@ -259,6 +359,18 @@
                 ],
                 "summary": "Total book by reviewer",
                 "operationId": "66ac360396c09cd53aa7d4f8fcc924bf",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of book per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "book found"
@@ -321,13 +433,45 @@
                 }
             }
         },
-        "/api/casualities/limit/{page_limit}/order/{orderby}/{ordertype}": {
+        "/api/casualities/limit/{limit}/order/{orderby}/{ordertype}": {
             "get": {
                 "tags": [
                     "Casualities"
                 ],
                 "summary": "Show all casualities with ordering",
-                "operationId": "d919840e5e5a64a70798938f5c322423",
+                "operationId": "35d49e1ee41a9f30cc0e6390bffe6b73",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of country per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "orderby",
+                        "in": "path",
+                        "description": "Field name to order",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "military_death"
+                        }
+                    },
+                    {
+                        "name": "ordertype",
+                        "in": "path",
+                        "description": "Order by field that used in param orderby",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "desc"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "casualities found"
@@ -338,13 +482,35 @@
                 }
             }
         },
-        "/api/casualities/totaldeath/bycountry/{order}/limit/{page_limit}": {
+        "/api/casualities/totaldeath/bycountry/{order}/limit/{limit}": {
             "get": {
                 "tags": [
                     "Casualities"
                 ],
                 "summary": "Total death by country",
-                "operationId": "2104d2bf6084687beff41494563558df",
+                "operationId": "58408786fe5debd66eab2148bb2ef74e",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of country per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order by field total (military_death + civilian_death)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "casualities found"
@@ -379,6 +545,18 @@
                 ],
                 "summary": "Total death by sides",
                 "operationId": "32c0dd44813f4d123eb9fcb57bbb60a8",
+                "parameters": [
+                    {
+                        "name": "view",
+                        "in": "path",
+                        "description": "View mode based on military or civilian",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "military"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "casualities found"
@@ -412,13 +590,35 @@
                 }
             }
         },
-        "/api/discussions/limit/{page_limit}/order/{order}": {
+        "/api/discussions/limit/{limit}/order/{order}": {
             "get": {
                 "tags": [
                     "Discussion"
                 ],
                 "summary": "Show all discussions with ordering",
-                "operationId": "418ad27cd777cc5b99a45d07899ab4b5",
+                "operationId": "224076fc31c1cb1d58373be3c8bf88aa",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of discussion per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order by field created at",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "discussion found"
@@ -452,13 +652,35 @@
                 }
             }
         },
-        "/api/events/limit/{page_limit}/order/{order}": {
+        "/api/events/limit/{limit}/order/{order}": {
             "get": {
                 "tags": [
                     "Event"
                 ],
                 "summary": "Show all event with ordering",
-                "operationId": "0bdfd894df8765ae82d25fba9f8a6867",
+                "operationId": "75b1ce212c9781d36ec86292c5224c34",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of events per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order by field event",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "event found"
@@ -528,6 +750,18 @@
                 ],
                 "summary": "Total facilities by type",
                 "operationId": "bc7cd01fe97871b63ea2a54cb1796572",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of facility per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "facilities found"
@@ -545,6 +779,18 @@
                 ],
                 "summary": "Total facilities by country",
                 "operationId": "a0e2ed5390e24afad15f90c038cbf623",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of facility per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "facilities found"
@@ -562,6 +808,18 @@
                 ],
                 "summary": "Total facilities by location and type",
                 "operationId": "a17158ce2d2ff0f3bec482858397015d",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "path",
+                        "description": "Filter by field type. Can be facility type or 'NULL'",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Airfield"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "facilities found"
@@ -626,13 +884,45 @@
                 }
             }
         },
-        "/api/feedbacks/limit/{page_limit}/order/{order}": {
+        "/api/feedbacks/limit/{limit}/order/{order}/{id}": {
             "get": {
                 "tags": [
                     "Feedback"
                 ],
-                "summary": "Show all feedbacks with pagination, ordering, and search",
-                "operationId": "d59ebb07dc868ac6664a5c7736c7940a",
+                "summary": "Show all feedbacks per stories with pagination, ordering, and search",
+                "operationId": "71797070b0659a258a79a230544a470b",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of feedback per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order by field created at",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the stories",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "10e62495-d508-b32f-2e8e-66fa84f43fe8"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "feedback found"
@@ -666,13 +956,45 @@
                 }
             }
         },
-        "/api/ships/limit/{page_limit}/order/{order}/find/{search}": {
+        "/api/ships/limit/{limit}/order/{order}/find/{search}": {
             "get": {
                 "tags": [
                     "Ships"
                 ],
                 "summary": "Show all ships with pagination, ordering, and search",
-                "operationId": "6e27a590e917fff5de74fdbbe185d026",
+                "operationId": "818551166708f51e3652634f2b56c911",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of ships per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order by field name",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "path",
+                        "description": "Search term based on the field name",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Peter"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "ship found"
@@ -724,6 +1046,18 @@
                 ],
                 "summary": "Total ship by country",
                 "operationId": "d089f7797162dc742ac7a4a571a41562",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of ships per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "ship found"
@@ -751,13 +1085,13 @@
                 }
             }
         },
-        "/api/ships/total/bylaunchyear/{limit}": {
+        "/api/ships/total/bylaunchyear": {
             "get": {
                 "tags": [
                     "Ships"
                 ],
                 "summary": "Total ship by launch year",
-                "operationId": "c51cf71e2efa54a3f787879a13a21b19",
+                "operationId": "88f6c9ade8a1a9c4f7d0805c6a80ccaf",
                 "responses": {
                     "200": {
                         "description": "ship found"
@@ -813,6 +1147,18 @@
                 ],
                 "summary": "Show stories by slug",
                 "operationId": "3338718948ca20440cbf189368f83660",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Slug of the stories",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "lorem"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "stories found"
@@ -823,13 +1169,35 @@
                 }
             }
         },
-        "/api/stories/limit/{page_limit}/order/{order}": {
+        "/api/stories/limit/{limit}/order/{order}": {
             "get": {
                 "tags": [
                     "Stories"
                 ],
                 "summary": "Show all stories with pagination and ordering",
-                "operationId": "f40752e1897c302a73c5b435dc6e2836",
+                "operationId": "ef9138a82258bb9d0548c0858e4951bb",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of stories per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order by field created at",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "stories found"
@@ -847,6 +1215,28 @@
                 ],
                 "summary": "Show all similiar stories by type and creator",
                 "operationId": "9fff087f144dd7ad2d3af46b085a0184",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "path",
+                        "description": "Type of the story",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "battle"
+                        }
+                    },
+                    {
+                        "name": "creator",
+                        "in": "path",
+                        "description": "Name of the story creator",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "jhon"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "stories found"
@@ -880,13 +1270,45 @@
                 }
             }
         },
-        "/api/vehicles/limit/{page_limit}/order/{order}/find/{search}": {
+        "/api/vehicles/limit/{limit}/order/{order}/find/{search}": {
             "get": {
                 "tags": [
                     "Vehicle"
                 ],
                 "summary": "Show all vehicles with pagination, ordering, and search",
-                "operationId": "6c463be2ef9ed5cf3190579b795a036f",
+                "operationId": "4c2a059a6d8b927bad7c8d25b993d3ce",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of vehicle per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order by field name",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "path",
+                        "description": "Search term based on the field name or manufacturer",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "SdKfz"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "vehicles found"
@@ -921,6 +1343,18 @@
                 ],
                 "summary": "Total vehicle by role",
                 "operationId": "142369555dedc674854c3ee26f387aa5",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of vehicle per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "vehicle found"
@@ -938,6 +1372,18 @@
                 ],
                 "summary": "Total vehicle by country",
                 "operationId": "83f8b102d5c180a3dbc0999679b7da60",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of vehicle per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "vehicle found"
@@ -1023,13 +1469,45 @@
                 }
             }
         },
-        "/api/weapons/limit/{page_limit}/order/{order}/find/{search}": {
+        "/api/weapons/limit/{limit}/order/{order}/find/{search}": {
             "get": {
                 "tags": [
                     "Weapon"
                 ],
                 "summary": "Show all weapons with pagination, ordering, and search",
-                "operationId": "0c23320a23a60fa5bd1191af5aa180d3",
+                "operationId": "a550297f88ab1cb4e3f229b8040127d3",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of weapon per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order by field name",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "asc"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "path",
+                        "description": "Search term based on the field name",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "75 mm"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "weapon found"
@@ -1064,6 +1542,18 @@
                 ],
                 "summary": "Total weapon by type",
                 "operationId": "ef2b293732f7d1d2711c4cb05355a735",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of weapon per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "weapon found"
@@ -1081,6 +1571,18 @@
                 ],
                 "summary": "Total weapon by country",
                 "operationId": "37b4d36817b1d7ad2c405de4ceef5f4d",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Number of weapon per page",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "weapon found"
@@ -1141,6 +1643,728 @@
                         "description": "Internal Server Error"
                     }
                 }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Admins": {
+                "required": [
+                    "id",
+                    "username",
+                    "fullname",
+                    "email",
+                    "password",
+                    "created_at",
+                    "updated_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "username": {
+                        "description": "Unique Identifier for admin",
+                        "type": "string"
+                    },
+                    "fullname": {
+                        "description": "Admin's fullname",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email for Auth and Task Scheduling",
+                        "type": "string"
+                    },
+                    "password": {
+                        "description": "Sanctum Hashed Password",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the admin was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the admin profile was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Aircraft": {
+                "required": [
+                    "id",
+                    "name",
+                    "primary_role",
+                    "manufacturer",
+                    "country",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "description": "Name of the aircraft",
+                        "type": "string"
+                    },
+                    "primary_role": {
+                        "description": "The primary role of the aircraft",
+                        "type": "string"
+                    },
+                    "manufacturer": {
+                        "description": "Manufacturer / Company of the aircraft",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "The country who invented the aircraft",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the aircraft data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the aircraft data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Books": {
+                "required": [
+                    "id",
+                    "title",
+                    "author",
+                    "reviewer",
+                    "review_date",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "title": {
+                        "description": "Title of the book",
+                        "type": "string"
+                    },
+                    "author": {
+                        "description": "Name of the book's author",
+                        "type": "string"
+                    },
+                    "reviewer": {
+                        "description": "Name of the book's reviewer",
+                        "type": "string"
+                    },
+                    "review_date": {
+                        "description": "Date when the book is reviewed",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the book data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the book data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Casualities": {
+                "required": [
+                    "id",
+                    "country",
+                    "continent",
+                    "total_population",
+                    "military_death",
+                    "civilian_death",
+                    "death_per_pop",
+                    "avg_death_per_pop"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "country": {
+                        "description": "Name of the country",
+                        "type": "string"
+                    },
+                    "continent": {
+                        "description": "Continent where the country is located",
+                        "type": "string"
+                    },
+                    "total_population": {
+                        "description": "Total population of the country",
+                        "type": "string"
+                    },
+                    "military_death": {
+                        "description": "Number of military deaths",
+                        "type": "integer"
+                    },
+                    "civilian_death": {
+                        "description": "Number of civilian deaths",
+                        "type": "integer"
+                    },
+                    "death_per_pop": {
+                        "description": "Death per population ratio",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "avg_death_per_pop": {
+                        "description": "Average death per population ratio",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "military_wounded": {
+                        "description": "Number of military wounded",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the casualties data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the casualties data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Discussions": {
+                "required": [
+                    "id",
+                    "stories_id",
+                    "body",
+                    "reviewer",
+                    "review_date",
+                    "created_at",
+                    "created_by"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "stories_id": {
+                        "description": "Id of the story",
+                        "type": "string"
+                    },
+                    "reply_id": {
+                        "description": "Id of the other discussion who got replied",
+                        "type": "string"
+                    },
+                    "body": {
+                        "description": "The body of the message",
+                        "type": "string"
+                    },
+                    "attachment": {
+                        "description": "Detail of attachment attached in the discussion. Contain attachment url, attachment type, and attachment name",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the story data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the story data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_by": {
+                        "description": "ID of the user / admin who created the discussion",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "updated_by": {
+                        "description": "ID of the user / admin who updated the discussion",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "Error": {
+                "required": [
+                    "id",
+                    "message",
+                    "stack_trace",
+                    "file",
+                    "line",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "description": "Message or description of the error",
+                        "type": "string"
+                    },
+                    "stack_trace": {
+                        "description": "Trail of function calls leading up to the error",
+                        "type": "string"
+                    },
+                    "file": {
+                        "description": "Path of the file where the error is faced",
+                        "type": "string"
+                    },
+                    "line": {
+                        "description": "Line of code in specific file where the error is faced",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the error was faced",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "fixed_at": {
+                        "description": "Timestamp when the dev team finally fix and deploy the bug / error fix",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "faced_by": {
+                        "description": "ID of the user who specific faced the error",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "Events": {
+                "required": [
+                    "id",
+                    "event",
+                    "date_start",
+                    "date_end",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "event": {
+                        "description": "Name of the event",
+                        "type": "string"
+                    },
+                    "date_start": {
+                        "description": "Date of event when the event was start",
+                        "type": "string"
+                    },
+                    "date_end": {
+                        "description": "Date of event when the event was end",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the book data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the book data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Facilities": {
+                "required": [
+                    "id",
+                    "name",
+                    "type",
+                    "location",
+                    "country",
+                    "coordinate",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "description": "Name of the facility",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "Type of the facility",
+                        "type": "string"
+                    },
+                    "location": {
+                        "description": "Location name of the facility",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Country of the facility located",
+                        "type": "string"
+                    },
+                    "coordinate": {
+                        "description": "Date of event when the event was end",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the facility data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the facility data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Feedbacks": {
+                "required": [
+                    "id",
+                    "stories_id",
+                    "body",
+                    "rate",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "stories_id": {
+                        "description": "Id of the story",
+                        "type": "string"
+                    },
+                    "body": {
+                        "description": "The body of feedback",
+                        "type": "string"
+                    },
+                    "rate": {
+                        "description": "Rate of the feedback",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the feedback data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_by": {
+                        "description": "Id of user who created the feedback",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "Histories": {
+                "required": [
+                    "id",
+                    "history_type",
+                    "body",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "history_type": {
+                        "description": "Id of the story",
+                        "type": "string"
+                    },
+                    "body": {
+                        "description": "The body of feedback",
+                        "type": "string"
+                    },
+                    "rate": {
+                        "description": "Rate of the feedback",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the feedback data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_by": {
+                        "description": "Id of the user who created the history",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "Ships": {
+                "required": [
+                    "id",
+                    "name",
+                    "class",
+                    "country",
+                    "year",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "description": "Name of the ship",
+                        "type": "string"
+                    },
+                    "class": {
+                        "description": "Class of the ship",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Country of the ship",
+                        "type": "string"
+                    },
+                    "year": {
+                        "description": "Year when the ships is launched",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the ship data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the ship data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Stories": {
+                "required": [
+                    "id",
+                    "slug_name",
+                    "main_title",
+                    "is_finished",
+                    "story_type",
+                    "date_start",
+                    "story_location",
+                    "story_tag",
+                    "story_detail",
+                    "story_reference",
+                    "created_at",
+                    "created_by"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "slug_name": {
+                        "description": "Slug name of the story",
+                        "type": "string"
+                    },
+                    "main_title": {
+                        "description": "Main title of the story",
+                        "type": "string"
+                    },
+                    "is_finished": {
+                        "description": "Indicates if the story is finished",
+                        "type": "boolean"
+                    },
+                    "story_type": {
+                        "description": "Type of the story",
+                        "type": "string"
+                    },
+                    "date_start": {
+                        "description": "Date when the story was started",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "date_end": {
+                        "description": "Date when the story was end",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "story_result": {
+                        "description": "Result of the story",
+                        "type": "string"
+                    },
+                    "story_location": {
+                        "description": "Location of the story",
+                        "type": "string"
+                    },
+                    "story_tag": {
+                        "description": "Tags associated with the story",
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "story_detail": {
+                        "description": "Detailed description of the story",
+                        "type": "string"
+                    },
+                    "story_stats": {
+                        "description": "Statistics related to the story",
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "story_reference": {
+                        "description": "References for the story",
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the story was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "created_by": {
+                        "description": "User who created the story",
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the story was last updated",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_by": {
+                        "description": "User who last updated the story",
+                        "type": "string"
+                    },
+                    "deleted_at": {
+                        "description": "Timestamp when the story was deleted",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deleted_by": {
+                        "description": "User who deleted the story",
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Users": {
+                "required": [
+                    "id",
+                    "username",
+                    "fullname",
+                    "email",
+                    "role",
+                    "password",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "username": {
+                        "description": "Unique Identifier for admin",
+                        "type": "string"
+                    },
+                    "fullname": {
+                        "description": "Admin's fullname",
+                        "type": "string"
+                    },
+                    "role": {
+                        "description": "User's role for get access to the apps feature",
+                        "type": "string"
+                    },
+                    "profile_img": {
+                        "description": "Profile image of user",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email for Auth and Task Scheduling",
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "description": "Timestamp when the email is validated",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "password": {
+                        "description": "Sanctum Hashed Password",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the user was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the user profile was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Weapons": {
+                "required": [
+                    "id",
+                    "name",
+                    "type",
+                    "country",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary Key",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "description": "Name of the weapon",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "Class of the weapon",
+                        "type": "string"
+                    },
+                    "country": {
+                        "description": "Country of the weapon",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the weapon data was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the weapon data was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
             }
         }
     },

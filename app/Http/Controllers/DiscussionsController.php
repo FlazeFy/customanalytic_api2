@@ -71,6 +71,8 @@ class DiscussionsController extends Controller
                         ], Response::HTTP_UNPROCESSABLE_ENTITY);
                     } else {  
                         $uuid = Generator::getUUID();
+                        $user_id = $request->user()->id;
+
                         Discussions::create([
                             'id' => $uuid,
                             'stories_id' => $request->stories_id,
@@ -78,7 +80,7 @@ class DiscussionsController extends Controller
                             'body' => $request->body,
                             'attachment' => $request->attachment,
                             'created_at' => $request->created_at,
-                            'created_by' => $request->created_by,
+                            'created_by' => $user_id,
                             'updated_at' => $request->update_at,
                             'updated_by' => $request->update_by
                         ]);
@@ -113,9 +115,29 @@ class DiscussionsController extends Controller
 
     /**
      * @OA\GET(
-     *     path="/api/discussions/limit/{page_limit}/order/{order}",
+     *     path="/api/discussions/limit/{limit}/order/{order}",
      *     summary="Show all discussions with ordering",
      *     tags={"Discussion"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of discussion per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="asc"
+     *         ),
+     *         description="Order by field created at"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="discussion found"
@@ -126,12 +148,14 @@ class DiscussionsController extends Controller
      *     ),
      * )
      */
-    public function getAllDiscussion($page_limit, $order)
+    public function getAllDiscussion($limit, $order)
     {
         try {
-            $evt = Discussions::selectRaw('id, stories_id, reply_id, body, attachment, created_at, created_by, updated_at, updated_by')
-                ->orderBy('event', $order)
-                ->paginate($page_limit);
+            $evt = Discussions::selectRaw('discussion.id as discussion_id, stories_id, reply_id, body, attachment, discussion.created_at, discussion.created_by, discussion.updated_at, discussion.updated_by')
+                ->join('stories','stories.id','=','discussion.stories_id')
+                ->orderBy('stories_id', 'DESC')
+                ->orderBy('discussion.created_at', $order)
+                ->paginate($limit);
         
             return response()->json([
                 'message' => count($evt)." Data retrived", 

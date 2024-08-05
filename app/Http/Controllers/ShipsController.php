@@ -71,6 +71,7 @@ class ShipsController extends Controller
                         ], Response::HTTP_UNPROCESSABLE_ENTITY);
                     } else {     
                         $uuid = Generator::getUUID();
+                        $user_id = $request->user()->id;
 
                         Ships::create([
                             'id' => $uuid,
@@ -79,7 +80,7 @@ class ShipsController extends Controller
                             'country' => $request->country,
                             'launch_year' => $request->launch_year,
                             'created_at' => date('Y-m-d H:i:s'),
-                            'created_by' => "1",
+                            'created_by' => $user_id,
                             'updated_at' => null,
                             'updated_by' => null,
                         ]);
@@ -114,9 +115,39 @@ class ShipsController extends Controller
 
     /**
      * @OA\GET(
-     *     path="/api/ships/limit/{page_limit}/order/{order}/find/{search}",
+     *     path="/api/ships/limit/{limit}/order/{order}/find/{search}",
      *     summary="Show all ships with pagination, ordering, and search",
      *     tags={"Ships"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of ships per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="asc"
+     *         ),
+     *         description="Order by field name"
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="Peter"
+     *         ),
+     *         description="Search term based on the field name"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="ship found"
@@ -127,7 +158,7 @@ class ShipsController extends Controller
      *     ),
      * )
      */
-    public function getAllShips($page_limit, $order, $search){
+    public function getAllShips($limit, $order, $search){
         try {
             $search = trim($search);
 
@@ -139,7 +170,7 @@ class ShipsController extends Controller
                 $shp = $shp->where('name', 'LIKE', '%' . $search . '%');
             }
 
-            $shp = $shp->paginate($page_limit);
+            $shp = $shp->paginate($limit);
         
             return response()->json([
                 //'message' => count($shp)." Data retrived", 
@@ -257,6 +288,16 @@ class ShipsController extends Controller
      *     path="/api/ships/total/bycountry/{limit}",
      *     summary="Total ship by country",
      *     tags={"Ships"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of ships per page"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="ship found"
@@ -328,7 +369,7 @@ class ShipsController extends Controller
 
      /**
      * @OA\GET(
-     *     path="/api/ships/total/bylaunchyear/{limit}",
+     *     path="/api/ships/total/bylaunchyear",
      *     summary="Total ship by launch year",
      *     tags={"Ships"},
      *     @OA\Response(

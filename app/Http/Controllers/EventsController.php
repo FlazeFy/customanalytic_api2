@@ -71,13 +71,15 @@ class EventsController extends Controller
                         ], Response::HTTP_UNPROCESSABLE_ENTITY);
                     } else {   
                         $uuid = Generator::getUUID();
+                        $user_id = $request->user()->id;
+
                         Events::create([
                             'id' => $uuid,
                             'event' => $request->event,
                             'date_start' => $request->date_start,
                             'date_end' => $request->date_end,
                             'created_at' => date('Y-m-d H:i:s'),
-                            'created_by' => "1",
+                            'created_by' => $user_id,
                             'updated_at' => null,
                             'updated_by' => null,
                         ]);
@@ -112,9 +114,29 @@ class EventsController extends Controller
 
     /**
      * @OA\GET(
-     *     path="/api/events/limit/{page_limit}/order/{order}",
+     *     path="/api/events/limit/{limit}/order/{order}",
      *     summary="Show all event with ordering",
      *     tags={"Event"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of events per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="asc"
+     *         ),
+     *         description="Order by field event"
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="event found"
@@ -125,11 +147,11 @@ class EventsController extends Controller
      *     ),
      * )
      */
-    public function getAllEvents($page_limit, $order){
+    public function getAllEvents($limit, $order){
         try {
             $evt = Events::selectRaw('id, event, date_start, date_end, DATEDIFF(date_end, date_start) AS period')
                 ->orderBy('event', $order)
-                ->paginate($page_limit);
+                ->paginate($limit);
         
             return response()->json([
                 //'message' => count($evt)." Data retrived", 
