@@ -187,6 +187,128 @@ class AircraftController extends Controller
 
     /**
      * @OA\GET(
+     *     path="/api/aircraft",
+     *     summary="Show all aircraft module or combined API (all data & stats)",
+     *     tags={"Aircraft"},
+     *     @OA\Parameter(
+     *         name="limit_data_all",
+     *         in="query",
+     *         description="Limit the number of aircraft to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=20
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="order_data_all",
+     *         in="query",
+     *         description="Order the aircraft by ascending or descending",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"asc", "desc"},
+     *             default="asc"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="search_data_all",
+     *         in="query",
+     *         description="Search term for filtering aircraft",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             default="%20"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit_stats_by_role",
+     *         in="query",
+     *         description="Limit the number of role to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=7
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit_stats_by_country",
+     *         in="query",
+     *         description="Limit the number of country to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=7
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit_stats_by_manufacturer",
+     *         in="query",
+     *         description="Limit the number of manufacturer to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=7
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="aircraft module found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
+    public function getAircraftModule(Request $request){
+        try {
+            $data_all = json_decode(
+                $this->getAllAircraft(
+                    $request->limit_data_all ?? 20,
+                    $request->order_data_all ?? 'asc',
+                    $request->search_data_all ?? '%20'
+                )->getContent(), true)['data'];
+    
+            $total_by_role = json_decode(
+                $this->getTotalAircraftByRole(
+                    $request->limit_stats_by_role ?? 7
+                )->getContent(), true)['data'];
+    
+            $total_by_country = json_decode(
+                $this->getTotalAircraftByCountry(
+                    $request->limit_stats_by_country ?? 7
+                )->getContent(), true)['data'];
+    
+            $total_by_sides = json_decode(
+                $this->getTotalAircraftBySides()->getContent(), true)['data'];
+    
+            $total_by_manufacturer = json_decode(
+                $this->getTotalAircraftByManufacturer(
+                    $request->limit_stats_by_manufacturer ?? 7
+                )->getContent(), true)['data'];
+
+            return response()->json([
+                "message" => Generator::getMessageTemplate("api_read", 'aircraft module', null),
+                "status" => 'success',
+                "data_all" => $data_all,
+                "stats" => [
+                    "total_by_role" => $total_by_role,
+                    "total_by_country" => $total_by_country,
+                    "total_by_sides" => $total_by_sides,
+                    "total_by_manufacturer" => $total_by_manufacturer
+                ]
+            ], Response::HTTP_OK);
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @OA\GET(
      *     path="/api/aircraft/summary",
      *     summary="Show aircraft summary",
      *     tags={"Aircraft"},

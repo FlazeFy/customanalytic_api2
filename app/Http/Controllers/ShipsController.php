@@ -250,7 +250,7 @@ class ShipsController extends Controller
 
     /**
      * @OA\GET(
-     *     path="/api/ships/total/byclass",
+     *     path="/api/ships/total/by/{limit}",
      *     summary="Total ship by class",
      *     tags={"Ships"},
      *     @OA\Response(
@@ -263,11 +263,12 @@ class ShipsController extends Controller
      *     ),
      * )
      */
-    public function getTotalShipsByClass(){
+    public function getTotalShipsByClass($limit){
         try {
             $shp = Ships::selectRaw('class as context, count(*) as total')
                 ->groupByRaw('1')
                 ->orderBy('total', 'DESC')
+                ->limit($limit)
                 ->get();
         
             return response()->json([
@@ -396,6 +397,116 @@ class ShipsController extends Controller
                 'message' => Generator::getMessageTemplate("api_read", 'ship', null),
                 'status' => 'success',
                 'data' => $shp
+            ], Response::HTTP_OK);
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @OA\GET(
+     *     path="/api/ships",
+     *     summary="Show all ship module or combined API (all data & stats)",
+     *     tags={"Ships"},
+     *     @OA\Parameter(
+     *         name="limit_data_all",
+     *         in="query",
+     *         description="Limit the number of ships to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=20
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="order_data_all",
+     *         in="query",
+     *         description="Order the ships by ascending or descending",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"asc", "desc"},
+     *             default="asc"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="search_data_all",
+     *         in="query",
+     *         description="Search term for filtering ships",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             default="%20"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit_stats_by_country",
+     *         in="query",
+     *         description="Limit the number of country to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=7
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit_stats_by_class",
+     *         in="query",
+     *         description="Limit the number of class to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=7
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="ship module found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
+    public function getShipsModule(Request $request){
+        try {
+            $data_all = json_decode(
+                $this->getAllShips(
+                    $request->limit_data_all ?? 20,
+                    $request->order_data_all ?? 'asc',
+                    $request->search_data_all ?? '%20'
+                )->getContent(), true)['data'];
+    
+            $total_by_class = json_decode(
+                $this->getTotalShipsByClass(
+                    $request->limit_stats_by_class ?? 7
+                )->getContent(), true)['data'];
+    
+            $total_by_country = json_decode(
+                $this->getTotalShipsByCountry(
+                    $request->limit_stats_by_country ?? 7
+                )->getContent(), true)['data'];
+    
+            $total_by_launch_year = json_decode(
+                $this->getTotalShipsByLaunchYear()->getContent(), true)['data'];
+
+            $total_by_sides = json_decode(
+                $this->getTotalShipsBySides()->getContent(), true)['data'];
+
+            return response()->json([
+                "message" => Generator::getMessageTemplate("api_read", 'ship module', null),
+                "status" => 'success',
+                "data_all" => $data_all,
+                "stats" => [
+                    "total_by_class" => $total_by_class,
+                    "total_by_country" => $total_by_country,
+                    "total_by_sides" => $total_by_sides,
+                    "total_by_launch_year" => $total_by_launch_year,
+                ]
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([

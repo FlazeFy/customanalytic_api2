@@ -250,8 +250,8 @@ class BooksController extends Controller
      */
     public function getTotalBooksByYearReview(){
         try {
-            $bok = Books::selectRaw('YEAR(datetime) as year_review, count(*) as total')
-                ->whereRaw('YEAR(datetime) is not null')
+            $bok = Books::selectRaw('YEAR(review_date) as year_review, count(*) as total')
+                ->whereRaw('YEAR(review_date) is not null')
                 ->groupBy('year_review')
                 ->orderBy('year_review', 'ASC')
                 ->get();
@@ -260,6 +260,96 @@ class BooksController extends Controller
                 'message' => Generator::getMessageTemplate("api_read", 'book', null),
                 'status' => 'success',
                 'data' => $bok
+            ], Response::HTTP_OK);
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @OA\GET(
+     *     path="/api/books",
+     *     summary="Show all book module or combined API (all data & stats)",
+     *     tags={"Books"},
+     *     @OA\Parameter(
+     *         name="limit_data_all",
+     *         in="query",
+     *         description="Limit the number of books to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=20
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="order_data_all",
+     *         in="query",
+     *         description="Order the books by ascending or descending",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"asc", "desc"},
+     *             default="asc"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="search_data_all",
+     *         in="query",
+     *         description="Search term for filtering books",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             default="%20"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit_stats_by_reviewer",
+     *         in="query",
+     *         description="Limit the number of reviewers to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=7
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="book module found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
+    public function getBooksModule(Request $request){
+        try {
+            $data_all = json_decode(
+                $this->getAllBooks(
+                    $request->limit_data_all ?? 20,
+                    $request->order_data_all ?? 'asc',
+                    $request->search_data_all ?? '%20'
+                )->getContent(), true)['data'];
+    
+            $total_by_reviewer = json_decode(
+                $this->getTotalBooksByReviewer(
+                    $request->limit_stats_by_reviewer ?? 7
+                )->getContent(), true)['data'];
+
+            $total_by_year_review = json_decode(
+                $this->getTotalBooksByYearReview()->getContent(), true)['data'];
+
+            return response()->json([
+                "message" => Generator::getMessageTemplate("api_read", 'book module', null),
+                "status" => 'success',
+                "data_all" => $data_all,
+                "stats" => [
+                    "total_by_reviewer" => $total_by_reviewer,
+                    "total_by_year_review" => $total_by_year_review,
+                ]
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
