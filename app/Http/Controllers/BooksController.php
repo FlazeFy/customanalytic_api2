@@ -269,6 +269,62 @@ class BooksController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/books",
+     *     summary="Show all book module or combined API (all data & stats)",
+     *     tags={"Books"},
+     *     @OA\Parameter(
+     *         name="limit_data_all",
+     *         in="query",
+     *         description="Limit the number of books to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=20
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="order_data_all",
+     *         in="query",
+     *         description="Order the books by ascending or descending",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"asc", "desc"},
+     *             default="asc"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="search_data_all",
+     *         in="query",
+     *         description="Search term for filtering books",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             default="%20"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit_stats_by_reviewer",
+     *         in="query",
+     *         description="Limit the number of reviewers to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=7
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="book module found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getBooksModule(Request $request){
         try {
             $data_all = json_decode(

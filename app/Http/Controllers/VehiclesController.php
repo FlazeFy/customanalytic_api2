@@ -372,6 +372,72 @@ class VehiclesController extends Controller
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/vehicles",
+     *     summary="Show all vehicles module or combined API (all data & stats)",
+     *     tags={"Vehicle"},
+     *     @OA\Parameter(
+     *         name="limit_data_all",
+     *         in="query",
+     *         description="Limit the number of vehicles to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=20
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="order_data_all",
+     *         in="query",
+     *         description="Order the vehicles by ascending or descending",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"asc", "desc"},
+     *             default="asc"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="search_data_all",
+     *         in="query",
+     *         description="Search term for filtering vehicles",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             default="%20"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit_stats_by_country",
+     *         in="query",
+     *         description="Limit the number of country to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=7
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit_stats_by_role",
+     *         in="query",
+     *         description="Limit the number of role to show",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             default=7
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="vehicle module found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
     public function getVehiclesModule(Request $request){
         try {
             $data_all = json_decode(

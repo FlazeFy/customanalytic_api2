@@ -10,6 +10,87 @@
     },
     "paths": {
         "/api/aircraft": {
+            "get": {
+                "tags": [
+                    "Aircraft"
+                ],
+                "summary": "Show all aircraft module or combined API (all data & stats)",
+                "operationId": "2a66a770ca931b589ad3756a4b983315",
+                "parameters": [
+                    {
+                        "name": "limit_data_all",
+                        "in": "query",
+                        "description": "Limit the number of aircraft to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "order_data_all",
+                        "in": "query",
+                        "description": "Order the aircraft by ascending or descending",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "asc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search_data_all",
+                        "in": "query",
+                        "description": "Search term for filtering aircraft",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "%20"
+                        }
+                    },
+                    {
+                        "name": "limit_stats_by_role",
+                        "in": "query",
+                        "description": "Limit the number of role to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 7
+                        }
+                    },
+                    {
+                        "name": "limit_stats_by_country",
+                        "in": "query",
+                        "description": "Limit the number of country to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 7
+                        }
+                    },
+                    {
+                        "name": "limit_stats_by_manufacturer",
+                        "in": "query",
+                        "description": "Limit the number of manufacturer to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 7
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "aircraft module found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Aircraft"
@@ -281,6 +362,67 @@
             }
         },
         "/api/books": {
+            "get": {
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Show all book module or combined API (all data & stats)",
+                "operationId": "6bfaa1e82b9c2a7d290d1e76fcfaedbb",
+                "parameters": [
+                    {
+                        "name": "limit_data_all",
+                        "in": "query",
+                        "description": "Limit the number of books to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "order_data_all",
+                        "in": "query",
+                        "description": "Order the books by ascending or descending",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "asc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search_data_all",
+                        "in": "query",
+                        "description": "Search term for filtering books",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "%20"
+                        }
+                    },
+                    {
+                        "name": "limit_stats_by_reviewer",
+                        "in": "query",
+                        "description": "Limit the number of reviewers to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 7
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "book module found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Books"
@@ -934,6 +1076,77 @@
             }
         },
         "/api/ships": {
+            "get": {
+                "tags": [
+                    "Ships"
+                ],
+                "summary": "Show all ship module or combined API (all data & stats)",
+                "operationId": "197a693a6c4503cc5e58f22f11542b7f",
+                "parameters": [
+                    {
+                        "name": "limit_data_all",
+                        "in": "query",
+                        "description": "Limit the number of ships to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "order_data_all",
+                        "in": "query",
+                        "description": "Order the ships by ascending or descending",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "asc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search_data_all",
+                        "in": "query",
+                        "description": "Search term for filtering ships",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "%20"
+                        }
+                    },
+                    {
+                        "name": "limit_stats_by_country",
+                        "in": "query",
+                        "description": "Limit the number of country to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 7
+                        }
+                    },
+                    {
+                        "name": "limit_stats_by_class",
+                        "in": "query",
+                        "description": "Limit the number of class to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 7
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ship module found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Ships"
@@ -1022,13 +1235,13 @@
                 }
             }
         },
-        "/api/ships/total/byclass": {
+        "/api/ships/total/by/{limit}": {
             "get": {
                 "tags": [
                     "Ships"
                 ],
                 "summary": "Total ship by class",
-                "operationId": "1233a5614352b7327cf1d7e747ad16ad",
+                "operationId": "17a7c0d67722124298c6d6ae09e7cdc7",
                 "responses": {
                     "200": {
                         "description": "ship found"
@@ -1248,6 +1461,77 @@
             }
         },
         "/api/vehicles": {
+            "get": {
+                "tags": [
+                    "Vehicle"
+                ],
+                "summary": "Show all vehicles module or combined API (all data & stats)",
+                "operationId": "94271f4562b7991061fa7c3b4ef8ce5e",
+                "parameters": [
+                    {
+                        "name": "limit_data_all",
+                        "in": "query",
+                        "description": "Limit the number of vehicles to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "order_data_all",
+                        "in": "query",
+                        "description": "Order the vehicles by ascending or descending",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "asc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search_data_all",
+                        "in": "query",
+                        "description": "Search term for filtering vehicles",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "%20"
+                        }
+                    },
+                    {
+                        "name": "limit_stats_by_country",
+                        "in": "query",
+                        "description": "Limit the number of country to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 7
+                        }
+                    },
+                    {
+                        "name": "limit_stats_by_role",
+                        "in": "query",
+                        "description": "Limit the number of role to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 7
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "vehicle module found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Vehicle"
@@ -1447,6 +1731,77 @@
             }
         },
         "/api/weapons": {
+            "get": {
+                "tags": [
+                    "Weapon"
+                ],
+                "summary": "Show all weapons module or combined API (all data & stats)",
+                "operationId": "32af284cc91d9708e9a875137a8ad335",
+                "parameters": [
+                    {
+                        "name": "limit_data_all",
+                        "in": "query",
+                        "description": "Limit the number of weapons to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "order_data_all",
+                        "in": "query",
+                        "description": "Order the weapons by ascending or descending",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "asc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search_data_all",
+                        "in": "query",
+                        "description": "Search term for filtering weapons",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "%20"
+                        }
+                    },
+                    {
+                        "name": "limit_stats_by_country",
+                        "in": "query",
+                        "description": "Limit the number of country to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 7
+                        }
+                    },
+                    {
+                        "name": "limit_stats_by_type",
+                        "in": "query",
+                        "description": "Limit the number of type to show",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 7
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "weapon module found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "tags": [
                     "Weapon"
