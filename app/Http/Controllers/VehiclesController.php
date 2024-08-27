@@ -372,6 +372,46 @@ class VehiclesController extends Controller
         }
     }
 
+    public function getVehiclesModule(Request $request){
+        try {
+            $data_all = json_decode(
+                $this->getAllVehicles(
+                    $request->limit_data_all ?? 20,
+                    $request->order_data_all ?? 'asc',
+                    $request->search_data_all ?? '%20'
+                )->getContent(), true)['data'];
+    
+            $total_by_role = json_decode(
+                $this->getTotalVehiclesByRole(
+                    $request->limit_stats_by_role ?? 7
+                )->getContent(), true)['data'];
+    
+            $total_by_country = json_decode(
+                $this->getTotalVehiclesByCountry(
+                    $request->limit_stats_by_country ?? 7
+                )->getContent(), true)['data'];
+
+            $total_by_sides = json_decode(
+                $this->getTotalVehiclesBySides()->getContent(), true)['data'];
+
+            return response()->json([
+                "message" => Generator::getMessageTemplate("api_read", 'vehicle module', null),
+                "status" => 'success',
+                "data_all" => $data_all,
+                "stats" => [
+                    "total_by_role" => $total_by_role,
+                    "total_by_country" => $total_by_country,
+                    "total_by_sides" => $total_by_sides,
+                ]
+            ], Response::HTTP_OK);
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      * @OA\PUT(
      *     path="/api/vehicles/{id}",

@@ -368,6 +368,46 @@ class WeaponsController extends Controller
         }
     }
 
+    public function getWeaponsModule(Request $request){
+        try {
+            $data_all = json_decode(
+                $this->getAllWeapons(
+                    $request->limit_data_all ?? 20,
+                    $request->order_data_all ?? 'asc',
+                    $request->search_data_all ?? '%20'
+                )->getContent(), true)['data'];
+    
+            $total_by_type = json_decode(
+                $this->getTotalWeaponsByType(
+                    $request->limit_stats_by_type ?? 7
+                )->getContent(), true)['data'];
+    
+            $total_by_country = json_decode(
+                $this->getTotalWeaponsByCountry(
+                    $request->limit_stats_by_country ?? 7
+                )->getContent(), true)['data'];
+
+            $total_by_sides = json_decode(
+                $this->getTotalWeaponsBySides()->getContent(), true)['data'];
+
+            return response()->json([
+                "message" => Generator::getMessageTemplate("api_read", 'weapon module', null),
+                "status" => 'success',
+                "data_all" => $data_all,
+                "stats" => [
+                    "total_by_type" => $total_by_type,
+                    "total_by_country" => $total_by_country,
+                    "total_by_sides" => $total_by_sides,
+                ]
+            ], Response::HTTP_OK);
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      * @OA\PUT(
      *     path="/api/weapons/{id}",
