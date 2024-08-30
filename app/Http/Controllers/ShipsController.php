@@ -231,8 +231,7 @@ class ShipsController extends Controller
                     ")
                 ->groupBy('class')
                 ->orderBy('total', 'DESC')
-                ->limit(1)
-                ->get();
+                ->first();
 
             return response()->json([
                 //'message' => count($shp)." Data retrived", 
@@ -497,6 +496,9 @@ class ShipsController extends Controller
             $total_by_sides = json_decode(
                 $this->getTotalShipsBySides()->getContent(), true)['data'];
 
+            $summary = json_decode(
+                $this->getShipsSummary()->getContent(), true)['data'];
+
             return response()->json([
                 "message" => Generator::getMessageTemplate("api_read", 'ship module', null),
                 "status" => 'success',
@@ -506,7 +508,8 @@ class ShipsController extends Controller
                     "total_by_country" => $total_by_country,
                     "total_by_sides" => $total_by_sides,
                     "total_by_launch_year" => $total_by_launch_year,
-                ]
+                ],
+                "summary" => $summary
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([

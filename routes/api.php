@@ -124,3 +124,7 @@ Route::prefix('/stories')->group(function () {
     Route::get('/detail/{slug}', [StoriesController::class, 'getStoriesBySlug']);
     Route::get('/type/{type}/creator/{creator}', [StoriesController::class, 'getSimiliarStories']);
 });
+
+Route::prefix('/user')->middleware(['auth:sanctum'])->group(function () {
+    Route::get('/my', [AuthController::class, 'getMyProfile']);
+});

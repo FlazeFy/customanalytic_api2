@@ -288,6 +288,9 @@ class AircraftController extends Controller
                     $request->limit_stats_by_manufacturer ?? 7
                 )->getContent(), true)['data'];
 
+            $summary = json_decode(
+                $this->getAircraftSummary()->getContent(), true)['data'];
+
             return response()->json([
                 "message" => Generator::getMessageTemplate("api_read", 'aircraft module', null),
                 "status" => 'success',
@@ -296,8 +299,9 @@ class AircraftController extends Controller
                     "total_by_role" => $total_by_role,
                     "total_by_country" => $total_by_country,
                     "total_by_sides" => $total_by_sides,
-                    "total_by_manufacturer" => $total_by_manufacturer
-                ]
+                    "total_by_manufacturer" => $total_by_manufacturer,
+                ],
+                "summary" => $summary
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
@@ -343,8 +347,7 @@ class AircraftController extends Controller
                     ")
                 ->groupBy('primary_role')
                 ->orderBy('total', 'DESC')
-                ->limit(1)
-                ->get();
+                ->first();
 
             return response()->json([
                 'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),

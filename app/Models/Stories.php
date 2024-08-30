@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(property="story_type", type="string", description="Type of the story"),
  *     @OA\Property(property="date_start", type="string", format="date", description="Date when the story was started"),
  *     @OA\Property(property="date_end", type="string", format="date", description="Date when the story was end"),
- *     @OA\Property(property="story_result", type="string", description="Result of the story"),
+ *     @OA\Property(property="story_result", type="array", @OA\Items(type="object"), description="Result of the story"),
  *     @OA\Property(property="story_location", type="string", description="Location of the story"),
  *     @OA\Property(property="story_tag", type="array", @OA\Items(type="object"), description="Tags associated with the story"),
  *     @OA\Property(property="story_detail", type="string", description="Detailed description of the story"),
@@ -45,6 +45,7 @@ class Stories extends Model
     protected $casts = [
         'story_tag' => 'array',
         'story_stats' => 'array',
-        'story_reference' => 'array'
+        'story_reference' => 'array',
+        'story_result' => 'array'
     ];
 }

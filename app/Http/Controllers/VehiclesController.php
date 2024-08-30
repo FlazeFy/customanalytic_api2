@@ -223,8 +223,7 @@ class VehiclesController extends Controller
                     ")
                 ->groupBy('primary_role')
                 ->orderBy('total', 'DESC')
-                ->limit(1)
-                ->get();
+                ->first();
 
             return response()->json([
                 //'message' => count($vch)." Data retrived", 
@@ -460,6 +459,9 @@ class VehiclesController extends Controller
             $total_by_sides = json_decode(
                 $this->getTotalVehiclesBySides()->getContent(), true)['data'];
 
+            $summary = json_decode(
+                $this->getVehiclesSummary()->getContent(), true)['data'];
+
             return response()->json([
                 "message" => Generator::getMessageTemplate("api_read", 'vehicle module', null),
                 "status" => 'success',
@@ -468,7 +470,8 @@ class VehiclesController extends Controller
                     "total_by_role" => $total_by_role,
                     "total_by_country" => $total_by_country,
                     "total_by_sides" => $total_by_sides,
-                ]
+                ],
+                "summary" => $summary
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
