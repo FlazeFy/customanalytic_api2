@@ -34,7 +34,7 @@ class Generator
             $res = "Failed to create ".$ctx;
         } else if($type == "api_read"){ 
             $res = $ctx." found";
-        } else if($type == "api_read_failed"){
+        } else if($type == "api_read_empty"){
             $res = $ctx." not found";
         } else if($type == "api_update"){ 
             $res = $ctx." ".$obj." has been updated";

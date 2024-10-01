@@ -17,6 +17,7 @@ use Laravel\Sanctum\HasApiTokens;
  *     @OA\Property(property="username", type="string", description="Unique Identifier for admin"),
  *     @OA\Property(property="fullname", type="string", description="Admin's fullname"),
  *     @OA\Property(property="role", type="string", description="User's role for get access to the apps feature"),
+ *     @OA\Property(property="bio", type="string", description="User's bio"),
  *     @OA\Property(property="profile_img", type="string", description="Profile image of user"),
  *     @OA\Property(property="email", type="string", description="Email for Auth and Task Scheduling"),
  *     @OA\Property(property="email_verified_at", type="string", format="date-time", description="Timestamp when the email is validated"),

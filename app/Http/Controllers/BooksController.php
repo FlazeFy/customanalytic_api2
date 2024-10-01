@@ -150,7 +150,11 @@ class BooksController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="books found"
+     *         description="book found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="book not found"
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -174,11 +178,18 @@ class BooksController extends Controller
 
             $bok = $bok->paginate($limit);
         
-            return response()->json([
-                'message' => Generator::getMessageTemplate("api_read", "book", null), 
-                'status' => 'success',
-                'data' => $bok
-            ], Response::HTTP_OK);
+            if($bok->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", "book", null), 
+                    'status' => 'success',
+                    'data' => $bok
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'book', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',

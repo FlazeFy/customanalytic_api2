@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(property="story_type", type="string", description="Type of the story"),
  *     @OA\Property(property="date_start", type="string", format="date", description="Date when the story was started"),
  *     @OA\Property(property="date_end", type="string", format="date", description="Date when the story was end"),
- *     @OA\Property(property="story_result", type="string", description="Result of the story"),
+ *     @OA\Property(property="story_result", type="array", @OA\Items(type="object"), description="Result of the story"),
  *     @OA\Property(property="story_location", type="string", description="Location of the story"),
  *     @OA\Property(property="story_tag", type="array", @OA\Items(type="object"), description="Tags associated with the story"),
  *     @OA\Property(property="story_detail", type="string", description="Detailed description of the story"),
@@ -28,9 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the story was created"),
  *     @OA\Property(property="created_by", type="string", description="User who created the story"),
  *     @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the story was last updated"),
- *     @OA\Property(property="updated_by", type="string", description="User who last updated the story"),
  *     @OA\Property(property="deleted_at", type="string", format="date-time", description="Timestamp when the story was deleted"),
- *     @OA\Property(property="deleted_by", type="string", description="User who deleted the story")
  * )
  */
 
@@ -38,13 +36,15 @@ class Stories extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    
+    public $incrementing = false;
+
     protected $table = 'stories';
     protected $primaryKey = 'id';
     protected $fillable = ['id', 'slug_name', 'main_title', 'is_finished', 'story_type', 'date_start', 'date_end', 'story_result', 'story_location', 'story_tag', 'story_detail', 'story_stats', 'story_reference', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'];
     protected $casts = [
         'story_tag' => 'array',
         'story_stats' => 'array',
-        'story_reference' => 'array'
+        'story_reference' => 'array',
+        'story_result' => 'array'
     ];
 }

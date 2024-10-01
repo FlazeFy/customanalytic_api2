@@ -152,6 +152,10 @@ class AircraftController extends Controller
      *         description="aircraft found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="aircraft not found"
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error"
      *     ),
@@ -171,12 +175,19 @@ class AircraftController extends Controller
             }
 
             $air = $air->paginate($limit);
-        
-            return response()->json([
-                'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),
-                "status" => 'success',
-                "data" => $air
-            ], Response::HTTP_OK);
+
+            if($air->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),
+                    "status" => 'success',
+                    "data" => $air
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'aircraft', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -288,6 +299,9 @@ class AircraftController extends Controller
                     $request->limit_stats_by_manufacturer ?? 7
                 )->getContent(), true)['data'];
 
+            $summary = json_decode(
+                $this->getAircraftSummary()->getContent(), true)['data'];
+
             return response()->json([
                 "message" => Generator::getMessageTemplate("api_read", 'aircraft module', null),
                 "status" => 'success',
@@ -296,8 +310,9 @@ class AircraftController extends Controller
                     "total_by_role" => $total_by_role,
                     "total_by_country" => $total_by_country,
                     "total_by_sides" => $total_by_sides,
-                    "total_by_manufacturer" => $total_by_manufacturer
-                ]
+                    "total_by_manufacturer" => $total_by_manufacturer,
+                ],
+                "summary" => $summary
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([
@@ -333,7 +348,7 @@ class AircraftController extends Controller
                         GROUP BY country
                         ORDER BY count(id) DESC LIMIT 3
                     ) q) most_produced_by_country, 
-                    (SELECT CAST(AVG(total) as int) 
+                    (SELECT CAST(AVG(total) as UNSIGNED) 
                     FROM (
                         SELECT COUNT(*) as total
                         FROM aircraft
@@ -343,8 +358,7 @@ class AircraftController extends Controller
                     ")
                 ->groupBy('primary_role')
                 ->orderBy('total', 'DESC')
-                ->limit(1)
-                ->get();
+                ->first();
 
             return response()->json([
                 'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),

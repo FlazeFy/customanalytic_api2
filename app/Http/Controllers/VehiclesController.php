@@ -150,7 +150,11 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="vehicles found"
+     *         description="vehicle found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="vehicle not found"
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -173,12 +177,18 @@ class VehiclesController extends Controller
 
             $vhc = $vhc->paginate($limit);
         
-            return response()->json([
-                //'message' => count($vhc)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
-                'status' => 'success',
-                'data' => $vhc
-            ], Response::HTTP_OK);
+            if($vhc->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
+                    'status' => 'success',
+                    'data' => $vhc
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'vehicle', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -213,7 +223,7 @@ class VehiclesController extends Controller
                         GROUP BY country
                         ORDER BY count(id) DESC LIMIT 3
                     ) q) most_produced_by_country, 
-                    (SELECT CAST(AVG(total) as int) 
+                    (SELECT CAST(AVG(total) as UNSIGNED) 
                     FROM (
                         SELECT COUNT(*) as total
                         FROM vehicles
@@ -223,8 +233,7 @@ class VehiclesController extends Controller
                     ")
                 ->groupBy('primary_role')
                 ->orderBy('total', 'DESC')
-                ->limit(1)
-                ->get();
+                ->first();
 
             return response()->json([
                 //'message' => count($vch)." Data retrived", 
@@ -460,6 +469,9 @@ class VehiclesController extends Controller
             $total_by_sides = json_decode(
                 $this->getTotalVehiclesBySides()->getContent(), true)['data'];
 
+            $summary = json_decode(
+                $this->getVehiclesSummary()->getContent(), true)['data'];
+
             return response()->json([
                 "message" => Generator::getMessageTemplate("api_read", 'vehicle module', null),
                 "status" => 'success',
@@ -468,7 +480,8 @@ class VehiclesController extends Controller
                     "total_by_role" => $total_by_role,
                     "total_by_country" => $total_by_country,
                     "total_by_sides" => $total_by_sides,
-                ]
+                ],
+                "summary" => $summary
             ], Response::HTTP_OK);
         } catch(\Exception $e) {
             return response()->json([

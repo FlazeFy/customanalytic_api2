@@ -15,6 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
  *     @OA\Property(property="id", type="string", format="uuid", description="Primary Key"),
  *     @OA\Property(property="username", type="string", description="Unique Identifier for admin"),
  *     @OA\Property(property="fullname", type="string", description="Admin's fullname"),
+ *     @OA\Property(property="bio", type="string", description="Admin's bio"),
  *     @OA\Property(property="email", type="string", description="Email for Auth and Task Scheduling"),
  *     @OA\Property(property="password", type="string", description="Sanctum Hashed Password"),
  * 
@@ -31,6 +32,6 @@ class Admin extends Authenticatable
 
     protected $table = 'admins';
     protected $primaryKey = 'id';
-    protected $fillable = ['id', 'username', 'fullname', 'email', 'password', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'username', 'fullname', 'email', 'bio', 'password', 'created_at', 'updated_at'];
 
 }
