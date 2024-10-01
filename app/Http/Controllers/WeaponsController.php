@@ -152,6 +152,10 @@ class WeaponsController extends Controller
      *         description="weapon found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="weapon not found"
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error"
      *     ),
@@ -171,12 +175,18 @@ class WeaponsController extends Controller
 
             $wpn = $wpn->paginate($limit);
         
-            return response()->json([
-                //'message' => count($wpn)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
-                'status' => 'success',
-                'data' => $wpn
-            ], Response::HTTP_OK);
+            if($wpn->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
+                    'status' => 'success',
+                    'data' => $wpn
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'weapon', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -210,7 +220,7 @@ class WeaponsController extends Controller
                         GROUP BY country
                         ORDER BY count(id) DESC LIMIT 3
                     ) q) most_produced_by_country, 
-                    (SELECT CAST(AVG(total) as int) 
+                    (SELECT CAST(AVG(total) as UNSIGNED) 
                     FROM (
                         SELECT COUNT(*) as total
                         FROM weapons

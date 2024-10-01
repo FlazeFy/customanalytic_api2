@@ -36,7 +36,7 @@ class FacilitiesController extends Controller
                         GROUP BY country
                         ORDER BY count(id) DESC LIMIT 3
                     ) q) most_built_by_country, 
-                    (SELECT CAST(AVG(total) as int) 
+                    (SELECT CAST(AVG(total) as UNSIGNED) 
                     FROM (
                         SELECT COUNT(*) as total
                         FROM facilities

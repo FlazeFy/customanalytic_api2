@@ -142,6 +142,10 @@ class EventsController extends Controller
      *         description="event found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="event not found"
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error"
      *     ),
@@ -153,11 +157,18 @@ class EventsController extends Controller
                 ->orderBy('event', $order)
                 ->paginate($limit);
         
-            return response()->json([
-                //'message' => count($evt)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'event', null),
-                "data" => $evt
-            ], Response::HTTP_OK);
+            if($evt->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'event', null),
+                    "data" => $evt,
+                    'status' => 'success'
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'event', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',

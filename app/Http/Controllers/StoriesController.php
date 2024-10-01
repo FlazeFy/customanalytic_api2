@@ -47,7 +47,7 @@ class StoriesController extends Controller
             $story = Template::getSelectTemplate("story_card", null);
             $props = Template::getSelectTemplate("properties", $main_table);
 
-            $str = Stories::selectRaw($story.",".$props.",is_finished, story_type, date_start, date_end, story_result, story_location, story_tag, story_detail, story_stats, story_reference")
+            $str = Stories::selectRaw($story.",".$props.",is_finished,$main_table.id,story_type, date_start, date_end, story_result, story_location, story_tag, story_detail, story_stats, story_reference")
                 ->leftjoin('admins', 'admins.id', '=', 'stories.created_by')
                 ->leftjoin('users', 'users.id', '=', 'stories.created_by')
                 ->groupBy($main_table.'.id')
@@ -105,6 +105,10 @@ class StoriesController extends Controller
      *         description="stories found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="stories not found"
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error"
      *     ),
@@ -126,11 +130,18 @@ class StoriesController extends Controller
 
             $str = $str->paginate($limit);
         
-            return response()->json([
-                'message' => Generator::getMessageTemplate("api_read", $main_table, null), 
-                'status' => 'success',
-                'data' => $str
-            ], Response::HTTP_OK);
+            if($str->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", $main_table, null), 
+                    'status' => 'success',
+                    'data' => $str
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", $main_table, null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',

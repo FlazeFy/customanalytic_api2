@@ -28,9 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  *     @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the story was created"),
  *     @OA\Property(property="created_by", type="string", description="User who created the story"),
  *     @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the story was last updated"),
- *     @OA\Property(property="updated_by", type="string", description="User who last updated the story"),
  *     @OA\Property(property="deleted_at", type="string", format="date-time", description="Timestamp when the story was deleted"),
- *     @OA\Property(property="deleted_by", type="string", description="User who deleted the story")
  * )
  */
 
@@ -38,7 +36,8 @@ class Stories extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    
+    public $incrementing = false;
+
     protected $table = 'stories';
     protected $primaryKey = 'id';
     protected $fillable = ['id', 'slug_name', 'main_title', 'is_finished', 'story_type', 'date_start', 'date_end', 'story_result', 'story_location', 'story_tag', 'story_detail', 'story_stats', 'story_reference', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted_at', 'deleted_by'];

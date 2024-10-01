@@ -50,6 +50,10 @@ class CasualitiesController extends Controller
      *         description="casualities found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="casualities not found"
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error"
      *     ),
@@ -61,11 +65,18 @@ class CasualitiesController extends Controller
                 ->orderBy($orderby, $ordertype)
                 ->paginate($limit);
         
-            return response()->json([
-                'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
-                'status' => 'success',
-                'data' => $cst
-            ], Response::HTTP_OK);
+            if($cst->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
+                    'status' => 'success',
+                    'data' => $cst
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'casualities', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -104,6 +115,10 @@ class CasualitiesController extends Controller
      *         description="casualities found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="casualities not found"
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error"
      *     ),
@@ -122,11 +137,18 @@ class CasualitiesController extends Controller
                     ->paginate($limit);
             }   
         
-            return response()->json([
-                'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
-                'status' => 'success',
-                'data' => $cst
-            ], Response::HTTP_OK);
+            if($cst->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
+                    'status' => 'success',
+                    'data' => $cst
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'casualities', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',

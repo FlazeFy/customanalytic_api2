@@ -110,13 +110,14 @@ Route::prefix('/casualities')->group(function () {
 });
 
 Route::prefix('/discussions')->group(function () {
-    Route::post('/', [DiscussionsController::class, 'createDiscussion']);
-    Route::get('/limit/{limit}/order/{order}', [DiscussionsController::class, 'getAllDiscussions']); // belum implement
+    Route::post('/', [DiscussionsController::class, 'createDiscussion'])->middleware(['auth:sanctum']);
+    Route::get('/limit/{limit}/order/{order}/{id}', [DiscussionsController::class, 'getAllDiscussion']); 
 });
 
 Route::prefix('/feedbacks')->group(function () {
-    Route::post('/', [FeedbacksController::class, 'createFeedback']);
+    Route::post('/', [FeedbacksController::class, 'createFeedback'])->middleware(['auth:sanctum']);
     Route::get('/limit/{limit}/order/{order}/{id}', [FeedbacksController::class, 'getAllFeedback']);
+    Route::get('/stats/{id}', [FeedbacksController::class, 'getStoriesFeedbackStats']);
 });
 
 Route::prefix('/stories')->group(function () {

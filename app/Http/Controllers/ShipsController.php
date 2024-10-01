@@ -153,6 +153,10 @@ class ShipsController extends Controller
      *         description="ship found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="ship not found"
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error"
      *     ),
@@ -172,12 +176,18 @@ class ShipsController extends Controller
 
             $shp = $shp->paginate($limit);
         
-            return response()->json([
-                //'message' => count($shp)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'ship', null),
-                'status' => 'success',
-                'data' => $shp
-            ], Response::HTTP_OK);
+            if($shp->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'ship', null),
+                    'status' => 'success',
+                    'data' => $shp
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'ship', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -212,7 +222,7 @@ class ShipsController extends Controller
                         GROUP BY country
                         ORDER BY count(id) DESC LIMIT 3
                     ) q) most_produced_by_country, 
-                    (SELECT CAST(AVG(total) as int) 
+                    (SELECT CAST(AVG(total) as UNSIGNED) 
                     FROM (
                         SELECT COUNT(*) as total
                         FROM ships

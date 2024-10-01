@@ -71,7 +71,7 @@ class FeedbacksController extends Controller
                         'stories_id' => $request->stories_id,
                         'body' => $request->body,
                         'rate' => $request->rate,
-                        'created_at' => $request->created_at,
+                        'created_at' => date("Y-m-d H:i:s"),
                         'created_by' => $user_id,
                     ]);
 
@@ -80,7 +80,7 @@ class FeedbacksController extends Controller
                         'history_type' => $data->type, 
                         'body' => $data->body,
                         'created_at' => date("Y-m-d H:i:s"),
-                        'created_by' => '1' // for now
+                        'created_by' => $user_id,
                     ]);
             
                     return response()->json([
@@ -137,6 +137,10 @@ class FeedbacksController extends Controller
      *         description="feedback found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="feedback not found"
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error"
      *     ),
@@ -145,15 +149,93 @@ class FeedbacksController extends Controller
     public function getAllFeedback($limit, $order, $id)
     {
         try {
-            $evt = Feedbacks::selectRaw('id, stories_id, body, rate, created_at, created_by')
+            $res = Feedbacks::selectRaw("body, rate, feedbacks.created_at,
+                    CASE 
+                        WHEN admins.username IS NOT NULL THEN admins.username
+                        WHEN users.username IS NOT NULL THEN users.username
+                        ELSE NULL
+                    END AS created_by
+                ")
+                ->leftjoin('users','users.id','=','feedbacks.created_by')
+                ->leftjoin('admins','admins.id','=','feedbacks.created_by')
                 ->where('stories_id', $id)
                 ->orderBy('created_at', $order)
                 ->paginate($limit);
         
+            if($res->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'feedback', null), 
+                    "data" => $res,
+                    'status' => 'success'
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'feedback', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
+        } catch(\Exception $e) {
             return response()->json([
-                'message' => count($evt)." Data retrived", 
-                "data" => $evt
-            ], Response::HTTP_OK);
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @OA\GET(
+     *     path="/api/feedbacks/stats/{id}",
+     *     summary="Show stories feedback stats by id",
+     *     tags={"Feedback"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="10e62495-d508-b32f-2e8e-66fa84f43fe8"
+     *         ),
+     *         description="ID of the stories"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="feedback stats found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error"
+     *     ),
+     * )
+     */
+    public function getStoriesFeedbackStats($id)
+    {
+        try {
+            $res = Feedbacks::selectRaw("rate, CAST(COUNT(rate) as UNSIGNED) as count")
+                ->join('stories','stories.id','=','feedbacks.stories_id')
+                ->where('stories_id', $id)
+                ->groupby('rate')
+                ->get();
+
+            if(count($res) > 0){
+                $res_summary = Feedbacks::selectRaw("CAST(SUM(1) as UNSIGNED) as total, CAST(AVG(rate) as UNSIGNED) as average")
+                    ->where('stories_id', $id)
+                    ->groupby('stories_id')
+                    ->first();
+            
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'feedback stats', null), 
+                    'data' => [
+                        'stats' => $res,
+                        'summary' => $res_summary
+                    ],
+                    'status' => 'success'
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'feedback stats', null),
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',

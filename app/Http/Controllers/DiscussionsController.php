@@ -49,60 +49,51 @@ class DiscussionsController extends Controller
                     "status" => 'error'
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
-                $check = Discussions::selectRaw('1')->where('stories_id', $request->stories_id)->first();
-                
-                if($check == null){
-                    $msg = Generator::getMessageTemplate("api_create", "discussion", $request->stories_id);
-                    $data = new Request();
-                    $obj = [
-                        'type' => "event",
-                        'body' => $msg
-                    ];
-                    $data->merge($obj);
+                $msg = Generator::getMessageTemplate("api_create", "discussion", null);
+                $data = new Request();
+                $obj = [
+                    'type' => "event",
+                    'body' => $msg
+                ];
+                $data->merge($obj);
 
-                    $validatorHistory = Validation::getValidateHistory($data);
+                $validatorHistory = Validation::getValidateHistory($data);
 
-                    if ($validatorHistory->fails()) {
-                        $errors = $validatorHistory->messages();
+                if ($validatorHistory->fails()) {
+                    $errors = $validatorHistory->messages();
 
-                        return response()->json([
-                            'status' => 'failed',
-                            'result' => $errors,
-                        ], Response::HTTP_UNPROCESSABLE_ENTITY);
-                    } else {  
-                        $uuid = Generator::getUUID();
-                        $user_id = $request->user()->id;
-
-                        Discussions::create([
-                            'id' => $uuid,
-                            'stories_id' => $request->stories_id,
-                            'reply_id' => $request->reply_id,
-                            'body' => $request->body,
-                            'attachment' => $request->attachment,
-                            'created_at' => $request->created_at,
-                            'created_by' => $user_id,
-                            'updated_at' => $request->update_at,
-                            'updated_by' => $request->update_by
-                        ]);
-
-                        Histories::create([
-                            'id' => Generator::getUUID(),
-                            'history_type' => $data->type, 
-                            'body' => $data->body,
-                            'created_at' => date("Y-m-d H:i:s"),
-                            'created_by' => '1' // for now
-                        ]);
-                
-                        return response()->json([
-                            'message' => $msg,
-                            'status' => 'success'
-                        ], Response::HTTP_OK);
-                    }
-                }else{
                     return response()->json([
-                        "message" => "Data is already exist", 
-                        "status" => 'failed'
-                    ], Response::HTTP_CONFLICT);
+                        'status' => 'failed',
+                        'result' => $errors,
+                    ], Response::HTTP_UNPROCESSABLE_ENTITY);
+                } else {  
+                    $uuid = Generator::getUUID();
+                    $user_id = $request->user()->id;
+
+                    Discussions::create([
+                        'id' => $uuid,
+                        'stories_id' => $request->stories_id,
+                        'reply_id' => $request->reply_id,
+                        'body' => $request->body,
+                        'attachment' => $request->attachment,
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'created_by' => $user_id,
+                        'updated_at' => null,
+                        'updated_by' => null
+                    ]);
+
+                    Histories::create([
+                        'id' => Generator::getUUID(),
+                        'history_type' => $data->type, 
+                        'body' => $data->body,
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'created_by' => $user_id,
+                    ]);
+            
+                    return response()->json([
+                        'message' => $msg,
+                        'status' => 'success'
+                    ], Response::HTTP_OK);
                 }
             }
         } catch(\Exception $e) {
@@ -143,24 +134,50 @@ class DiscussionsController extends Controller
      *         description="discussion found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="discussion not found"
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error"
      *     ),
      * )
      */
-    public function getAllDiscussion($limit, $order)
+    public function getAllDiscussion($limit, $order, $id)
     {
         try {
-            $evt = Discussions::selectRaw('discussion.id as discussion_id, stories_id, reply_id, body, attachment, discussion.created_at, discussion.created_by, discussion.updated_at, discussion.updated_by')
-                ->join('stories','stories.id','=','discussion.stories_id')
+            $evt = Discussions::selectRaw("discussions.id as discussion_id, stories_id, reply_id, body, attachment, discussions.created_at, discussions.updated_at,
+                    CASE
+                        WHEN admins.username IS NOT NULL THEN admins.username
+                        WHEN users.username IS NOT NULL THEN users.username
+                        ELSE NULL
+                    END AS created_by,
+                    CASE
+                        WHEN admins.username IS NOT NULL THEN 'admin'
+                        WHEN users.username IS NOT NULL THEN users.role
+                        ELSE NULL
+                    END AS role
+                ")
+                ->join('stories','stories.id','=','discussions.stories_id')
+                ->leftjoin('users','users.id','=','discussions.created_by')
+                ->leftjoin('admins','admins.id','=','discussions.created_by')
+                ->where('stories.id',$id)
                 ->orderBy('stories_id', 'DESC')
-                ->orderBy('discussion.created_at', $order)
+                ->orderBy('discussions.created_at', $order)
                 ->paginate($limit);
         
-            return response()->json([
-                'message' => count($evt)." Data retrived", 
-                "data" => $evt
-            ], Response::HTTP_OK);
+            if($evt->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", "discussion", null), 
+                    "data" => $evt,
+                    'status' => 'success'
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'discussion', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
