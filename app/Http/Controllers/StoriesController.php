@@ -106,11 +106,32 @@ class StoriesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="stories found"
+     *         description="stories found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Stories found"),
+     *             @OA\Property(property="data", type="object",
+     *                  @OA\Property(property="data", type="array",
+     *                      @OA\Items(
+     *                          @OA\Property(property="slug_name", type="string", example="test_story"),
+     *                          @OA\Property(property="main_title", type="string", example="Test Story"),
+     *                          @OA\Property(property="story_type", type="string", example="battle"),
+     *                          @OA\Property(property="story_detail", type="string", example="<p>helo</p>"),
+     *                          @OA\Property(property="created_at", type="string", example="2024-09-03 00:28:28"),
+     *                          @OA\Property(property="created_by", type="string", example="testeradmin"),
+     *                          @OA\Property(property="updated_at", type="string", example="2024-09-03 00:28:28"),
+     *                      )
+     *                  )
+     *             ),
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="stories not found"
+     *         description="stories failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="stories not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -239,7 +260,11 @@ class StoriesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="stories not found"
+     *         description="stories failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="stories not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -294,7 +319,11 @@ class StoriesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="stories not found"
+     *         description="stories failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="stories not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,

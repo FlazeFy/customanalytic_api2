@@ -20,6 +20,14 @@ class FacilitiesController extends Controller
      *         description="facilities found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="facilities failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="facilities not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error",
      *         @OA\JsonContent(
@@ -93,6 +101,14 @@ class FacilitiesController extends Controller
      *         description="facilities found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="facilities failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="facilities not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error",
      *         @OA\JsonContent(
@@ -148,6 +164,14 @@ class FacilitiesController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="facilities found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="facilities failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="facilities not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -207,6 +231,14 @@ class FacilitiesController extends Controller
      *         description="facilities found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="facilities failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="facilities not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error",
      *         @OA\JsonContent(
@@ -259,6 +291,14 @@ class FacilitiesController extends Controller
      *         description="facilities found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="facilities failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="facilities not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error",
      *         @OA\JsonContent(
@@ -304,6 +344,14 @@ class FacilitiesController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="facilities found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="facilities failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="facilities not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,

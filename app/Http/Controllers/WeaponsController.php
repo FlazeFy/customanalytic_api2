@@ -18,9 +18,18 @@ class WeaponsController extends Controller
      *     path="/api/weapons",
      *     summary="Add weapon",
      *     tags={"Weapon"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="New weapon ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=409,
@@ -93,7 +102,7 @@ class WeaponsController extends Controller
                             'history_type' => $data->type, 
                             'body' => $data->body,
                             'created_at' => date("Y-m-d H:i:s"),
-                            'created_by' => '1' // for now
+                            'created_by' => $user_id
                         ]);
                 
                         return response()->json([
@@ -153,11 +162,29 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="weapon found"
+     *         description="weapon found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Weapon found"),
+     *             @OA\Property(property="data", type="object",
+     *                  @OA\Property(property="data", type="array",
+     *                      @OA\Items(
+     *                          @OA\Property(property="id", type="string", example="103"),
+     *                          @OA\Property(property="name", type="string", example="75 mm How M1"),
+     *                          @OA\Property(property="type", type="string", example="Field Gun"),
+     *                          @OA\Property(property="country", type="string", example="United States")
+     *                      )
+     *                  )
+     *             ),
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="weapon not found"
+     *         description="weapon failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="weapon not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -211,6 +238,14 @@ class WeaponsController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="weapon found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="weapon failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="weapon not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -281,7 +316,25 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="weapon found"
+     *         description="weapon found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Weapon found"),
+     *             @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(property="context", type="string", example="Field Gun"),
+     *                      @OA\Property(property="total", type="number", example=80)
+     *                  )
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="weapon failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="weapon not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -338,7 +391,25 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="weapon found"
+     *         description="weapon found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Weapon found"),
+     *             @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(property="context", type="string", example="United States"),
+     *                      @OA\Property(property="total", type="number", example=80)
+     *                  )
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="weapon failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="weapon not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -385,7 +456,25 @@ class WeaponsController extends Controller
      *     tags={"Weapon"},
      *     @OA\Response(
      *         response=200,
-     *         description="weapon found"
+     *         description="weapon found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Weapon found"),
+     *             @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(property="context", type="string", example="axis"),
+     *                      @OA\Property(property="total", type="number", example=80)
+     *                  )
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="weapon failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="weapon not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -544,9 +633,18 @@ class WeaponsController extends Controller
      *     path="/api/weapons/{id}",
      *     summary="Update weapon by id",
      *     tags={"Weapon"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="weapon ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=422,
@@ -592,12 +690,14 @@ class WeaponsController extends Controller
                         'result' => $errors,
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 } else {  
+                    $user_id = $request->user()->id;
+
                     Weapons::where('id', $id)->update([
                         'name' => $request->name,
                         'type' => $request->type,
                         'country' => $request->country,
                         'updated_at' => date('Y-m-d H:i:s'),
-                        'updated_by' => null,
+                        'updated_by' => $user_id,
                     ]);
 
                     Histories::create([
@@ -605,7 +705,7 @@ class WeaponsController extends Controller
                         'history_type' => $data->type, 
                         'body' => $data->body,
                         'created_at' => date("Y-m-d H:i:s"),
-                        'created_by' => '1' // for now
+                        'created_by' => $user_id
                     ]);
             
                     return response()->json([
@@ -627,9 +727,18 @@ class WeaponsController extends Controller
      *     path="/api/weapons/{id}",
      *     summary="Delete weapon by id",
      *     tags={"Weapon"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="weapon ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -665,14 +774,15 @@ class WeaponsController extends Controller
                     'result' => $errors,
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {  
-                Weapons::destroy($id);
+                $user_id = $request->user()->id;
 
+                Weapons::destroy($id);
                 Histories::create([
                     'id' => Generator::getUUID(),
                     'history_type' => $data->type, 
                     'body' => $data->body,
                     'created_at' => date("Y-m-d H:i:s"),
-                    'created_by' => '1' // for now
+                    'created_by' => $user_id
                 ]);
 
                 return response()->json([

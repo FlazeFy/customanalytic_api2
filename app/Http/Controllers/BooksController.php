@@ -18,9 +18,18 @@ class BooksController extends Controller
      *     path="/api/books",
      *     summary="Add book",
      *     tags={"Books"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="New book ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=409,
@@ -32,7 +41,11 @@ class BooksController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -90,7 +103,7 @@ class BooksController extends Controller
                             'history_type' => $data->type, 
                             'body' => $data->body,
                             'created_at' => date("Y-m-d H:i:s"),
-                            'created_by' => '1' // for now
+                            'created_by' => $user_id
                         ]);
                 
                         return response()->json([
@@ -158,7 +171,11 @@ class BooksController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -219,7 +236,11 @@ class BooksController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -255,7 +276,11 @@ class BooksController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -332,7 +357,11 @@ class BooksController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -375,9 +404,18 @@ class BooksController extends Controller
      *     path="/api/books/{id}",
      *     summary="Update book by id",
      *     tags={"Books"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="book ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=422,
@@ -385,7 +423,11 @@ class BooksController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -419,13 +461,15 @@ class BooksController extends Controller
                         'result' => $errors,
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 } else {
+                    $user_id = $request->user()->id;
+
                     Books::where('id', $id)->update([
                         'title' => $request->title,
                         'author' => $request->author,
                         'reviewer' => $request->reviewer,
                         'review_date' => $request->review_date,
                         'updated_at' => date('Y-m-d H:i:s'),
-                        'updated_by' => null,
+                        'updated_by' => $user_id,
                     ]);
 
                     Histories::create([
@@ -433,11 +477,11 @@ class BooksController extends Controller
                         'history_type' => $data->type, 
                         'body' => $data->body,
                         'created_at' => date("Y-m-d H:i:s"),
-                        'created_by' => '1' // for now
+                        'created_by' => $user_id
                     ]);
             
                     return response()->json([
-                        'message' => $msg, //masi belum fix
+                        'message' => $msg,
                         'status' => 'success'
                     ], Response::HTTP_OK);
                 }
@@ -455,13 +499,26 @@ class BooksController extends Controller
      *     path="/api/books/{id}",
      *     summary="Delete book by id",
      *     tags={"Books"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="book ... has been updated"
      *     ),
      *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -489,6 +546,7 @@ class BooksController extends Controller
                     'result' => $errors,
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
+                $user_id = $request->user()->id;
                 Books::destroy($id);
 
                 Histories::create([
@@ -496,7 +554,7 @@ class BooksController extends Controller
                     'history_type' => $data->type, 
                     'body' => $data->body,
                     'created_at' => date("Y-m-d H:i:s"),
-                    'created_by' => '1' // for now
+                    'created_by' => $user_id
                 ]);
 
                 return response()->json([

@@ -18,7 +18,6 @@ use App\Http\Controllers\StoriesController;
 use Spatie\LaravelIgnition\Solutions\LivewireDiscoverSolution;
 
 Route::post('/login', [AuthController::class, 'login']);
-
 Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum']);
 
 Route::prefix('/aircraft')->group(function () {    
@@ -30,9 +29,9 @@ Route::prefix('/aircraft')->group(function () {
     Route::get('/', [AircraftController::class, 'getAircraftModule']);
     Route::get('/summary', [AircraftController::class, 'getAircraftSummary']);
 
-    Route::post('/', [AircraftController::class, 'createAircraft']);
-    Route::delete('/{id}', [AircraftController::class, 'deleteAircraftById']);
-    Route::put('/{id}', [AircraftController::class, 'updateAircraftById']);
+    Route::post('/', [AircraftController::class, 'createAircraft'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [AircraftController::class, 'deleteAircraftById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [AircraftController::class, 'updateAircraftById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/ships')->group(function () {
@@ -44,9 +43,9 @@ Route::prefix('/ships')->group(function () {
     Route::get('/summary', [ShipsController::class, 'getShipsSummary']);
     Route::get('/', [ShipsController::class, 'getShipsModule']);
 
-    Route::post('/', [ShipsController::class, 'createShip']);
-    Route::delete('/{id}', [ShipsController::class, 'deleteShipById']);
-    Route::put('/{id}', [ShipsController::class, 'updateShipById']);
+    Route::post('/', [ShipsController::class, 'createShip'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [ShipsController::class, 'deleteShipById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [ShipsController::class, 'updateShipById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/vehicles')->group(function () {    
@@ -57,9 +56,9 @@ Route::prefix('/vehicles')->group(function () {
     Route::get('/summary', [VehiclesController::class, 'getVehiclesSummary']);
     Route::get('/', [VehiclesController::class, 'getVehiclesModule']);
 
-    Route::post('/', [VehiclesController::class, 'createVehicles']);
-    Route::delete('/{id}', [VehiclesController::class, 'deleteVehiclesById']);
-    Route::put('/{id}', [VehiclesController::class, 'updateVehicleById']);
+    Route::post('/', [VehiclesController::class, 'createVehicles'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [VehiclesController::class, 'deleteVehiclesById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [VehiclesController::class, 'updateVehicleById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/facilities')->group(function () {
@@ -79,16 +78,17 @@ Route::prefix('/weapons')->group(function () {
     Route::get('/summary', [WeaponsController::class, 'getWeaponsSummary']);
     Route::get('/', [WeaponsController::class, 'getWeaponsModule']);
 
-    Route::post('/', [WeaponsController::class, 'createWeapon']);
-    Route::delete('/{id}', [WeaponsController::class, 'deleteWeaponById']);
-    Route::put('/{id}', [WeaponsController::class, 'updateWeaponById']);
+    Route::post('/', [WeaponsController::class, 'createWeapon'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [WeaponsController::class, 'deleteWeaponById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [WeaponsController::class, 'updateWeaponById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/events')->group(function () {
-    Route::post('/', [EventsController::class, 'createEvent']);
     Route::get('/limit/{limit}/order/{order}', [EventsController::class, 'getAllEvents']);
-    Route::delete('/{id}', [EventsController::class, 'deleteEventById']);
-    Route::put('/{id}', [EventsController::class, 'updateEventById']);
+
+    Route::post('/', [EventsController::class, 'createEvent'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [EventsController::class, 'deleteEventById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [EventsController::class, 'updateEventById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/books')->group(function () {
@@ -97,9 +97,9 @@ Route::prefix('/books')->group(function () {
     Route::get('/total/byyearreview', [BooksController::class, 'getTotalBooksByYearReview']);
     Route::get('/', [BooksController::class, 'getBooksModule']);
 
-    Route::post('/', [BooksController::class, 'createBook']);
-    Route::delete('/{id}', [BooksController::class, 'deleteBookById']);
-    Route::put('/{id}', [BooksController::class, 'updateBookById']);
+    Route::post('/', [BooksController::class, 'createBook'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [BooksController::class, 'deleteBookById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [BooksController::class, 'updateBookById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/casualities')->group(function () {
@@ -110,14 +110,16 @@ Route::prefix('/casualities')->group(function () {
 });
 
 Route::prefix('/discussions')->group(function () {
-    Route::post('/', [DiscussionsController::class, 'createDiscussion'])->middleware(['auth:sanctum']);
     Route::get('/limit/{limit}/order/{order}/{id}', [DiscussionsController::class, 'getAllDiscussion']); 
+
+    Route::post('/', [DiscussionsController::class, 'createDiscussion'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/feedbacks')->group(function () {
-    Route::post('/', [FeedbacksController::class, 'createFeedback'])->middleware(['auth:sanctum']);
     Route::get('/limit/{limit}/order/{order}/{id}', [FeedbacksController::class, 'getAllFeedback']);
     Route::get('/stats/{id}', [FeedbacksController::class, 'getStoriesFeedbackStats']);
+
+    Route::post('/', [FeedbacksController::class, 'createFeedback'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/stories')->group(function () {

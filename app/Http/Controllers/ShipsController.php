@@ -18,9 +18,18 @@ class ShipsController extends Controller
      *     path="/api/ships",
      *     summary="Add ship",
      *     tags={"Ships"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="New ships ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=409,
@@ -94,7 +103,7 @@ class ShipsController extends Controller
                             'history_type' => $data->type, 
                             'body' => $data->body,
                             'created_at' => date("Y-m-d H:i:s"),
-                            'created_by' => '1' // for now
+                            'created_by' => $user_id
                         ]);
                 
                         return response()->json([
@@ -154,11 +163,30 @@ class ShipsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="ship found"
+     *         description="ship found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Ship found"),
+     *             @OA\Property(property="data", type="object",
+     *                  @OA\Property(property="data", type="array",
+     *                      @OA\Items(
+     *                          @OA\Property(property="id", type="string", example="142"),
+     *                          @OA\Property(property="name", type="string", example="Carl Peters"),
+     *                          @OA\Property(property="class", type="string", example="Carl Peters-class Tender"),
+     *                          @OA\Property(property="launch_year", type="string", example="1939"),
+     *                          @OA\Property(property="country", type="string", example="Germany")
+     *                      )
+     *                  )
+     *             ),
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="ship not found"
+     *         description="ship failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="ship not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -278,6 +306,14 @@ class ShipsController extends Controller
      *         description="ship found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="ship failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="ship not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error",
      *         @OA\JsonContent(
@@ -335,6 +371,14 @@ class ShipsController extends Controller
      *         description="ship found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="ship failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="ship not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error",
      *         @OA\JsonContent(
@@ -382,6 +426,14 @@ class ShipsController extends Controller
      *         description="ship found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="ship failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="ship not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
      *         description="Internal Server Error",
      *         @OA\JsonContent(
@@ -427,6 +479,14 @@ class ShipsController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="ship found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="ship failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="ship not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -590,9 +650,18 @@ class ShipsController extends Controller
      *     path="/api/ships/{id}",
      *     summary="Update ships by id",
      *     tags={"Ships"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="ships ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=422,
@@ -638,14 +707,15 @@ class ShipsController extends Controller
                         'result' => $errors,
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 } else {     
-                    
+                    $user_id = $request->user()->id;
+
                     Ships::where('id', $id)->update([
                         'name' => $request->name,
                         'class' => $request->class,
                         'country' => $request->country,
                         'launch_year' => $request->launch_year,
                         'updated_at' => date('Y-m-d H:i:s'),
-                        'updated_by' => null,
+                        'updated_by' => $user_id,
                     ]);
 
                     Histories::create([
@@ -653,7 +723,7 @@ class ShipsController extends Controller
                         'history_type' => $data->type, 
                         'body' => $data->body,
                         'created_at' => date("Y-m-d H:i:s"),
-                        'created_by' => '1' // for now
+                        'created_by' => $user_id
                     ]);
             
                     return response()->json([
@@ -675,9 +745,18 @@ class ShipsController extends Controller
      *     path="/api/ships/{id}",
      *     summary="Delete ship by id",
      *     tags={"Ships"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="ships ... has been deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=422,
@@ -717,14 +796,15 @@ class ShipsController extends Controller
                     'result' => $errors,
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {     
-                Ships::destroy($id);
+                $user_id = $request->user()->id;
 
+                Ships::destroy($id);
                 Histories::create([
                     'id' => Generator::getUUID(),
                     'history_type' => $data->type, 
                     'body' => $data->body,
                     'created_at' => date("Y-m-d H:i:s"),
-                    'created_by' => '1' // for now
+                    'created_by' => $user_id
                 ]);
 
                 return response()->json([

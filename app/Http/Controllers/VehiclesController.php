@@ -18,9 +18,18 @@ class VehiclesController extends Controller
      *     path="/api/vehicles",
      *     summary="Add vehicle",
      *     tags={"Vehicle"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="New vehicle ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=409,
@@ -94,7 +103,7 @@ class VehiclesController extends Controller
                             'history_type' => $data->type, 
                             'body' => $data->body,
                             'created_at' => date("Y-m-d H:i:s"),
-                            'created_by' => '1' // for now
+                            'created_by' => $user_id
                         ]);
                 
                         return response()->json([
@@ -154,11 +163,30 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="vehicle found"
+     *         description="vehicle found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Vehicle found"),
+     *             @OA\Property(property="data", type="object",
+     *                  @OA\Property(property="data", type="array",
+     *                      @OA\Items(
+     *                          @OA\Property(property="id", type="string", example="103"),
+     *                          @OA\Property(property="name", type="string", example="SdKfz 10"),
+     *                          @OA\Property(property="primary_role", type="string", example="Transport"),
+     *                          @OA\Property(property="manufacturer", type="string", example="Deutsche Maschinenfabrik AG"),
+     *                          @OA\Property(property="country", type="string", example="Germany")
+     *                      )
+     *                  )
+     *             ),
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="vehicle not found"
+     *         description="vehicle failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="vehicle not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -213,6 +241,14 @@ class VehiclesController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="vehicle found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="vehicle failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="vehicle not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -285,7 +321,25 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="vehicle found"
+     *         description="vehicle found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Vehicle found"),
+     *             @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(property="context", type="string", example="Armored Tank"),
+     *                      @OA\Property(property="total", type="number", example=80)
+     *                  )
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="vehicle failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="vehicle not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -342,7 +396,25 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="vehicle found"
+     *         description="vehicle found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Vehicle found"),
+     *             @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(property="context", type="string", example="United States"),
+     *                      @OA\Property(property="total", type="number", example=80)
+     *                  )
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="vehicle failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="vehicle not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -389,7 +461,25 @@ class VehiclesController extends Controller
      *     tags={"Vehicle"},
      *     @OA\Response(
      *         response=200,
-     *         description="vehicle found"
+     *         description="vehicle found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Vehicle found"),
+     *             @OA\Property(property="data", type="array",
+     *                  @OA\Items(
+     *                      @OA\Property(property="context", type="string", example="axis"),
+     *                      @OA\Property(property="total", type="number", example=80)
+     *                  )
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="vehicle failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="vehicle not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -548,9 +638,18 @@ class VehiclesController extends Controller
      *     path="/api/vehicles/{id}",
      *     summary="Update vehicle by id",
      *     tags={"Vehicle"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="vehicle ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=422,
@@ -596,13 +695,15 @@ class VehiclesController extends Controller
                         'result' => $errors,
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 } else {
+                    $user_id = $request->user()->id;
+
                     Vehicles::where('id', $id)->update([
                         'name' => $request->name,
                         'primary_role' => $request->primary_role,
                         'manufacturer' => $request->manufacturer,
                         'country' => $request->country,
                         'updated_at' => date('Y-m-d H:i:s'),
-                        'updated_by' => null,
+                        'updated_by' => $user_id
                     ]);
 
                     Histories::create([
@@ -610,7 +711,7 @@ class VehiclesController extends Controller
                         'history_type' => $data->type, 
                         'body' => $data->body,
                         'created_at' => date("Y-m-d H:i:s"),
-                        'created_by' => '1' // for now
+                        'created_by' => $user_id
                     ]);
             
                     return response()->json([
@@ -632,9 +733,18 @@ class VehiclesController extends Controller
      *     path="/api/vehicles/{id}",
      *     summary="Delete vehicle by id",
      *     tags={"Vehicle"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="vehicle ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
@@ -670,6 +780,8 @@ class VehiclesController extends Controller
                     'result' => $errors,
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {
+                $user_id = $request->user()->id;
+                
                 Vehicles::destroy($id);
 
                 Histories::create([
@@ -677,7 +789,7 @@ class VehiclesController extends Controller
                     'history_type' => $data->type, 
                     'body' => $data->body,
                     'created_at' => date("Y-m-d H:i:s"),
-                    'created_by' => '1' // for now
+                    'created_by' => $user_id
                 ]);
 
                 return response()->json([
