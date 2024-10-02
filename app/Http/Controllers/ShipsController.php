@@ -18,9 +18,18 @@ class ShipsController extends Controller
      *     path="/api/ships",
      *     summary="Add ship",
      *     tags={"Ships"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="New ships ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=409,
@@ -32,7 +41,11 @@ class ShipsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -90,7 +103,7 @@ class ShipsController extends Controller
                             'history_type' => $data->type, 
                             'body' => $data->body,
                             'created_at' => date("Y-m-d H:i:s"),
-                            'created_by' => '1' // for now
+                            'created_by' => $user_id
                         ]);
                 
                         return response()->json([
@@ -108,7 +121,7 @@ class ShipsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -150,15 +163,38 @@ class ShipsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="ship found"
+     *         description="ship found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Ship found"),
+     *             @OA\Property(property="data", type="object",
+     *                  @OA\Property(property="data", type="array",
+     *                      @OA\Items(
+     *                          @OA\Property(property="id", type="string", example="142"),
+     *                          @OA\Property(property="name", type="string", example="Carl Peters"),
+     *                          @OA\Property(property="class", type="string", example="Carl Peters-class Tender"),
+     *                          @OA\Property(property="launch_year", type="string", example="1939"),
+     *                          @OA\Property(property="country", type="string", example="Germany")
+     *                      )
+     *                  )
+     *             ),
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="ship not found"
+     *         description="ship failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="ship not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -191,7 +227,7 @@ class ShipsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -207,7 +243,11 @@ class ShipsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -244,7 +284,6 @@ class ShipsController extends Controller
                 ->first();
 
             return response()->json([
-                //'message' => count($shp)." Data retrived", 
                 'message' => Generator::getMessageTemplate("api_read", 'ship', null),
                 "status"=> 'success',
                 "data"=> $shp
@@ -252,7 +291,7 @@ class ShipsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -267,28 +306,47 @@ class ShipsController extends Controller
      *         description="ship found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="ship failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="ship not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getTotalShipsByClass($limit){
         try {
-            $shp = Ships::selectRaw('class as context, count(*) as total')
+            $res = Ships::selectRaw('class as context, count(*) as total')
                 ->groupByRaw('1')
                 ->orderBy('total', 'DESC')
                 ->limit($limit)
                 ->get();
         
-            return response()->json([
-                'message' => count($shp)." Data retrived", 
-                'status' => 'success',
-                'data' => $shp
-            ], Response::HTTP_OK);
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'ship', null), 
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'ship', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -313,29 +371,47 @@ class ShipsController extends Controller
      *         description="ship found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="ship failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="ship not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getTotalShipsByCountry($limit){
         try {
-            $shp = Ships::selectRaw('country as context, count(*) as total')
+            $res = Ships::selectRaw('country as context, count(*) as total')
                 ->groupByRaw('1')
                 ->orderBy('total', 'DESC')
                 ->limit($limit)
                 ->get();
-        
-            return response()->json([
-                //'message' => count($shp)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'ship', null),
-                'status' => 'success',
-                'data' => $shp
-            ], Response::HTTP_OK);
+
+            if($res){
+                return response()->json([ 
+                    'message' => Generator::getMessageTemplate("api_read", 'ship', null),
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'ship', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -350,29 +426,47 @@ class ShipsController extends Controller
      *         description="ship found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="ship failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="ship not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getTotalShipsBySides(){
         try {
-            $shp = Ships::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
+            $res = Ships::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
                 OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
                 OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS context, COUNT(*) as total')
                 ->groupByRaw('1')
                 ->get();
-        
-            return response()->json([
-                //'message' => count($shp)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'ship', null),
-                'status' => 'success',
-                'data' => $shp
-            ], Response::HTTP_OK);
+
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'ship', null),
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'ship', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -387,30 +481,48 @@ class ShipsController extends Controller
      *         description="ship found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="ship failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="ship not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getTotalShipsByLaunchYear(){
         try {
-            $shp = Ships::selectRaw('launch_year as context, count(*) as total')
+            $res = Ships::selectRaw('launch_year as context, count(*) as total')
                 ->where('launch_year', '!=', 0000)
                 ->whereRaw('char_length(launch_year) = 5')
                 ->groupBy('launch_year')
                 ->orderBy('total', 'DESC')
                 ->get();
         
-            return response()->json([
-                //'message' => count($shp)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'ship', null),
-                'status' => 'success',
-                'data' => $shp
-            ], Response::HTTP_OK);
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'ship', null),
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'ship', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -477,7 +589,11 @@ class ShipsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -524,7 +640,7 @@ class ShipsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -534,9 +650,18 @@ class ShipsController extends Controller
      *     path="/api/ships/{id}",
      *     summary="Update ships by id",
      *     tags={"Ships"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="ships ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=422,
@@ -544,7 +669,11 @@ class ShipsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -578,14 +707,15 @@ class ShipsController extends Controller
                         'result' => $errors,
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 } else {     
-                    
+                    $user_id = $request->user()->id;
+
                     Ships::where('id', $id)->update([
                         'name' => $request->name,
                         'class' => $request->class,
                         'country' => $request->country,
                         'launch_year' => $request->launch_year,
                         'updated_at' => date('Y-m-d H:i:s'),
-                        'updated_by' => null,
+                        'updated_by' => $user_id,
                     ]);
 
                     Histories::create([
@@ -593,7 +723,7 @@ class ShipsController extends Controller
                         'history_type' => $data->type, 
                         'body' => $data->body,
                         'created_at' => date("Y-m-d H:i:s"),
-                        'created_by' => '1' // for now
+                        'created_by' => $user_id
                     ]);
             
                     return response()->json([
@@ -605,7 +735,7 @@ class ShipsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -615,9 +745,18 @@ class ShipsController extends Controller
      *     path="/api/ships/{id}",
      *     summary="Delete ship by id",
      *     tags={"Ships"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="ships ... has been deleted"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=422,
@@ -625,7 +764,11 @@ class ShipsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -653,14 +796,15 @@ class ShipsController extends Controller
                     'result' => $errors,
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             } else {     
-                Ships::destroy($id);
+                $user_id = $request->user()->id;
 
+                Ships::destroy($id);
                 Histories::create([
                     'id' => Generator::getUUID(),
                     'history_type' => $data->type, 
                     'body' => $data->body,
                     'created_at' => date("Y-m-d H:i:s"),
-                    'created_by' => '1' // for now
+                    'created_by' => $user_id
                 ]);
 
                 return response()->json([
@@ -671,7 +815,7 @@ class ShipsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

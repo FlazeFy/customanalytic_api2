@@ -18,9 +18,18 @@ class EventsController extends Controller
      *     path="/api/events",
      *     summary="Add event",
      *     tags={"Event"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="New event ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=409,
@@ -32,7 +41,11 @@ class EventsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -89,7 +102,7 @@ class EventsController extends Controller
                             'history_type' => $data->type, 
                             'body' => $data->body,
                             'created_at' => date("Y-m-d H:i:s"),
-                            'created_by' => '1' // for now
+                            'created_by' => $user_id
                         ]);
                 
                         return response()->json([
@@ -107,7 +120,7 @@ class EventsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -147,7 +160,11 @@ class EventsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -172,7 +189,7 @@ class EventsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -182,9 +199,18 @@ class EventsController extends Controller
      *     path="/api/events/{id}",
      *     summary="Update event by id",
      *     tags={"Event"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="event ... has been updated"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=422,
@@ -192,7 +218,11 @@ class EventsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -226,12 +256,14 @@ class EventsController extends Controller
                         'result' => $errors,
                     ], Response::HTTP_UNPROCESSABLE_ENTITY);
                 } else {   
+                    $user_id = $request->user()->id;
+
                     Events::where('id', $id)->update([
                         'event' => $request->event,
                         'date_start' => $request->date_start,
                         'date_end' => $request->date_end,
                         'updated_at' => date('Y-m-d H:i:s'),
-                        'updated_by' => null,
+                        'updated_by' => $user_id
                     ]);
 
                     Histories::create([
@@ -239,7 +271,7 @@ class EventsController extends Controller
                         'history_type' => $data->type, 
                         'body' => $data->body,
                         'created_at' => date("Y-m-d H:i:s"),
-                        'created_by' => '1' // for now
+                        'created_by' => $user_id
                     ]);
             
                     return response()->json([
@@ -251,7 +283,7 @@ class EventsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -261,13 +293,26 @@ class EventsController extends Controller
      *     path="/api/events/{id}",
      *     summary="Delete event by id",
      *     tags={"Event"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="event ... has been updated"
      *     ),
      *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -289,14 +334,14 @@ class EventsController extends Controller
 
             if ($validatorHistory->fails()) {
                 $errors = $validatorHistory->messages();
-
+                $user_id = $request->user()->id;
 
                 Histories::create([
                     'id' => Generator::getUUID(),
                     'history_type' => $data->type, 
                     'body' => $data->body,
                     'created_at' => date("Y-m-d H:i:s"),
-                    'created_by' => '1' // for now
+                    'created_by' => $user_id
                 ]);
                 
                 return response()->json([
@@ -314,7 +359,7 @@ class EventsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

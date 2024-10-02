@@ -18,9 +18,18 @@ class FeedbacksController extends Controller
      *     path="/api/feedbacks",
      *     summary="Add feedback",
      *     tags={"Feedback"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Response(
-     *         response=200,
+     *         response=201,
      *         description="New feedback ... has been created"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="protected route need to include sign in token as authorization bearer",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="failed"),
+     *             @OA\Property(property="message", type="string", example="you need to include the authorization token from login")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=422,
@@ -28,7 +37,11 @@ class FeedbacksController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -92,7 +105,7 @@ class FeedbacksController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -134,15 +147,37 @@ class FeedbacksController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="feedback found"
+     *         description="feedback found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Feedback found"),
+     *             @OA\Property(property="data", type="object",
+     *                  @OA\Property(property="data", type="array",
+     *                      @OA\Items(
+     *                          @OA\Property(property="body", type="string", example="that content look so great!"),
+     *                          @OA\Property(property="rate", type="number", example=5),
+     *                          @OA\Property(property="created_at", type="string", example="2024-09-03 00:28:28"),
+     *                          @OA\Property(property="created_by", type="string", example="testeradmin"),
+     *                      )
+     *                  )
+     *             ),
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
-     *         description="feedback not found"
+     *         description="feedback failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="feedback not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -177,7 +212,7 @@ class FeedbacksController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -202,8 +237,20 @@ class FeedbacksController extends Controller
      *         description="feedback stats found"
      *     ),
      *     @OA\Response(
+     *         response=404,
+     *         description="feedback failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="feedback stats not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -239,7 +286,7 @@ class FeedbacksController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
