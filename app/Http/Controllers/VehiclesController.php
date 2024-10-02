@@ -32,7 +32,11 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -108,7 +112,7 @@ class VehiclesController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -158,7 +162,11 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -192,7 +200,7 @@ class VehiclesController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -208,13 +216,17 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getVehiclesSummary(){
         try {
-            $vch = Vehicles::selectRaw("primary_role as most_produced, count(*) as 'total', 
+            $res = Vehicles::selectRaw("primary_role as most_produced, count(*) as 'total', 
                     (SELECT GROUP_CONCAT(' ',country)
                     FROM (
                         SELECT country 
@@ -235,16 +247,22 @@ class VehiclesController extends Controller
                 ->orderBy('total', 'DESC')
                 ->first();
 
-            return response()->json([
-                //'message' => count($vch)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
-                'status' => 'success',
-                'data' => $vch
-            ], Response::HTTP_OK);
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'vehicle', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -271,28 +289,38 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getTotalVehiclesByRole($limit){
         try {
-            $vhc = Vehicles::selectRaw('primary_role as context, count(*) as total')
+            $res = Vehicles::selectRaw('primary_role as context, count(*) as total')
                 ->groupByRaw('1')
                 ->orderBy('total', 'DESC')
                 ->limit($limit)
                 ->get();
         
-            return response()->json([
-                //'message' => count($vhc)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
-                'status' => 'success',
-                'data' => $vhc
-            ], Response::HTTP_OK);
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'vehicle', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -318,28 +346,38 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getTotalVehiclesByCountry($limit){
         try {
-            $vhc = Vehicles::selectRaw('country as context, count(*) as total')
+            $res = Vehicles::selectRaw('country as context, count(*) as total')
                 ->groupByRaw('1')
                 ->orderBy('total', 'DESC')
                 ->limit($limit)
                 ->get();
         
-            return response()->json([
-                //'message' => count($vhc)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
-                'status' => 'success',
-                'data' =>$vhc
-            ], Response::HTTP_OK);
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
+                    'status' => 'success',
+                    'data' =>$res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'vehicle', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -355,28 +393,38 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getTotalVehiclesBySides(){
         try {
-            $vhc = Vehicles::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
+            $res = Vehicles::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
                 OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
                 OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS context, COUNT(*) as total')
                 ->groupByRaw('1')
                 ->get();
         
-            return response()->json([
-                //'message' => count($vhc)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
-                'status' => 'success',
-                'data' => $vhc
-            ], Response::HTTP_OK);
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'vehicle', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -443,7 +491,11 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -486,7 +538,7 @@ class VehiclesController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -506,7 +558,11 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -566,7 +622,7 @@ class VehiclesController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -582,7 +638,11 @@ class VehiclesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -628,7 +688,7 @@ class VehiclesController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

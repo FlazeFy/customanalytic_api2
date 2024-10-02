@@ -124,6 +124,8 @@ Route::prefix('/stories')->group(function () {
     Route::get('/limit/{limit}/order/{order}', [StoriesController::class, 'getAllStories']);
     Route::get('/detail/{slug}', [StoriesController::class, 'getStoriesBySlug']);
     Route::get('/type/{type}/creator/{creator}', [StoriesController::class, 'getSimiliarStories']);
+    Route::get('/top/discuss', [StoriesController::class, 'getMostDiscussStories']);
+    Route::get('/top/rate', [StoriesController::class, 'getBestRatedStories']);
 });
 
 Route::prefix('/user')->middleware(['auth:sanctum'])->group(function () {

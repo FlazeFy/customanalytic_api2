@@ -32,7 +32,11 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -107,7 +111,7 @@ class WeaponsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -157,7 +161,11 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -190,7 +198,7 @@ class WeaponsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -206,13 +214,17 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getWeaponsSummary(){
         try {
-            $wpn = Weapons::selectRaw("type as most_produced, count(*) as 'total', 
+            $res = Weapons::selectRaw("type as most_produced, count(*) as 'total', 
                     (SELECT GROUP_CONCAT(' ',country)
                     FROM (
                         SELECT country 
@@ -231,17 +243,23 @@ class WeaponsController extends Controller
                 ->groupBy('type')
                 ->orderBy('total', 'DESC')
                 ->first();
-
-            return response()->json([
-                //'message' => count($wpn)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
-                'status' => 'success',
-                'data' => $wpn
-            ], Response::HTTP_OK);
+            
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'vehicle', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -267,28 +285,38 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getTotalWeaponsByType($limit){
         try {
-            $wpn = Weapons::selectRaw('type as context, count(*) as total')
+            $res = Weapons::selectRaw('type as context, count(*) as total')
                 ->groupByRaw('1')
                 ->orderBy('total', 'DESC')
                 ->limit($limit)
                 ->get();
         
-            return response()->json([
-                //'message' => count($wpn)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
-                'status' => 'success',
-                'data' => $wpn
-            ], Response::HTTP_OK);
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'weapon', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -314,28 +342,38 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getTotalWeaponsByCountry($limit){
         try {
-            $wpn = Weapons::selectRaw('country as context, count(*) as total')
+            $res = Weapons::selectRaw('country as context, count(*) as total')
                 ->groupByRaw('1')
                 ->orderBy('total', 'DESC')
                 ->limit($limit)
                 ->get();
         
-            return response()->json([
-                //'message' => count($wpn)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
-                'status' => 'success',
-                'data' => $wpn
-            ], Response::HTTP_OK);
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'weapon', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -351,28 +389,38 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
     public function getTotalWeaponsBySides(){
         try {
-            $wpn = Weapons::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
+            $res = Weapons::selectRaw('(CASE WHEN country = "Germany" OR country = "Italy" OR country = "Japan" OR country = "Thailand" 
                 OR country = "Austria" OR country = "Hungary" OR country = "Romania" OR country = "Bulgaria" 
                 OR country = "Albania" OR country = "Finland" THEN "Axis" ELSE "Allies" END) AS context, COUNT(*) as total')
                 ->groupByRaw('1')
                 ->get();
         
-            return response()->json([
-                //'message' => count($wpn)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
-                'status' => 'success',
-                'data' => $wpn
-            ], Response::HTTP_OK);
+            if($res){
+                return response()->json([ 
+                    'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'weapon', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -439,7 +487,11 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -482,7 +534,7 @@ class WeaponsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -502,7 +554,11 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -561,7 +617,7 @@ class WeaponsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -577,7 +633,11 @@ class WeaponsController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -623,7 +683,7 @@ class WeaponsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

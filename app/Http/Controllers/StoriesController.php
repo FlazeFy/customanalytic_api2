@@ -35,7 +35,11 @@ class StoriesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -70,7 +74,7 @@ class StoriesController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -110,7 +114,11 @@ class StoriesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -145,7 +153,7 @@ class StoriesController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -181,7 +189,11 @@ class StoriesController extends Controller
      *     ),
      *     @OA\Response(
      *         response=500,
-     *         description="Internal Server Error"
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
      *     ),
      * )
      */
@@ -211,7 +223,117 @@ class StoriesController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @OA\GET(
+     *     path="/api/stories/top/rate",
+     *     summary="Show 7 best rate stories",
+     *     tags={"Stories"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="stories found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="stories not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
+     *     ),
+     * )
+     */
+    public function getBestRatedStories()
+    {
+        try {
+            $res = Stories::selectRaw('main_title, story_type, CAST(AVG(rate) as UNSIGNED) as average_rate, COUNT(1) as total_rate, admins.username as admin_username, users.username as user_username, stories.created_at')
+                ->leftjoin('admins', 'admins.id', '=', 'stories.created_by')
+                ->leftjoin('users', 'users.id', '=', 'stories.created_by')
+                ->leftjoin('feedbacks', 'feedbacks.stories_id', '=', 'stories.id')
+                ->groupby('stories.id')
+                ->orderby('average_rate', "DESC")
+                ->limit(7)
+                ->get();
+
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", "stories", null), 
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", "stories", null), 
+                    'status' => 'failed',
+                ], Response::HTTP_NOT_FOUND);
+            }
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'something wrong. please contact admin',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @OA\GET(
+     *     path="/api/stories/top/discuss",
+     *     summary="Show 7 most discussed stories",
+     *     tags={"Stories"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="stories found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="stories not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
+     *     ),
+     * )
+     */
+    public function getMostDiscussStories()
+    {
+        try {
+            $res = Stories::selectRaw('main_title, story_type, COUNT(1) as total_discuss, admins.username as admin_username, users.username as user_username, stories.created_at')
+                ->leftjoin('admins', 'admins.id', '=', 'stories.created_by')
+                ->leftjoin('users', 'users.id', '=', 'stories.created_by')
+                ->leftjoin('discussions', 'discussions.stories_id', '=', 'stories.id')
+                ->groupby('stories.id')
+                ->orderby('total_discuss', "DESC")
+                ->limit(7)
+                ->get();
+
+            if($res){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", "stories", null), 
+                    'status' => 'success',
+                    'data' => $res
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", "stories", null), 
+                    'status' => 'failed',
+                ], Response::HTTP_NOT_FOUND);
+            }
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
