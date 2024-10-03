@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 
 use App\Models\Facilities;
 use App\Helpers\Generator;
+use App\Helpers\Converter;
 
 class FacilitiesController extends Controller
 {
@@ -58,8 +59,7 @@ class FacilitiesController extends Controller
                     ")
                 ->groupBy('type')
                 ->orderBy('total', 'DESC')
-                ->limit(1)
-                ->get();
+                ->first();
             
             if($res){
                 return response()->json([
@@ -388,4 +388,119 @@ class FacilitiesController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * @OA\GET(
+     *     path="/api/facilities/nearest/{limit}/{lat}/{long}",
+     *     summary="Show all nearest facility by given coordinate",
+     *     tags={"Facility"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="10"
+     *         ),
+     *         description="Set limit of facility to search"
+     *     ),
+     *     @OA\Parameter(
+     *         name="lat",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="-6.23061921707629"
+     *         ),
+     *         description="Current user latitude"
+     *     ),
+     *     @OA\Parameter(
+     *         name="long",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="106.81801504386465"
+     *         ),
+     *         description="Current user longitude"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="facilities found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="facilities failed to fetched",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="facilities not found"),
+     *             @OA\Property(property="status", type="string", example="failed")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
+     *     ),
+     * )
+     */
+    public function getNearestFacilitiesByCoordinate($limit, $lat, $long){
+        try {
+            $res = Facilities::select('name', 'type', 'location', 'country', 'coordinate')
+                ->whereNotNull('coordinate')
+                ->get();
+    
+            if($res){
+                $res_count = [];
+                $res_final = [];
+    
+                foreach($res as $dt){
+                    if (strpos($dt->coordinate, ',') !== false) {
+                        list($lat1, $lon1) = explode(',', $dt->coordinate);
+                        if (is_numeric($lat1) && is_numeric($lon1)) {
+                            $distance = Converter::calculateDistance($dt->coordinate, "$lat,$long");
+                            $res_count[] = [
+                                'name' => $dt->name,
+                                'type' => $dt->type,
+                                'location' => $dt->location,
+                                'country' => $dt->country,
+                                'coordinate' => $dt->coordinate,
+                                'distance_meters' => round($distance, 2)
+                            ];
+                        }
+                    }
+                }
+    
+                if (!empty($res_count)) {
+                    usort($res_count, function($a, $b) {
+                        return $a['distance_meters'] <=> $b['distance_meters'];
+                    });
+                    $res_final = array_slice($res_count, 0, $limit);
+    
+                    return response()->json([
+                        'message' => Generator::getMessageTemplate("api_read", 'facilities', null),
+                        'status' => 'success',
+                        'data' => $res_final
+                    ], Response::HTTP_OK);
+                } else {
+                    return response()->json([
+                        'message' => Generator::getMessageTemplate("api_read_empty", 'facilities', null),
+                        'status' => 'failed'
+                    ], Response::HTTP_NOT_FOUND);
+                }
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'facilities', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong. Please contact the admin',
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }    
 }

@@ -193,7 +193,7 @@ class CasualitiesController extends Controller
                     (SELECT sum(military_death + civilian_death) from casualities) as total_death_all")
                 ->whereRaw('military_death + civilian_death = ( SELECT MAX(military_death + civilian_death) FROM casualities)')
                 ->groupBy('military_death', 'civilian_death', 'country')
-                ->get();
+                ->first();
 
             return response()->json([
                 'message' => Generator::getMessageTemplate("api_read", 'casualities', null),

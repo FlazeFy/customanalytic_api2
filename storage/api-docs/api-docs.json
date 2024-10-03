@@ -2076,6 +2076,92 @@
                 }
             }
         },
+        "/api/facilities/nearest/{limit}/{lat}/{long}": {
+            "get": {
+                "tags": [
+                    "Facility"
+                ],
+                "summary": "Show all nearest facility",
+                "operationId": "e0c92d55421e00e4aea4ab83f58baedb",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "path",
+                        "description": "Set limit of facility to search",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "10"
+                        }
+                    },
+                    {
+                        "name": "lat",
+                        "in": "path",
+                        "description": "Current user latitude",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "-6.23061921707629"
+                        }
+                    },
+                    {
+                        "name": "long",
+                        "in": "path",
+                        "description": "Current user longitude",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "106.81801504386465"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "facilities found"
+                    },
+                    "404": {
+                        "description": "facilities failed to fetched",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "facilities not found"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "something wrong. please contact admin"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/feedbacks": {
             "post": {
                 "tags": [

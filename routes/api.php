@@ -68,6 +68,7 @@ Route::prefix('/facilities')->group(function () {
     Route::get('/bylocation/{type}', [FacilitiesController::class, 'getFacilitiesByLocation']);
     Route::get('/type', [FacilitiesController::class, 'getFacilitiesType']);
     Route::get('/summary', [FacilitiesController::class, 'getFacilitiesSummary']);
+    Route::get('/nearest/{limit}/{lat}/{long}', [FacilitiesController::class, 'getNearestFacilitiesByCoordinate']);
 });
 
 Route::prefix('/weapons')->group(function () {
