@@ -79,4 +79,11 @@ class Validation
             'rate' => 'required|max:10|numeric',
         ]);
     }
+
+    public static function getValidateHistory($request){
+        return Validator::make($request->all(), [
+            'type' => 'required|max:36|string',
+            'body' => 'required|max:255|string',
+        ]);
+    }
 }

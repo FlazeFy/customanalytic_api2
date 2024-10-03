@@ -14,45 +14,51 @@ use App\Http\Controllers\FeedbacksController;
 use App\Http\Controllers\ShipsController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\WeaponsController;
+use App\Http\Controllers\StoriesController;
 use Spatie\LaravelIgnition\Solutions\LivewireDiscoverSolution;
 
 Route::post('/login', [AuthController::class, 'login']);
-
 Route::get('/logout', [AuthController::class, 'logout'])->middleware(['auth:sanctum']);
 
-Route::prefix('/aircraft')->group(function () {
-    Route::post('/', [AircraftController::class, 'createAircraft']);
-    Route::get('/limit/{page_limit}/order/{order}/find/{search}', [AircraftController::class, 'getAllAircraft']);
+Route::prefix('/aircraft')->group(function () {    
+    Route::get('/limit/{limit}/order/{order}/find/{search}', [AircraftController::class, 'getAllAircraft']);
     Route::get('/total/byrole/{limit}', [AircraftController::class, 'getTotalAircraftByRole']);
     Route::get('/total/bycountry/{limit}', [AircraftController::class, 'getTotalAircraftByCountry']);
     Route::get('/total/bysides', [AircraftController::class, 'getTotalAircraftBySides']);
     Route::get('/total/bymanufacturer/{limit}', [AircraftController::class, 'getTotalAircraftByManufacturer']);
+    Route::get('/', [AircraftController::class, 'getAircraftModule']);
     Route::get('/summary', [AircraftController::class, 'getAircraftSummary']);
-    Route::delete('/{id}', [AircraftController::class, 'deleteAircraftById']);
-    Route::put('/{id}', [AircraftController::class, 'updateAircraftById']);
+
+    Route::post('/', [AircraftController::class, 'createAircraft'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [AircraftController::class, 'deleteAircraftById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [AircraftController::class, 'updateAircraftById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/ships')->group(function () {
-    Route::post('/', [ShipsController::class, 'createShip']);
-    Route::get('/limit/{page_limit}/order/{order}/find/{search}', [ShipsController::class, 'getAllShips']);
-    Route::get('/total/byclass', [ShipsController::class, 'getTotalShipsByClass']);
+    Route::get('/limit/{limit}/order/{order}/find/{search}', [ShipsController::class, 'getAllShips']);
+    Route::get('/total/byclass/{limit}', [ShipsController::class, 'getTotalShipsByClass']);
     Route::get('/total/bycountry/{limit}', [ShipsController::class, 'getTotalShipsByCountry']);
     Route::get('/total/bysides', [ShipsController::class, 'getTotalShipsBySides']);
     Route::get('/total/bylaunchyear', [ShipsController::class, 'getTotalShipsByLaunchYear']);
     Route::get('/summary', [ShipsController::class, 'getShipsSummary']);
-    Route::delete('/{id}', [ShipsController::class, 'deleteShipById']);
-    Route::put('/{id}', [ShipsController::class, 'updateShipById']);
+    Route::get('/', [ShipsController::class, 'getShipsModule']);
+
+    Route::post('/', [ShipsController::class, 'createShip'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [ShipsController::class, 'deleteShipById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [ShipsController::class, 'updateShipById'])->middleware(['auth:sanctum']);
 });
 
-Route::prefix('/vehicles')->group(function () {
-    Route::post('/', [VehiclesController::class, 'createVehicles']);
-    Route::get('/limit/{page_limit}/order/{order}/find/{search}', [VehiclesController::class, 'getAllVehicles']);
+Route::prefix('/vehicles')->group(function () {    
+    Route::get('/limit/{limit}/order/{order}/find/{search}', [VehiclesController::class, 'getAllVehicles']);
     Route::get('/total/byrole/{limit}', [VehiclesController::class, 'getTotalVehiclesByRole']);
     Route::get('/total/bycountry/{limit}', [VehiclesController::class, 'getTotalVehiclesByCountry']);
     Route::get('/total/bysides', [VehiclesController::class, 'getTotalVehiclesBySides']);
     Route::get('/summary', [VehiclesController::class, 'getVehiclesSummary']);
-    Route::delete('/{id}', [VehiclesController::class, 'deleteVehiclesById']);
-    Route::put('/{id}', [VehiclesController::class, 'updateVehicleById']);
+    Route::get('/', [VehiclesController::class, 'getVehiclesModule']);
+
+    Route::post('/', [VehiclesController::class, 'createVehicles'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [VehiclesController::class, 'deleteVehiclesById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [VehiclesController::class, 'updateVehicleById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/facilities')->group(function () {
@@ -65,47 +71,65 @@ Route::prefix('/facilities')->group(function () {
 });
 
 Route::prefix('/weapons')->group(function () {
-    Route::post('/', [WeaponsController::class, 'createWeapon']);
-    Route::get('/limit/{page_limit}/order/{order}/find/{search}', [WeaponsController::class, 'getAllWeapons']);
+    Route::get('/limit/{limit}/order/{order}/find/{search}', [WeaponsController::class, 'getAllWeapons']);
     Route::get('/total/bytype/{limit}', [WeaponsController::class, 'getTotalWeaponsByType']);
     Route::get('/total/bycountry/{limit}', [WeaponsController::class, 'getTotalWeaponsByCountry']);
     Route::get('/total/bysides', [WeaponsController::class, 'getTotalWeaponsBySides']);
     Route::get('/summary', [WeaponsController::class, 'getWeaponsSummary']);
-    Route::delete('/{id}', [WeaponsController::class, 'deleteWeaponById']);
-    Route::put('/{id}', [WeaponsController::class, 'updateWeaponById']);
+    Route::get('/', [WeaponsController::class, 'getWeaponsModule']);
+
+    Route::post('/', [WeaponsController::class, 'createWeapon'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [WeaponsController::class, 'deleteWeaponById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [WeaponsController::class, 'updateWeaponById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/events')->group(function () {
-    Route::post('/', [EventsController::class, 'createEvent']);
-    Route::get('/limit/{page_limit}/order/{order}', [EventsController::class, 'getAllEvents']);
-    Route::delete('/{id}', [EventsController::class, 'deleteEventById']);
-    Route::put('/{id}', [EventsController::class, 'updateEventById']);
+    Route::get('/limit/{limit}/order/{order}', [EventsController::class, 'getAllEvents']);
+
+    Route::post('/', [EventsController::class, 'createEvent'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [EventsController::class, 'deleteEventById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [EventsController::class, 'updateEventById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/books')->group(function () {
-    Route::post('/', [BooksController::class, 'createBook']);
-    Route::get('/limit/{page_limit}/order/{order}/find/{search}', [BooksController::class, 'getAllBooks']);
+    Route::get('/limit/{limit}/order/{order}/find/{search}', [BooksController::class, 'getAllBooks']);
     Route::get('/total/byreviewer/{limit}', [BooksController::class, 'getTotalBooksByReviewer']);
     Route::get('/total/byyearreview', [BooksController::class, 'getTotalBooksByYearReview']);
-    Route::delete('/{id}', [BooksController::class, 'deleteBookById']);
-    Route::put('/{id}', [BooksController::class, 'updateBookById']);
+    Route::get('/', [BooksController::class, 'getBooksModule']);
+
+    Route::post('/', [BooksController::class, 'createBook'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [BooksController::class, 'deleteBookById'])->middleware(['auth:sanctum']);
+    Route::put('/{id}', [BooksController::class, 'updateBookById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/casualities')->group(function () {
-    Route::get('/limit/{page_limit}/order/{orderby}/{ordertype}', [CasualitiesController::class, 'getAllCasualities']);
-    Route::get('/totaldeath/bycountry/{order}/limit/{page_limit}', [CasualitiesController::class, 'getTotalDeathByCountry']);
+    Route::get('/limit/{limit}/order/{orderby}/{ordertype}', [CasualitiesController::class, 'getAllCasualities']);
+    Route::get('/totaldeath/bycountry/{order}/limit/{limit}', [CasualitiesController::class, 'getTotalDeathByCountry']);
     Route::get('/totaldeath/bysides/{view}', [CasualitiesController::class, 'getTotalDeathBySides']);
     Route::get('/summary', [CasualitiesController::class, 'getCasualitiesSummary']);
 });
 
 Route::prefix('/discussions')->group(function () {
-    Route::post('/', [DiscussionsController::class, 'createDiscussion']);
-    Route::get('/limit/{page_limit}/order/{order}', [DiscussionsController::class, 'getAllDiscussions']); // belum implement
+    Route::get('/limit/{limit}/order/{order}/{id}', [DiscussionsController::class, 'getAllDiscussion']); 
+
+    Route::post('/', [DiscussionsController::class, 'createDiscussion'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/feedbacks')->group(function () {
-    Route::post('/', [FeedbacksController::class, 'createFeedback']);
-    Route::get('/limit/{page_limit}/order/{order}', [FeedbacksController::class, 'getAllFeedback']);
-    Route::delete('/{id}', [FeedbacksController::class, 'deleteFeedbackById']);
+    Route::get('/limit/{limit}/order/{order}/{id}', [FeedbacksController::class, 'getAllFeedback']);
+    Route::get('/stats/{id}', [FeedbacksController::class, 'getStoriesFeedbackStats']);
+    Route::post('/', [FeedbacksController::class, 'createFeedback'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [FeedbacksController::class, 'deleteFeedbackById'])->middleware(['auth:sanctum']);
+});
 
+Route::prefix('/stories')->group(function () {
+    Route::get('/limit/{limit}/order/{order}', [StoriesController::class, 'getAllStories']);
+    Route::get('/detail/{slug}', [StoriesController::class, 'getStoriesBySlug']);
+    Route::get('/type/{type}/creator/{creator}', [StoriesController::class, 'getSimiliarStories']);
+    Route::get('/top/discuss', [StoriesController::class, 'getMostDiscussStories']);
+    Route::get('/top/rate', [StoriesController::class, 'getBestRatedStories']);
+});
+
+Route::prefix('/user')->middleware(['auth:sanctum'])->group(function () {
+    Route::get('/my', [AuthController::class, 'getMyProfile']);
 });

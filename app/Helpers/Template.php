@@ -18,4 +18,12 @@ class Template
             return 255;
         }
     }
+
+    public static function getSelectTemplate($type, $ctx){ 
+        if($type == "story_card"){
+            return "slug_name,main_title, story_type, story_detail";
+        } else if ($type == "properties"){
+            return $ctx.".created_at, ".$ctx.".created_by, ".$ctx.".updated_at";
+        }
+    }
 }

@@ -10,63 +10,180 @@ use App\Helpers\Generator;
 
 class CasualitiesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+   /**
+     * @OA\GET(
+     *     path="/api/casualities/limit/{limit}/order/{orderby}/{ordertype}",
+     *     summary="Show all casualities with ordering",
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of country per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="orderby",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="military_death"
+     *         ),
+     *         description="Field name to order"
+     *     ),
+     *     @OA\Parameter(
+     *         name="ordertype",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="desc"
+     *         ),
+     *         description="Order by field that used in param orderby"
+     *     ),
+     *     tags={"Casualities"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="casualities found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="casualities not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
+     *     ),
+     * )
      */
-    public function index()
-    {
-        //
-    }
-
-    public function getAllCasualities($page_limit, $orderby, $ordertype){
+    public function getAllCasualities($limit, $orderby, $ordertype){
         try {
             $cst = Casualities::select('id', 'country', 'continent', 'total_population', 'military_death', 'civilian_death', 'total_death', 'death_per_pop', 'avg_death_per_pop', 'military_wounded')
                 ->orderBy($orderby, $ordertype)
-                ->paginate($page_limit);
+                ->paginate($limit);
         
-            return response()->json([
-                //'message' => count($cst)." Data retrived", //belum clear kalau ada count
-                'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
-                'status' => 'success',
-                'data' => $cst
-            ], Response::HTTP_OK);
+            if($cst->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
+                    'status' => 'success',
+                    'data' => $cst
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'casualities', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    public function getTotalDeathByCountry($order, $page_limit){
+     /**
+     * @OA\GET(
+     *     path="/api/casualities/totaldeath/bycountry/{order}/limit/{limit}",
+     *     summary="Total death by country",
+     *     tags={"Casualities"},
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example=10
+     *         ),
+     *         description="Number of country per page"
+     *     ),
+     *     @OA\Parameter(
+     *         name="order",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="asc"
+     *         ),
+     *         description="Order by field total (military_death + civilian_death)"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="casualities found"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="casualities not found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
+     *     ),
+     * )
+     */
+    public function getTotalDeathByCountry($order, $limit){
         try {
             if($order != "NULL"){
                 $cst = Casualities::selectRaw('country as context, total_population, military_death, civilian_death, military_death + civilian_death as total')
                     ->whereRaw('military_death+civilian_death != 0')
                     ->orderBy("total", $order)
-                    ->paginate($page_limit);
+                    ->paginate($limit);
             } else {
                 $cst = Casualities::selectRaw('country as context, total_population, military_death, civilian_death, military_death + civilian_death as total')
                     ->whereRaw('military_death+civilian_death != 0')
-                    ->paginate($page_limit);
+                    ->paginate($limit);
             }   
         
-            return response()->json([
-                //'message' => count($cst)." Data retrived", 
-                'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
-                'status' => 'success',
-                'data' => $cst
-            ], Response::HTTP_OK);
+            if($cst->total() > 0){
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
+                    'status' => 'success',
+                    'data' => $cst
+                ], Response::HTTP_OK);
+            } else {
+                return response()->json([
+                    'message' => Generator::getMessageTemplate("api_read_empty", 'casualities', null),
+                    'status' => 'failed'
+                ], Response::HTTP_NOT_FOUND);
+            }
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
+     /**
+     * @OA\GET(
+     *     path="/api/casualities/summary",
+     *     summary="Show casualities summary",
+     *     tags={"Casualities"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="casualities found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
+     *     ),
+     * )
+     */
     public function getCasualitiesSummary(){
         try {
             $cst = Casualities::selectRaw("(SELECT cast(avg(military_death + civilian_death) as decimal(10,0)) from casualities) as average_death, 
@@ -79,7 +196,6 @@ class CasualitiesController extends Controller
                 ->get();
 
             return response()->json([
-                //'message' => count($cst)." Data retrived", 
                 'message' => Generator::getMessageTemplate("api_read", 'casualities', null),
                 'status' => 'success',
                 'data' => $cst
@@ -87,11 +203,40 @@ class CasualitiesController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
+    /**
+     * @OA\GET(
+     *     path="/api/casualities/totaldeath/bysides/{view}",
+     *     summary="Total death by sides",
+     *     tags={"Casualities"},
+     *     @OA\Parameter(
+     *         name="view",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="military"
+     *         ),
+     *         description="View mode based on military or civilian"
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="casualities found"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="something wrong. please contact admin")
+     *         )
+     *     ),
+     * )
+     */
     public function getTotalDeathBySides($view){
         try {
             if($view == "military" || $view == "civilian"){
@@ -117,7 +262,7 @@ class CasualitiesController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
