@@ -118,8 +118,8 @@ Route::prefix('/discussions')->group(function () {
 Route::prefix('/feedbacks')->group(function () {
     Route::get('/limit/{limit}/order/{order}/{id}', [FeedbacksController::class, 'getAllFeedback']);
     Route::get('/stats/{id}', [FeedbacksController::class, 'getStoriesFeedbackStats']);
-
     Route::post('/', [FeedbacksController::class, 'createFeedback'])->middleware(['auth:sanctum']);
+    Route::delete('/{id}', [FeedbacksController::class, 'deleteFeedbackById'])->middleware(['auth:sanctum']);
 });
 
 Route::prefix('/stories')->group(function () {

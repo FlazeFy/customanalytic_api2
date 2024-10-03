@@ -110,6 +110,7 @@ class FeedbacksController extends Controller
         }
     }
 
+
     /**
      * @OA\GET(
      *     path="/api/feedbacks/limit/{limit}/order/{order}/{id}",
@@ -289,5 +290,16 @@ class FeedbacksController extends Controller
                 'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+    //hard delete, admin only
+    public function deleteFeedbackById($id)
+    {
+        $feedback = Feedbacks::select('stories_id')->where('id', $id)->first();
+        Feedbacks::destroy($id);
+
+        return response()->json([
+            "msg" => Generator::getMessageTemplate("custom", "Feedback has deleted", null),
+            "status" => 200
+        ]);
     }
 }
