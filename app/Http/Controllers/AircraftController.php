@@ -178,9 +178,10 @@ class AircraftController extends Controller
      *     ),
      * )
      */
-    public function getAllAircraft($limit, $order, $search){
+    public function getAllAircraft(Request $request, $limit, $order, $search){
         try {
             $search = trim($search);
+            $page = $request->query('page', 1);
 
             $air = Aircraft::select('id', 'name', 'primary_role', 'manufacturer', 'country')
                 ->orderBy('name', $order);
@@ -191,9 +192,15 @@ class AircraftController extends Controller
                     ->orwhere('manufacturer', 'LIKE', '%' . $search . '%');
             }
 
-            $air = $air->paginate($limit);
-
-            if($air->total() > 0){
+            if($page != 'all'){
+                $air = $air->paginate($limit);
+                $total = $air->total();
+            } else {
+                $air = $air->get();
+                $total = count($air);
+            }
+            
+            if($total > 0){
                 return response()->json([
                     'message' => Generator::getMessageTemplate("api_read", 'aircraft', null),
                     "status" => 'success',
@@ -297,6 +304,7 @@ class AircraftController extends Controller
         try {
             $data_all = json_decode(
                 $this->getAllAircraft(
+                    $request,
                     $request->limit_data_all ?? 20,
                     $request->order_data_all ?? 'asc',
                     $request->search_data_all ?? '%20'
@@ -714,7 +722,7 @@ class AircraftController extends Controller
      *     ),
      * )
      */
-    public function deleteAircraftById($id){
+    public function deleteAircraftById(Request $request, $id){
         try {
             $air = Aircraft::selectRaw("concat (name, ' - ', primary_role) as final_name")
                 ->where('id', $id)

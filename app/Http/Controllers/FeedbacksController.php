@@ -290,7 +290,8 @@ class FeedbacksController extends Controller
                 'message' => 'something wrong. please contact admin',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
+    }
+    
     //hard delete, admin only
     public function deleteFeedbackById($id)
     {

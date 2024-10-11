@@ -198,9 +198,10 @@ class ShipsController extends Controller
      *     ),
      * )
      */
-    public function getAllShips($limit, $order, $search){
+    public function getAllShips(Request $request, $limit, $order, $search){
         try {
             $search = trim($search);
+            $page = $request->query('page', 1);
 
             $shp = Ships::select('id', 'name', 'class', 'country', 'launch_year')
                 ->orderBy('name', $order);
@@ -210,9 +211,15 @@ class ShipsController extends Controller
                 $shp = $shp->where('name', 'LIKE', '%' . $search . '%');
             }
 
-            $shp = $shp->paginate($limit);
-        
-            if($shp->total() > 0){
+            if($page != 'all'){
+                $shp = $shp->paginate($limit);
+                $total = $shp->total();
+            } else {
+                $shp = $shp->get();
+                $total = count($shp);
+            }
+
+            if($total > 0){
                 return response()->json([
                     'message' => Generator::getMessageTemplate("api_read", 'ship', null),
                     'status' => 'success',
@@ -601,6 +608,7 @@ class ShipsController extends Controller
         try {
             $data_all = json_decode(
                 $this->getAllShips(
+                    $request,
                     $request->limit_data_all ?? 20,
                     $request->order_data_all ?? 'asc',
                     $request->search_data_all ?? '%20'
@@ -772,7 +780,7 @@ class ShipsController extends Controller
      *     ),
      * )
      */
-    public function deleteShipById($id){
+    public function deleteShipById(Request $request, $id){
         try {
             $shp = Ships::selectRaw("concat (name, ' - ', class) as final_name")
                 ->where('id', $id)

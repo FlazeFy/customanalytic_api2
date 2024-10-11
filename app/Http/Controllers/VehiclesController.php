@@ -198,9 +198,10 @@ class VehiclesController extends Controller
      *     ),
      * )
      */
-    public function getAllVehicles($limit, $order, $search){
+    public function getAllVehicles(Request $request, $limit, $order, $search){
         try {
             $search = trim($search);
+            $page = $request->query('page', 1);
 
             $vhc = Vehicles::select('id', 'name', 'primary_role', 'manufacturer', 'country')
                 ->orderBy('name', $order);
@@ -211,9 +212,16 @@ class VehiclesController extends Controller
                     ->orwhere('manufacturer', 'LIKE', '%' . $search . '%');
             }
 
-            $vhc = $vhc->paginate($limit);
+            if($page != 'all'){
+                $vhc = $vhc->paginate($limit);
+                $total = $vhc->total();
+            } else {
+                $vhc = $vhc->get();
+                $total = count($vhc);
+            }
+            
         
-            if($vhc->total() > 0){
+            if($total > 0){
                 return response()->json([
                     'message' => Generator::getMessageTemplate("api_read", 'vehicle', null),
                     'status' => 'success',
@@ -593,6 +601,7 @@ class VehiclesController extends Controller
         try {
             $data_all = json_decode(
                 $this->getAllVehicles(
+                    $request,
                     $request->limit_data_all ?? 20,
                     $request->order_data_all ?? 'asc',
                     $request->search_data_all ?? '%20'
@@ -756,7 +765,7 @@ class VehiclesController extends Controller
      *     ),
      * )
      */
-    public function deleteVehiclesById($id){
+    public function deleteVehiclesById(Request $request, $id){
         try {
             $vhc = Vehicles::selectRaw("concat (name, ' - ', primary_role) as final_name")
                 ->where('id', $id)

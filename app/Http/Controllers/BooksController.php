@@ -179,9 +179,10 @@ class BooksController extends Controller
      *     ),
      * )
      */
-    public function getAllBooks($limit, $order, $search){
+    public function getAllBooks(Request $request, $limit, $order, $search){
         try {
             $search = trim($search);
+            $page = $request->query('page', 1);
 
             $bok = Books::select('id', 'title', 'author', 'reviewer', 'review_date')
                 ->orderBy('title', $order);
@@ -193,9 +194,15 @@ class BooksController extends Controller
                     ->orwhere('reviewer', 'LIKE', '%' . $search . '%');
             }
 
-            $bok = $bok->paginate($limit);
+            if($page != 'all'){
+                $bok = $bok->paginate($limit);
+                $total = $bok->total();
+            } else {
+                $bok = $bok->get();
+                $total = count($bok);
+            }
         
-            if($bok->total() > 0){
+            if($total > 0){
                 return response()->json([
                     'message' => Generator::getMessageTemplate("api_read", "book", null), 
                     'status' => 'success',
@@ -369,6 +376,7 @@ class BooksController extends Controller
         try {
             $data_all = json_decode(
                 $this->getAllBooks(
+                    $request,
                     $request->limit_data_all ?? 20,
                     $request->order_data_all ?? 'asc',
                     $request->search_data_all ?? '%20'
@@ -522,7 +530,7 @@ class BooksController extends Controller
      *     ),
      * )
      */
-    public function deleteBookById($id){
+    public function deleteBookById(Request $request, $id){
         try {
             $bok = Books::selectRaw("concat (title, ' by ', author) as final_name")
                 ->where('id', $id)

@@ -196,9 +196,10 @@ class WeaponsController extends Controller
      *     ),
      * )
      */
-    public function getAllWeapons($limit, $order, $search){
+    public function getAllWeapons(Request $request, $limit, $order, $search){
         try {
             $search = trim($search);
+            $page = $request->query('page', 1);
 
             $wpn = Weapons::select('id', 'name', 'type', 'country')
                 ->orderBy('name', $order);
@@ -208,9 +209,16 @@ class WeaponsController extends Controller
                 $wpn = $wpn->where('name', 'LIKE', '%' . $search . '%');
             }
 
-            $wpn = $wpn->paginate($limit);
+            if($page != 'all'){
+                $wpn = $wpn->paginate($limit);
+                $total = $wpn->total();
+            } else {
+                $wpn = $wpn->get();
+                $total = count($wpn);
+            }
+            
         
-            if($wpn->total() > 0){
+            if($total > 0){
                 return response()->json([
                     'message' => Generator::getMessageTemplate("api_read", 'weapon', null),
                     'status' => 'success',
@@ -588,6 +596,7 @@ class WeaponsController extends Controller
         try {
             $data_all = json_decode(
                 $this->getAllWeapons(
+                    $request,
                     $request->limit_data_all ?? 20,
                     $request->order_data_all ?? 'asc',
                     $request->search_data_all ?? '%20'
@@ -750,7 +759,7 @@ class WeaponsController extends Controller
      *     ),
      * )
      */
-    public function deleteWeaponById($id){
+    public function deleteWeaponById(Request $request, $id){
         try {
             $wpn = Weapons::selectRaw("concat (name, ' - ', type) as final_name")
                 ->where('id', $id)

@@ -168,13 +168,22 @@ class EventsController extends Controller
      *     ),
      * )
      */
-    public function getAllEvents($limit, $order){
+    public function getAllEvents(Request $request, $limit, $order){
         try {
             $evt = Events::selectRaw('id, event, date_start, date_end, DATEDIFF(date_end, date_start) AS period')
-                ->orderBy('event', $order)
-                ->paginate($limit);
-        
-            if($evt->total() > 0){
+                ->orderBy('event', $order);
+
+            $page = $request->query('page', 1);
+            
+            if($page != 'all'){
+                $evt = $evt->paginate($limit);
+                $total = $evt->total();
+            } else {
+                $evt = $evt->get();
+                $total = count($evt);
+            }
+
+            if($total > 0){
                 return response()->json([
                     'message' => Generator::getMessageTemplate("api_read", 'event', null),
                     "data" => $evt,
@@ -189,7 +198,7 @@ class EventsController extends Controller
         } catch(\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'something wrong. please contact admin',
+                'message' => 'something wrong. please contact admin'.$e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -316,7 +325,7 @@ class EventsController extends Controller
      *     ),
      * )
      */
-    public function deleteEventById($id){
+    public function deleteEventById(Request $request, $id){
         try {
             $evt = Events::select('event')
                 ->where('id', $id)
